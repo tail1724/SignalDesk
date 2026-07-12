@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
 
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { error } = await supabase
     .from("hr_newsletter_subscribers")
     .upsert({ email: parsed.data.email, source: parsed.data.source, status: "subscribed" }, { onConflict: "email" });

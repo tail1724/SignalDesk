@@ -5,7 +5,7 @@ const ARTICLE_SELECT =
   "id, short_id, title, dek, slug, kicker, section_id, author_id, hero_image_url, hero_image_alt, status, publish_at, published_at, read_time_min, is_pro, hr_categories:section_id(id, name, slug, order, accent_hex), hr_authors:author_id(id, name, slug, bio, avatar_url)";
 
 export async function getCategories(): Promise<City[]> {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from("hr_categories")
     .select("id, name, slug, order, accent_hex")
@@ -15,7 +15,7 @@ export async function getCategories(): Promise<City[]> {
 }
 
 export async function getFeedArticles(citySlug?: string, limit = 20): Promise<Article[]> {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   let query = supabase
     .from("hr_articles")
     .select(ARTICLE_SELECT)
@@ -38,7 +38,7 @@ export async function getFeedArticles(citySlug?: string, limit = 20): Promise<Ar
 }
 
 export async function getArticleByShortId(shortId: string): Promise<Article | null> {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from("hr_articles")
     .select(ARTICLE_SELECT)

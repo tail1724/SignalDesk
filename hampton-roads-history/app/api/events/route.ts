@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid event" }, { status: 400 });
   }
 
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   await supabase.from("hr_page_events").insert({
     event_type: parsed.data.event_type,
     city_slug: parsed.data.city_slug ?? null,

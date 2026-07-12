@@ -11,7 +11,7 @@ export default async function SearchPage({
   let results: Article[] = [];
 
   if (q) {
-    const supabase = createServerSupabase();
+    const supabase = await createServerSupabase();
     const { data } = await supabase
       .from("hr_articles")
       .select(
