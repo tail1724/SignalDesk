@@ -3,6 +3,7 @@ import { HeroBentoGrid } from "@/components/HeroBentoGrid";
 import { SectionPills } from "@/components/SectionPills";
 import { ArticleCard } from "@/components/ArticleCard";
 import { ConversionBand } from "@/components/ConversionBand";
+import { TrendingArticles } from "@/components/TrendingArticles";
 import { WatchlistWidget } from "@/components/rail/WatchlistWidget";
 import { WeatherCard } from "@/components/rail/WeatherCard";
 import { CityDirectory } from "@/components/rail/CityDirectory";
@@ -36,6 +37,7 @@ export default async function HomePage() {
 
         <aside className="lg:sticky lg:top-20 flex flex-col gap-3.5">
           <WatchlistWidget />
+          <TrendingArticles limit={5} />
           <WeatherCard />
           <CityDirectory cities={cities} />
           <div className="bg-surface-1 border border-line rounded-[var(--r-card)] p-5">
