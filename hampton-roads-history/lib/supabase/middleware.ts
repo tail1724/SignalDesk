@@ -25,8 +25,13 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Refresh session if needed
-  await supabase.auth.getSession();
+  try {
+    // Refresh session if needed
+    await supabase.auth.getSession();
+  } catch {
+    // Silently fail if unable to reach Supabase (e.g., network restrictions)
+    // Session will be refreshed on next auth operation
+  }
 
   return response;
 }
