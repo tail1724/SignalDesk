@@ -24,7 +24,8 @@ export function NewsletterWidget({ source = "rail-widget" }: { source?: string }
   if (state === "done") {
     return (
       <p className="text-[13px] text-ink-2">
-        You&apos;re in — welcome aboard. Keep an eye on your inbox for our first dispatch.
+        Almost there — check your inbox and click the confirmation link to
+        start receiving the dispatch.
       </p>
     );
   }
