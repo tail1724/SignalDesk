@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Terms of Service — Hampton Roads History" };
 
@@ -10,8 +11,8 @@ export default function TermsPage() {
 
       <div className="text-ink-2 leading-relaxed space-y-5">
         <p>
-          By using Hampton Roads History (the "Site"), you agree to these
-          terms. If you don't agree, please don't use the Site.
+          By using Hampton Roads History (the &ldquo;Site&rdquo;), you agree to these
+          terms. If you don&apos;t agree, please don&apos;t use the Site.
         </p>
 
         <h2 className="font-display font-bold text-lg text-ink pt-2">Content</h2>
@@ -28,7 +29,7 @@ export default function TermsPage() {
 
         <h2 className="font-display font-bold text-lg text-ink pt-2">Accounts</h2>
         <p>
-          Creating an account requires a valid email address. You're
+          Creating an account requires a valid email address. You&apos;re
           responsible for keeping your account credentials secure. We may
           suspend accounts used to abuse the Site (spam, scraping, or
           attempts to circumvent access controls).
@@ -36,13 +37,13 @@ export default function TermsPage() {
 
         <h2 className="font-display font-bold text-lg text-ink pt-2">No warranty</h2>
         <p>
-          The Site is provided "as is." We work to keep information
+          The Site is provided &ldquo;as is.&rdquo; We work to keep information
           accurate but make no guarantee of completeness or accuracy.
           Historical accounts in particular may be subject to updated
           research — see our corrections policy on the{" "}
-          <a href="/about" className="text-accent hover:underline">
+          <Link href="/about" className="text-accent hover:underline">
             About page
-          </a>
+          </Link>
           .
         </p>
 

@@ -31,7 +31,7 @@ export async function searchArticles(query: string, limit = 20): Promise<Article
 
   if (error) throw error;
 
-  const byId = new Map((articles ?? []).map((a: any) => [a.id, a]));
+  const byId = new Map((articles ?? []).map((a: { id: string }) => [a.id, a]));
   return ranked
     .map((r: { id: string }) => byId.get(r.id))
     .filter((a: unknown): a is NonNullable<typeof a> => Boolean(a)) as unknown as Article[];

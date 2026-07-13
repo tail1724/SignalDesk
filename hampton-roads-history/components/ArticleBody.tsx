@@ -2,12 +2,11 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 
 export function ArticleBody({ body, title }: { body: unknown; title: string }) {
-  const hasContent =
-    body &&
-    typeof body === "object" &&
-    "root" in (body as Record<string, unknown>) &&
-    Array.isArray((body as any).root?.children) &&
-    (body as any).root.children.length > 0;
+  const root =
+    body && typeof body === "object" && "root" in (body as Record<string, unknown>)
+      ? (body as { root?: { children?: unknown[] } }).root
+      : undefined;
+  const hasContent = Array.isArray(root?.children) && root.children.length > 0;
 
   if (!hasContent) {
     return (

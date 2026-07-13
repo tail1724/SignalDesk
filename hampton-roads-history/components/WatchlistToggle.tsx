@@ -10,12 +10,10 @@ export function WatchlistToggle({ articleId }: { articleId: string }) {
   const [saved, setSaved] = useState(false);
   const [toggling, setToggling] = useState(false);
 
-  // Fetch initial watchlist state
+  // Fetch initial watchlist state. Rendering guards on `user` separately
+  // (see `displaySaved` below), so there's nothing to reset here on logout.
   useEffect(() => {
-    if (!user) {
-      setSaved(false);
-      return;
-    }
+    if (!user) return;
 
     async function checkWatchlist() {
       const res = await fetch("/api/watchlist");
@@ -58,17 +56,19 @@ export function WatchlistToggle({ articleId }: { articleId: string }) {
     }
   };
 
+  const displaySaved = user ? saved : false;
+
   return (
     <button
       onClick={handleToggle}
       disabled={loading || toggling}
-      aria-pressed={saved}
+      aria-pressed={displaySaved}
       data-article-id={articleId}
       className={`font-mono text-[11px] uppercase tracking-wide rounded-full px-3 py-1.5 border transition-colors disabled:opacity-50 ${
-        saved ? "bg-accent border-accent text-white" : "border-line-strong text-ink-2 hover:text-ink"
+        displaySaved ? "bg-accent border-accent text-white" : "border-line-strong text-ink-2 hover:text-ink"
       }`}
     >
-      {toggling ? "..." : saved ? "Saved" : "Save"}
+      {toggling ? "..." : displaySaved ? "Saved" : "Save"}
     </button>
   );
 }

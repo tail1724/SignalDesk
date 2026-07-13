@@ -50,7 +50,7 @@ export function UserWatchlist() {
   if (watchlist.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-ink-2 mb-4">You haven't saved any articles yet.</p>
+        <p className="text-ink-2 mb-4">You haven&apos;t saved any articles yet.</p>
         <Link href="/" className="text-accent hover:text-accent-dim font-semibold">
           Browse articles
         </Link>

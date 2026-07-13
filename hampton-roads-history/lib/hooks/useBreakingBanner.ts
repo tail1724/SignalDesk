@@ -18,9 +18,10 @@ export function useBreakingBanner() {
   const [banner, setBanner] = useState<BreakingBanner | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = getBrowserSupabase();
-  let channel: RealtimeChannel | null = null;
 
   useEffect(() => {
+    let channel: RealtimeChannel | null = null;
+
     async function loadBanner() {
       try {
         const { data } = await supabase

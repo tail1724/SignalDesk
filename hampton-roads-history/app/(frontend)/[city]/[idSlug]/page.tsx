@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getArticleByShortId, getRelatedArticles } from "@/lib/data";
 import { articleHref } from "@/components/ArticleCard";
-import { timeAgo, thumbGradient } from "@/lib/format";
+import { timeAgo, thumbGradient, parseShortId } from "@/lib/format";
 import { WatchlistToggle } from "@/components/WatchlistToggle";
 import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
@@ -19,7 +19,7 @@ type Props = { params: Promise<{ city: string; idSlug: string }> };
 export const dynamic = "force-dynamic";
 
 async function resolveArticle(idSlug: string) {
-  const [shortId] = idSlug.split("-");
+  const shortId = parseShortId(idSlug);
   if (!shortId) return null;
   return getArticleByShortId(shortId);
 }

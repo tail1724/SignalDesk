@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About — Hampton Roads History",
@@ -22,11 +23,11 @@ export default function AboutPage() {
           matters.
         </p>
         <p className="text-ink-2 leading-relaxed">
-          We're an independent publication, owned and operated by Mid-Atlantic
-          Labs. We don't run third-party ad networks or trackers — see our{" "}
-          <a href="/privacy" className="text-accent hover:underline">
+          We&apos;re an independent publication, owned and operated by Mid-Atlantic
+          Labs. We don&apos;t run third-party ad networks or trackers — see our{" "}
+          <Link href="/privacy" className="text-accent hover:underline">
             privacy policy
-          </a>{" "}
+          </Link>{" "}
           for the specifics.
         </p>
       </section>
@@ -47,7 +48,7 @@ export default function AboutPage() {
           <a href="mailto:corrections@hamptonroadshistory.com" className="text-accent hover:underline">
             corrections@hamptonroadshistory.com
           </a>{" "}
-          with the article title and what's wrong. We review every report
+          with the article title and what&apos;s wrong. We review every report
           and post corrections at the bottom of the affected story.
         </p>
       </section>
@@ -66,9 +67,9 @@ export default function AboutPage() {
           </a>
           <br />
           Advertising:{" "}
-          <a href="/advertise" className="text-accent hover:underline">
+          <Link href="/advertise" className="text-accent hover:underline">
             hamptonroadshistory.com/advertise
-          </a>
+          </Link>
         </p>
       </section>
     </main>

@@ -34,7 +34,7 @@ export async function getTrendingArticles(limit = 5): Promise<Article[]> {
   if (articlesError) throw articlesError;
 
   // Re-sort to match trend_score order (the `in` query doesn't preserve it)
-  const byId = new Map((articles ?? []).map((a: any) => [a.id, a]));
+  const byId = new Map((articles ?? []).map((a: { id: string }) => [a.id, a]));
   return trending
     .map((t) => byId.get(t.article_id))
     .filter((a): a is NonNullable<typeof a> => Boolean(a)) as unknown as Article[];
@@ -86,7 +86,7 @@ export async function getTrendingByCity(citySlug: string, limit = 5): Promise<Ar
 
   if (articlesError) throw articlesError;
 
-  const byId = new Map((articles ?? []).map((a: any) => [a.id, a]));
+  const byId = new Map((articles ?? []).map((a: { id: string }) => [a.id, a]));
   return trending
     .map((t) => byId.get(t.article_id))
     .filter((a): a is NonNullable<typeof a> => Boolean(a))

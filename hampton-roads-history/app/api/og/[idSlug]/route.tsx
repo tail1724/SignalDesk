@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getArticleByShortId } from "@/lib/data";
+import { parseShortId } from "@/lib/format";
 
 export const runtime = "edge";
 
@@ -8,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ idSlug: string }> }
 ) {
   const { idSlug } = await params;
-  const [shortId] = idSlug.split("-");
+  const shortId = parseShortId(idSlug);
   const article = shortId ? await getArticleByShortId(shortId) : null;
 
   const title = article?.title ?? "Hampton Roads History";

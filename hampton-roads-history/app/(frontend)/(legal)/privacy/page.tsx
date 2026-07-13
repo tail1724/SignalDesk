@@ -10,7 +10,7 @@ export default function PrivacyPage() {
 
       <div className="text-ink-2 leading-relaxed space-y-5">
         <p>
-          We don't run third-party ad networks, third-party analytics
+          We don&apos;t run third-party ad networks, third-party analytics
           scripts, or trackers of any kind. Everything described below is
           first-party — collected directly by us, stored in our own
           database, and never sold or shared with data brokers.
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <li>
             <strong>Account information:</strong> if you create an account,
             we store your email address and an encrypted password (we never
-            see or store your plaintext password — that's handled by our
+            see or store your plaintext password — that&apos;s handled by our
             authentication provider, Supabase).
           </li>
           <li>
@@ -44,16 +44,16 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>Basic analytics:</strong> page views, scroll depth, and
-            which city/article you're reading, tied to an anonymous
-            session ID (not your identity, unless you're signed in). This
-            helps us understand what's resonating and surface trending
+            which city/article you&apos;re reading, tied to an anonymous
+            session ID (not your identity, unless you&apos;re signed in). This
+            helps us understand what&apos;s resonating and surface trending
             stories.
           </li>
           <li>
             <strong>Ad impressions:</strong> if you see an ad slot, we log
             that impression (which creative, which slot, an anonymous
             session ID) to measure performance and to detect anomalous
-            click patterns automatically. We don't track you across other
+            click patterns automatically. We don&apos;t track you across other
             websites.
           </li>
         </ul>

@@ -31,15 +31,7 @@ function addRecentSearch(query: string) {
 }
 
 export function OmniSearch() {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [recent, setRecent] = useState<string[]>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Global Cmd+K / Ctrl+K to open
   useEffect(() => {
@@ -56,30 +48,50 @@ export function OmniSearch() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        aria-label="Search the site"
+        className="font-mono text-xs text-ink-2 bg-surface-2 border border-line rounded-full px-4 py-2 hover:border-line-strong transition-colors"
+      >
+        Find a story ⌘K
+      </button>
+    );
+  }
+
+  // Rendered fresh each time `open` flips true, so query/results/recent all
+  // start clean without needing an effect to reset them.
+  return <SearchDialog onClose={() => setOpen(false)} />;
+}
+
+function SearchDialog({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [recent] = useState<string[]>(() => getRecentSearches());
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
   useEffect(() => {
-    if (open) {
-      setRecent(getRecentSearches());
-      setQuery("");
-      setResults([]);
-      setActiveIndex(0);
-      // Wait for the dialog to mount before focusing
-      setTimeout(() => inputRef.current?.focus(), 0);
-    }
-  }, [open]);
+    inputRef.current?.focus();
+  }, []);
 
   // Debounced live search
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
-    if (!query.trim()) {
-      setResults([]);
+    const trimmed = query.trim();
+    if (!trimmed) {
       return;
     }
 
-    setLoading(true);
     debounceRef.current = setTimeout(async () => {
+      setLoading(true);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`);
         const data = await res.json();
         setResults(data.results ?? []);
         setActiveIndex(0);
@@ -95,58 +107,48 @@ export function OmniSearch() {
     };
   }, [query]);
 
+  const displayResults = query.trim() ? results : [];
+
   const navigateToResult = useCallback(
     (result: SearchResult) => {
       addRecentSearch(query.trim());
-      setOpen(false);
+      onClose();
       router.push(result.href);
     },
-    [query, router]
+    [query, router, onClose]
   );
 
   const submitQuery = useCallback(
     (q: string) => {
       if (!q.trim()) return;
       addRecentSearch(q.trim());
-      setOpen(false);
+      onClose();
       router.push(`/search?q=${encodeURIComponent(q.trim())}`);
     },
-    [router]
+    [router, onClose]
   );
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActiveIndex((i) => Math.min(i + 1, Math.max(results.length - 1, 0)));
+      setActiveIndex((i) => Math.min(i + 1, Math.max(displayResults.length - 1, 0)));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActiveIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (results[activeIndex]) {
-        navigateToResult(results[activeIndex]);
+      if (displayResults[activeIndex]) {
+        navigateToResult(displayResults[activeIndex]);
       } else {
         submitQuery(query);
       }
     }
   }
 
-  if (!open) {
-    return (
-      <button
-        onClick={() => setOpen(true)}
-        aria-label="Search the site"
-        className="font-mono text-xs text-ink-2 bg-surface-2 border border-line rounded-full px-4 py-2 hover:border-line-strong transition-colors"
-      >
-        Find a story ⌘K
-      </button>
-    );
-  }
-
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/40"
-      onClick={() => setOpen(false)}
+      onClick={onClose}
     >
       <div
         role="dialog"
@@ -167,7 +169,7 @@ export function OmniSearch() {
             className="flex-1 bg-transparent py-3.5 text-sm outline-none text-ink placeholder:text-ink-3"
           />
           <button
-            onClick={() => setOpen(false)}
+            onClick={onClose}
             aria-label="Close search"
             className="text-ink-3 hover:text-ink text-xs font-mono"
           >
@@ -180,14 +182,14 @@ export function OmniSearch() {
             <div className="px-4 py-3 text-sm text-ink-3">Searching…</div>
           )}
 
-          {!loading && query.trim() && results.length === 0 && (
+          {!loading && query.trim() && displayResults.length === 0 && (
             <div className="px-4 py-3 text-sm text-ink-3">
               No stories matched. Press Enter to see full search results.
             </div>
           )}
 
           {!loading &&
-            results.map((result, i) => (
+            displayResults.map((result, i) => (
               <button
                 key={result.id}
                 onClick={() => navigateToResult(result)}
