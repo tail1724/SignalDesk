@@ -1,10 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getArticleByShortId, getRelatedArticles } from "@/lib/data";
 import { articleHref } from "@/components/ArticleCard";
 import { timeAgo, thumbGradient } from "@/lib/format";
 import { WatchlistToggle } from "@/components/WatchlistToggle";
 import { ShareBar } from "@/components/ShareBar";
+import { AdSlot } from "@/components/AdSlot";
+import { getHeroImageUrl } from "@/lib/images";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ city: string; idSlug: string }> };
@@ -62,10 +65,23 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       </div>
 
-      <div
-        className={`aspect-[16/9] rounded-[var(--r-card)] bg-gradient-to-br ${thumbGradient(article.id)} mb-8`}
-        aria-hidden
-      />
+      {article.hero_image_url ? (
+        <div className="aspect-[16/9] rounded-[var(--r-card)] overflow-hidden mb-8">
+          <Image
+            src={getHeroImageUrl(article.hero_image_url)}
+            alt={article.hero_image_alt || article.title}
+            width={1200}
+            height={630}
+            priority
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div
+          className={`aspect-[16/9] rounded-[var(--r-card)] bg-gradient-to-br ${thumbGradient(article.id)} mb-8`}
+          aria-hidden
+        />
+      )}
 
       <article className="prose-hr max-w-none text-ink-2 leading-relaxed space-y-4">
         <p>
@@ -74,6 +90,10 @@ export default async function ArticlePage({ params }: Props) {
           account of {article.title.toLowerCase()}.
         </p>
       </article>
+
+      <div className="my-10">
+        <AdSlot slotId="article-inline" articleId={article.id} />
+      </div>
 
       {related.length > 0 && (
         <section className="mt-14">
