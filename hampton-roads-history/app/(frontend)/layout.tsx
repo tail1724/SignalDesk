@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo, DM_Sans, JetBrains_Mono } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { GlobalNav } from "@/components/GlobalNav";
 import { BreakingBanner } from "@/components/BreakingBanner";
 import { Footer } from "@/components/Footer";
