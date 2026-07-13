@@ -4,6 +4,9 @@ import type { Article, City } from "@/lib/supabase/types";
 const ARTICLE_SELECT =
   "id, short_id, title, dek, slug, kicker, section_id, author_id, hero_image_url, hero_image_alt, status, publish_at, published_at, read_time_min, is_pro, hr_categories:section_id(id, name, slug, order, accent_hex), hr_authors:author_id(id, name, slug, bio, avatar_url)";
 
+// Detail view additionally needs the full rich-text body (Payload Lexical JSON)
+const ARTICLE_DETAIL_SELECT = `${ARTICLE_SELECT}, body_lexical`;
+
 export async function getCategories(): Promise<City[]> {
   const supabase = await createServerSupabase();
   const { data, error } = await supabase
@@ -41,7 +44,7 @@ export async function getArticleByShortId(shortId: string): Promise<Article | nu
   const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from("hr_articles")
-    .select(ARTICLE_SELECT)
+    .select(ARTICLE_DETAIL_SELECT)
     .eq("short_id", shortId)
     .eq("status", "published")
     .maybeSingle();

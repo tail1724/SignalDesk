@@ -32,4 +32,6 @@ export type Article = {
   is_pro: boolean;
   hr_categories?: City | null;
   hr_authors?: Author | null;
+  // Payload Lexical rich-text JSON — only present on the detail-view select.
+  body_lexical?: unknown | null;
 };

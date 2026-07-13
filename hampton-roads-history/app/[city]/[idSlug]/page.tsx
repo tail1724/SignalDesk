@@ -7,6 +7,7 @@ import { timeAgo, thumbGradient } from "@/lib/format";
 import { WatchlistToggle } from "@/components/WatchlistToggle";
 import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
+import { ArticleBody } from "@/components/ArticleBody";
 import { getHeroImageUrl } from "@/lib/images";
 import type { Metadata } from "next";
 
@@ -22,9 +23,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { idSlug } = await params;
   const article = await resolveArticle(idSlug);
   if (!article) return {};
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
+  const url = `${siteUrl}${articleHref(article)}`;
+  const heroImage = article.hero_image_url ? getHeroImageUrl(article.hero_image_url) : undefined;
+
   return {
     title: `${article.title} — Hampton Roads History`,
     description: article.dek ?? undefined,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.dek ?? undefined,
+      url,
+      publishedTime: article.published_at ?? undefined,
+      authors: article.hr_authors?.name ? [article.hr_authors.name] : undefined,
+      images: heroImage ? [{ url: heroImage, width: 1200, height: 630 }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.dek ?? undefined,
+      images: heroImage ? [heroImage] : undefined,
+    },
   };
 }
 
@@ -41,8 +63,35 @@ export default async function ArticlePage({ params }: Props) {
 
   const related = await getRelatedArticles(city, article.id, 3);
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
+  const articleUrl = `${siteUrl}${canonical}`;
+  const heroImage = article.hero_image_url ? getHeroImageUrl(article.hero_image_url) : undefined;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: article.title,
+    description: article.dek ?? undefined,
+    image: heroImage ? [heroImage] : undefined,
+    datePublished: article.published_at ?? undefined,
+    dateModified: article.published_at ?? undefined,
+    author: article.hr_authors?.name
+      ? { "@type": "Person", name: article.hr_authors.name }
+      : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: "Hampton Roads History",
+      logo: { "@type": "ImageObject", url: `${siteUrl}/favicon.ico` },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+  };
+
   return (
     <main className="wrap py-10 max-w-3xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="font-mono text-xs tracking-wide uppercase text-accent-soft mb-3">
         <Link href={`/${city}`} className="hover:underline">
           {article.hr_categories?.name}
@@ -83,12 +132,8 @@ export default async function ArticlePage({ params }: Props) {
         />
       )}
 
-      <article className="prose-hr max-w-none text-ink-2 leading-relaxed space-y-4">
-        <p>
-          This story is still being written up in full — the editorial team
-          is finishing the deep-dive draft. Check back soon for the complete
-          account of {article.title.toLowerCase()}.
-        </p>
+      <article className="max-w-none text-ink-2 leading-relaxed">
+        <ArticleBody body={article.body_lexical} title={article.title} />
       </article>
 
       <div className="my-10">
