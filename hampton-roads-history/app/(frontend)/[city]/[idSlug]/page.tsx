@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
 import { getArticleByShortId, getRelatedArticles } from "@/lib/data";
@@ -12,6 +13,9 @@ import { getHeroImageUrl } from "@/lib/images";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ city: string; idSlug: string }> };
+
+// Required for CSP nonce support (the nonce is minted per-request in proxy.ts)
+export const dynamic = "force-dynamic";
 
 async function resolveArticle(idSlug: string) {
   const [shortId] = idSlug.split("-");
@@ -62,6 +66,7 @@ export default async function ArticlePage({ params }: Props) {
   }
 
   const related = await getRelatedArticles(city, article.id, 3);
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
   const articleUrl = `${siteUrl}${canonical}`;
@@ -90,6 +95,7 @@ export default async function ArticlePage({ params }: Props) {
     <main className="wrap py-10 max-w-3xl">
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="font-mono text-xs tracking-wide uppercase text-accent-soft mb-3">
