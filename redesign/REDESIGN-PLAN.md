@@ -27,7 +27,7 @@ Five non-negotiable outcomes:
 |---|---|
 | Clinical clarity | White canvas, hairline dividers, no decorative chrome between the reader and the headline. |
 | Reader's time first | Every story consumable in 1–2 minutes; axiom + bullets, never walls of prose. |
-| One column, one priority | The feed is a single ranked stream. Curation replaces navigation. |
+| One column, one priority | The feed is a single ranked stream — curation replaces navigation. It runs in a **wide content shell (~1080px)** with horizontal thumbnail cards, so the layout fills the viewport instead of stranding it in wide empty margins, while the article *reading* column stays at a comfortable ~720px measure. |
 | Inbox over destination | Newsletter capture is the primary conversion event, injected into the scroll path. |
 | Brand continuity | Terracotta (`#C0472F` family) survives as the single accent. The comic-book cityscape illustration style (see §7) becomes the masthead/brand illustration language — not the UI language. |
 
@@ -80,18 +80,28 @@ Reuse the existing dark tokens verbatim under `[data-theme="dark"]`. The current
 - Left: wordmark. Center: seven city links (overflow into a "Cities" menu < 1024px). Right: search (`⌘K` retained), theme quick-toggle (sun/moon), **Subscribe** as the single filled accent button, Sign in as text link.
 - Remove: `SectionPills.tsx` sticky sub-nav from the home path (keep the component for city pages only if analytics justify; default is delete).
 
+### 4.1a Layout widths (applies to §4.2 and §4.4)
+
+Two width tokens govern the whole product so the feed fills the viewport but long-form text never runs to an unreadable measure:
+
+- **`--shell: 1080px`** — the feed shell (home, city pages). Horizontal padding 32px. This is the change that removes the wide empty left/right margins; the feed now uses the desktop width instead of sitting in a 680px ribbon.
+- **`--reading: 720px`** — the centered reading column (article body, legal, settings, auth). Kept narrow on purpose: body prose at 720px is ~75 characters per line, the readable optimum. Feed content is scannable headlines + deks, so it tolerates the wider shell; article prose does not.
+
+Implement as a `.shell` and a `.reading` container class (or Tailwind `max-w-[1080px]` / `max-w-[720px]` wrappers). Both center with `margin-inline:auto`.
+
 ### 4.2 Home — `app/(frontend)/page.tsx`
 
-Replace `HeroBentoGrid.tsx` + `rail/*` composition with a **single 680px-max column**, in this order:
+Replace `HeroBentoGrid.tsx` + `rail/*` composition with a **single wide feed column (`.shell`, ~1080px)**, in this order:
 
-1. **Top story block** — kicker, 34px headline, one-sentence lede, "Why it matters" one-liner, byline/read-time.
-2. **Newsletter capture band #1** (The Morning Dispatch) — full-width-of-column inline card, email input + one button. This is the primary conversion unit; it appears above the fold on desktop.
-3. **Ranked story feed** — `ArticleCard.tsx` rewritten: no thumbnail-left dark card; instead kicker (city · topic, accent color, 12px caps), 22px headline, 1-sentence summary, meta row. Hairline between cards, 32px vertical rhythm.
-4. **Inline sponsored unit** after feed position 3 (see §6) and every ~6 items thereafter.
+1. **Top story hero** — two-column on desktop (`grid-template-columns: 1.05fr .95fr`): kicker + 38px headline + one-sentence lede + "Why it matters" one-liner + byline on the left, a 4:3 lead photo on the right. Stacks (photo first) below 860px.
+2. **Newsletter capture band #1** (The Morning Dispatch) — full-shell-width inline card; on desktop it's a two-column band (copy left, email input + button right), stacking on mobile. Primary conversion unit, above the fold.
+3. **Ranked story feed** — `ArticleCard.tsx` rewritten as a **horizontal card**: `grid-template-columns: 240px 1fr` with a 4:3 thumbnail on the left and kicker (city · topic, accent, 12px caps) / 22px headline / 1-sentence dek (capped at ~66ch) / meta on the right. Hairline (`border-top`) between cards, ~26px vertical padding. Cards with **no real photo** get a `.noimg` modifier that collapses to a single full-width text column — so text-only stories degrade cleanly without leaving an empty thumbnail box.
+4. **Inline sponsored unit** after feed position 3 (see §6) and every ~6 items thereafter — same horizontal card geometry as editorial (native), with the "Sponsored" label.
 5. **Newsletter capture band #2** at feed position ~8.
-6. Photojournalism: cards may carry a full-column-width 16:9 photo **only when a real photograph exists**. No gradient placeholder blocks in the new system — a card with no photo renders text-only.
+6. **Programmatic ad** renders as a full-shell-width billboard (reserved height) rather than a narrow box, now that the shell is wide.
+7. Photojournalism: thumbnails/hero are 4:3 (feed) and 16:9 (article), used **only when a real photograph exists**. No gradient placeholder blocks in production — the mockup's gradient tiles are stand-ins.
 
-Sidebars (`TrendingArticles`, weather, reading list, browse-by-city) are removed from home. Weather collapses into a one-line chip in the header area of the feed ("84° Partly cloudy · Hampton Roads"). Trending becomes an editorial "Catch up fast" bulleted card inside the feed (position ~5).
+Sidebars (`TrendingArticles`, weather, reading list, browse-by-city) are removed from home. Weather collapses into a one-line chip above the hero ("84° Partly cloudy · Hampton Roads"). Trending becomes an editorial "Catch up fast" card inside the feed — a two-column numbered list (position ~5) that also helps fill the wider shell.
 
 ### 4.3 Article page — `app/(frontend)/[city]/[idSlug]/page.tsx`, `components/ArticleBody.tsx`
 
@@ -99,14 +109,14 @@ Smart Brevity template, enforced by structure not by convention:
 
 - Kicker → H1 (34px) → one-paragraph bold lede (19px).
 - Modular blocks rendered from CMS fields: **Why it matters**, **Driving the news**, **By the numbers**, **What's next**, **Go deeper** — each a bolded axiom followed by bullets. Payload CMS: add a `brevityBlocks` array field (blockType enum + rich-text bullets) to the Articles collection; `ArticleBody.tsx` maps blocks to components.
-- Photo (when real) sits between lede and first axiom, full column width, credit line required.
+- Article runs in the narrower **`.reading` (~720px)** column, not the wide feed shell — long-form prose stays at a readable measure. Photo (when real) sits between lede and first axiom, full reading-column width at 16:9, credit line required.
 - Read-time target surfaced in editor UI; warn > 2 min.
 - Below article: one third-party ad slot, then "More from {city}" as three text-only links, then newsletter band.
 - `ShareBar`/`WatchlistToggle` collapse into a single quiet meta row under the byline.
 
 ### 4.4 City pages — `app/(frontend)/[city]/page.tsx`
 
-Same single-column feed as home, filtered by city. City name as H1 with one-line description; city switcher becomes a horizontal row of text tabs (light style) under the header. **This spec applies identically to all seven city pages.**
+Same wide feed shell (`.shell`, ~1080px) and horizontal cards as home, filtered by city. City name as H1 with one-line description; city switcher becomes a horizontal row of text tabs (light style) under the header. **This spec applies identically to all seven city pages.**
 
 ### 4.5 Search, Sign in, Account, Saved
 

@@ -42,7 +42,7 @@
     position:sticky;top:0;z-index:50;background:var(--base);
     border-bottom:1px solid var(--line);
     height:56px;display:flex;align-items:center;gap:20px;
-    padding:0 24px;
+    padding:0 32px;
   }
   .wordmark{font-weight:800;font-size:19px;letter-spacing:-.02em;white-space:nowrap}
   .wordmark span{color:var(--accent)}
@@ -61,7 +61,7 @@
   .theme-toggle:hover{border-color:var(--line-strong)}
 
   /* ============ MASTHEAD SKYLINE (brand illustration strip) ============ */
-  .skyline{max-width:680px;margin:0 auto;padding:20px 20px 0}
+  .skyline{max-width:1080px;margin:0 auto;padding:20px 32px 0}
   .skyline svg{display:block;width:100%;height:auto}
   [data-theme="dark"] .skyline .sky{fill:#1c2a30}
 
@@ -71,57 +71,72 @@
   .viewtabs button.on{background:var(--base);border-color:var(--line-strong);color:var(--ink)}
   .view{display:none} .view.on{display:block}
 
-  /* ============ FEED COLUMN ============ */
-  .col{max-width:680px;margin:0 auto;padding:28px 20px 80px}
+  /* ============ WIDTHS ============ */
+  /* Feed shell is wide (fills the side space); reading column stays a comfortable measure. */
+  .shell{max-width:1080px;margin:0 auto;padding:26px 32px 80px}
+  .reading{max-width:720px;margin:0 auto;padding:28px 24px 80px}
+
   .kicker{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
   .kicker .topic{color:var(--ink-3)}
   .meta{font-size:13px;color:var(--ink-3);margin-top:10px}
   .meta b{color:var(--ink-2);font-weight:600}
-  .chipline{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-3);margin-bottom:26px}
+  .chipline{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-3);margin-bottom:22px}
   .chipline .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
 
-  .top-story h1{font-size:34px;line-height:1.15;font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
-  .top-story .lede{font-size:19px;color:var(--ink-2);line-height:1.5}
-  .axiom-line{margin-top:12px;font-size:16px}
-  .axiom-line b{font-weight:800}
+  /* Photo placeholder (real photojournalism in production) */
+  .photo{width:100%;aspect-ratio:16/9;border-radius:10px;display:block;
+    background:linear-gradient(120deg,#b0532f,#7d3a24 55%,#2f6577);position:relative;overflow:hidden}
+  .photo::after{content:"PHOTO — real, credited";position:absolute;inset:0;display:flex;
+    align-items:center;justify-content:center;font-size:10px;letter-spacing:.12em;color:rgba(255,255,255,.85)}
 
-  .card{padding:28px 0;border-top:1px solid var(--line)}
+  /* ============ TOP STORY (hero: text + photo, fills width) ============ */
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;margin-bottom:6px}
+  .hero h1{font-size:38px;line-height:1.12;font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+  .hero .lede{font-size:19px;color:var(--ink-2);line-height:1.5}
+  .hero .axiom-line{margin-top:12px;font-size:16px}
+  .hero .axiom-line b{font-weight:800}
+  .hero-photo{aspect-ratio:4/3}
+
+  /* ============ FEED CARD (thumbnail left, text right) ============ */
+  .card{display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:start;
+    padding:26px 0;border-top:1px solid var(--line)}
+  .card.noimg{grid-template-columns:1fr}
+  .card .photo{aspect-ratio:4/3;border-radius:8px}
   .card h2{font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
   .card h2 a:hover{color:var(--accent)}
-  .card p{font-size:16px;color:var(--ink-2)}
-  .photo{width:100%;aspect-ratio:16/9;border-radius:10px;margin:0 0 14px;object-fit:cover;display:block;
-    background:linear-gradient(120deg,#b0532f,#7d3a24 55%,#2f6577);position:relative;overflow:hidden}
-  .photo::after{content:"REAL PHOTOJOURNALISM — 16:9, credited";position:absolute;inset:0;display:flex;
-    align-items:center;justify-content:center;font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.85)}
+  .card p{font-size:16px;color:var(--ink-2);max-width:66ch}
 
   /* catch up fast */
-  .catchup{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:28px 0 0}
-  .catchup h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
-  .catchup ul{list-style:none}
-  .catchup li{padding:7px 0;font-size:15px;font-weight:600;border-top:1px solid var(--line)}
-  .catchup li:first-child{border-top:0}
+  .catchup{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin:28px 0 0}
+  .catchup h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px}
+  .catchup ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 32px}
+  .catchup li{padding:8px 0;font-size:15px;font-weight:600;border-top:1px solid var(--line)}
+  .catchup li:nth-child(-n+2){border-top:0}
   .catchup li span{color:var(--accent);font-weight:800;margin-right:8px}
 
   /* newsletter band */
-  .nl{background:var(--accent-soft);border-radius:12px;padding:24px;margin:28px 0 0;border:1px solid var(--line)}
+  .nl{background:var(--accent-soft);border-radius:12px;padding:26px 28px;margin:28px 0 0;border:1px solid var(--line);
+    display:grid;grid-template-columns:1fr auto;gap:16px 32px;align-items:center}
   [data-theme="dark"] .nl{background:var(--surface-3)}
-  .nl h3{font-size:18px;font-weight:800;letter-spacing:-.01em}
-  .nl p{font-size:14px;color:var(--ink-2);margin:4px 0 14px}
-  .nl form{display:flex;gap:8px;flex-wrap:wrap}
-  .nl input{flex:1;min-width:200px;height:44px;border:1px solid var(--line-strong);border-radius:8px;
+  .nl h3{font-size:19px;font-weight:800;letter-spacing:-.01em}
+  .nl p{font-size:14px;color:var(--ink-2);margin-top:4px}
+  .nl form{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .nl input{width:280px;max-width:100%;height:44px;border:1px solid var(--line-strong);border-radius:8px;
     padding:0 14px;font:inherit;font-size:15px;background:var(--base);color:var(--ink)}
   .nl .btn{height:44px}
 
-  /* sponsored + programmatic ads */
-  .sponsored{border:1px solid var(--line);border-radius:12px;padding:22px;margin:28px 0 0;background:var(--surface-2)}
+  /* sponsored (native, horizontal) + programmatic ads */
+  .sponsored{display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:center;
+    border:1px solid var(--line);border-radius:12px;padding:20px;margin:28px 0 0;background:var(--surface-2)}
+  .sponsored .photo{aspect-ratio:4/3;border-radius:8px}
   .adlabel{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
     display:inline-block;border:1px solid var(--line-strong);border-radius:4px;padding:1px 7px;margin-bottom:10px}
   .sponsored h2{font-size:20px;font-weight:700;line-height:1.3;margin-bottom:6px}
   .sponsored p{font-size:15px;color:var(--ink-2)}
   .sponsored .from{font-size:13px;color:var(--ink-3);margin-top:10px}
-  .gpt{margin:28px 0 0;border:1px dashed var(--line-strong);border-radius:12px;min-height:250px;
+  .gpt{margin:28px 0 0;border:1px dashed var(--line-strong);border-radius:12px;min-height:140px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--surface-2)}
-  .gpt small{font-size:12px;color:var(--ink-3);max-width:420px;text-align:center;padding:0 16px}
+  .gpt small{font-size:12px;color:var(--ink-3);max-width:520px;text-align:center;padding:0 16px}
 
   /* ============ ARTICLE (Smart Brevity) ============ */
   .art .lede{font-size:19px;font-weight:600;line-height:1.5;margin:14px 0 6px}
@@ -130,6 +145,7 @@
   .byline-row .grow{flex:1}
   .byline-row button{font-size:13px;color:var(--ink-2);font-weight:600}
   .byline-row button:hover{color:var(--accent)}
+  .art .photo{aspect-ratio:16/9;margin-bottom:6px}
   .axiom{margin:24px 0 0}
   .axiom h3{font-size:17px;font-weight:800;margin-bottom:8px}
   .axiom ul{list-style:none}
@@ -169,15 +185,30 @@
   .seg button.on{background:var(--accent);color:#fff}
 
   footer.site{border-top:1px solid var(--line);margin-top:40px}
-  footer.site .inner{max-width:680px;margin:0 auto;padding:28px 20px;font-size:13px;color:var(--ink-3);
+  footer.site .inner{max-width:1080px;margin:0 auto;padding:28px 32px;font-size:13px;color:var(--ink-3);
     display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
   footer.site a:hover{color:var(--accent)}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;gap:18px}
+    .hero-photo{order:-1}
+    .card{grid-template-columns:1fr;gap:12px}
+    .card .photo{order:-1}
+    .sponsored{grid-template-columns:1fr;gap:14px}
+    .sponsored .photo{order:-1}
+    .catchup ul{grid-template-columns:1fr}
+    .catchup li:nth-child(2){border-top:1px solid var(--line)}
+    .nl{grid-template-columns:1fr}
+    .nl form{justify-content:flex-start}
+    .nl input{flex:1;width:auto;min-width:180px}
+  }
   @media(max-width:760px){nav.cities{display:none}}
 </style>
 </head>
 <body>
 
-<div class="demo">REDESIGN MOCKUP — light mode default · single-column feed · Smart Brevity · third-party ads · theme switcher. <b>Tabs below switch mocked views.</b></div>
+<div class="demo">REDESIGN MOCKUP — light default · wide feed shell + horizontal cards · Smart Brevity · third-party ads · theme switcher. <b>Tabs below switch mocked views.</b></div>
 
 <header class="site">
   <a class="wordmark" href="#">Hampton Roads <span>History</span></a>
@@ -205,75 +236,90 @@
 <main class="view on" id="view-home">
   <div class="skyline" aria-hidden="true">
     <!-- Brand illustration strip: ink-outlined, halftone harbor skyline. Warm foreground / cool sky per inspo. -->
-    <svg viewBox="0 0 680 64">
+    <svg viewBox="0 0 1080 64" preserveAspectRatio="none">
       <defs><pattern id="ht" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.4" cy="1.4" r="1" fill="#2f6577" opacity=".35"/></pattern></defs>
-      <rect class="sky" x="0" y="0" width="680" height="52" fill="#dcebf1"/>
-      <rect x="0" y="8" width="680" height="44" fill="url(#ht)"/>
+      <rect class="sky" x="0" y="0" width="1080" height="52" fill="#dcebf1"/>
+      <rect x="0" y="8" width="1080" height="44" fill="url(#ht)"/>
       <g stroke="#15140f" stroke-width="1.6" fill="#c0472f">
-        <rect x="24" y="26" width="34" height="26"/><rect x="70" y="18" width="26" height="34" fill="#b0532f"/>
-        <rect x="470" y="24" width="40" height="28" fill="#a34427"/><rect x="622" y="20" width="30" height="32" fill="#b0532f"/>
+        <rect x="30" y="26" width="40" height="26"/><rect x="90" y="18" width="30" height="34" fill="#b0532f"/>
+        <rect x="760" y="24" width="46" height="28" fill="#a34427"/><rect x="990" y="20" width="34" height="32" fill="#b0532f"/>
       </g>
       <g stroke="#15140f" stroke-width="1.6" fill="#e9f2f5">
-        <rect x="120" y="10" width="18" height="42"/><rect x="150" y="16" width="22" height="36"/>
-        <rect x="530" y="12" width="20" height="40"/><rect x="562" y="18" width="16" height="34"/>
+        <rect x="180" y="10" width="20" height="42"/><rect x="220" y="16" width="26" height="36"/>
+        <rect x="850" y="12" width="22" height="40"/><rect x="890" y="18" width="18" height="34"/>
       </g>
       <!-- harbor cranes -->
       <g stroke="#15140f" stroke-width="2" fill="none">
-        <path d="M220 52 V22 H280 M232 22 V52 M268 22 V52 M280 22 l14 12"/>
-        <path d="M330 52 V26 H386 M342 26 V52 M374 26 V52 M386 26 l14 10"/>
+        <path d="M340 52 V22 H440 M360 22 V52 M420 22 V52 M440 22 l18 12"/>
+        <path d="M520 52 V26 H612 M540 26 V52 M592 26 V52 M612 26 l18 10"/>
       </g>
-      <path d="M420 44 q10 -14 24 0 q10 -12 22 0" stroke="#15140f" stroke-width="2" fill="#f2b134"/>
-      <rect x="0" y="52" width="680" height="4" fill="#15140f"/>
-      <rect x="0" y="56" width="680" height="8" fill="#2f6577"/>
+      <path d="M660 44 q14 -14 30 0 q14 -12 28 0" stroke="#15140f" stroke-width="2" fill="#f2b134"/>
+      <rect x="0" y="52" width="1080" height="4" fill="#15140f"/>
+      <rect x="0" y="56" width="1080" height="8" fill="#2f6577"/>
     </svg>
   </div>
 
-  <div class="col">
+  <div class="shell">
     <div class="chipline"><span class="dot"></span> Sunday, July 13 · <b style="color:var(--ink-2)">84° Partly cloudy</b> · Hampton Roads</div>
 
-    <article class="top-story">
-      <div class="kicker">Hampton <span class="topic">· Feature</span></div>
-      <h1>Fort Monroe and the birth of freedom: how contraband camps changed American history</h1>
-      <p class="lede">In 1861, three enslaved men rowed across Hampton Roads to Union-held Fort Monroe — forcing Lincoln's hand and reshaping the Civil War.</p>
-      <p class="axiom-line"><b>Why it matters:</b> The "contraband decision" made here became the legal seed of emancipation — and its story is still being written into the national record.</p>
-      <div class="meta"><b>Mara Whitfield</b> · 1d ago · 2 min read</div>
+    <article class="hero">
+      <div class="hero-text">
+        <div class="kicker">Hampton <span class="topic">· Feature</span></div>
+        <h1>Fort Monroe and the birth of freedom: how contraband camps changed American history</h1>
+        <p class="lede">In 1861, three enslaved men rowed across Hampton Roads to Union-held Fort Monroe — forcing Lincoln's hand and reshaping the Civil War.</p>
+        <p class="axiom-line"><b>Why it matters:</b> The "contraband decision" made here became the legal seed of emancipation.</p>
+        <div class="meta"><b>Mara Whitfield</b> · 1d ago · 2 min read</div>
+      </div>
+      <div class="photo hero-photo" role="img" aria-label="Fort Monroe ramparts at dawn"></div>
     </article>
 
     <!-- Newsletter capture #1: primary conversion unit, above the fold -->
     <section class="nl">
-      <h3>The Morning Dispatch</h3>
-      <p>One flagship story, a few quick reads — Hampton Roads history in your inbox, weekday mornings. Free.</p>
+      <div>
+        <h3>The Morning Dispatch</h3>
+        <p>One flagship story, a few quick reads — Hampton Roads history in your inbox, weekday mornings. Free.</p>
+      </div>
       <form onsubmit="return false"><input type="email" placeholder="you@email.com" aria-label="Email address"><button class="btn btn-accent">Subscribe free</button></form>
     </section>
 
     <article class="card">
       <div class="photo" role="img" aria-label="Huntington Shipyard drydock, Newport News"></div>
-      <div class="kicker">Newport News <span class="topic">· Industry</span></div>
-      <h2><a href="#">The Huntington Shipyard and the men who built the first American battleships</a></h2>
-      <p>Collis P. Huntington bet on a patch of swampland in 1886. Within a decade it was building the hemisphere's most powerful warships.</p>
-      <div class="meta"><b>Desmond Carr</b> · 1d ago · 2 min read</div>
+      <div class="cbody">
+        <div class="kicker">Newport News <span class="topic">· Industry</span></div>
+        <h2><a href="#">The Huntington Shipyard and the men who built the first American battleships</a></h2>
+        <p>Collis P. Huntington bet on a patch of swampland in 1886. Within a decade it was building the hemisphere's most powerful warships.</p>
+        <div class="meta"><b>Desmond Carr</b> · 1d ago · 2 min read</div>
+      </div>
+    </article>
+
+    <article class="card noimg">
+      <div class="cbody">
+        <div class="kicker">Norfolk <span class="topic">· History</span></div>
+        <h2><a href="#">The night Norfolk burned: revisiting the 1776 bombardment and what was lost</a></h2>
+        <p>British shells and Patriot torches — the complicated truth behind Hampton Roads' most destructive night.</p>
+        <div class="meta"><b>Desmond Carr</b> · 1d ago · 1 min read</div>
+      </div>
     </article>
 
     <article class="card">
-      <div class="kicker">Norfolk <span class="topic">· History</span></div>
-      <h2><a href="#">The night Norfolk burned: revisiting the 1776 bombardment and what was lost</a></h2>
-      <p>British shells and Patriot torches — the complicated truth behind Hampton Roads' most destructive night.</p>
-      <div class="meta"><b>Desmond Carr</b> · 1d ago · 1 min read</div>
-    </article>
-
-    <article class="card">
-      <div class="kicker">Norfolk <span class="topic">· Navy</span></div>
-      <h2><a href="#">Naval Station Norfolk at 100: from tent city to the world's largest naval base</a></h2>
-      <p>The 1917 Jamestown Exposition grounds were requisitioned in 72 hours. What followed redefined the city, the region, and American sea power.</p>
-      <div class="meta"><b>Desmond Carr</b> · 2d ago · 2 min read</div>
+      <div class="photo" role="img" aria-label="Aerial view of Naval Station Norfolk piers"></div>
+      <div class="cbody">
+        <div class="kicker">Norfolk <span class="topic">· Navy</span></div>
+        <h2><a href="#">Naval Station Norfolk at 100: from tent city to the world's largest naval base</a></h2>
+        <p>The 1917 Jamestown Exposition grounds were requisitioned in 72 hours. What followed redefined the city, the region, and American sea power.</p>
+        <div class="meta"><b>Desmond Carr</b> · 2d ago · 2 min read</div>
+      </div>
     </article>
 
     <!-- Native sponsored unit: injected after feed position 3, mimics editorial format, clearly labeled -->
     <aside class="sponsored">
-      <span class="adlabel">Sponsored</span>
-      <h2>Chart your own crossing: sunset sails on the Elizabeth River</h2>
-      <p>Norfolk Harbor Cruises runs nightly departures from Waterside all summer. Locals get 20% off with code ROADS.</p>
-      <div class="from">From Norfolk Harbor Cruises · Paid content, sold &amp; served via our advertising partners</div>
+      <div class="photo" role="img" aria-label="Sunset sail on the Elizabeth River"></div>
+      <div class="cbody">
+        <span class="adlabel">Sponsored</span>
+        <h2>Chart your own crossing: sunset sails on the Elizabeth River</h2>
+        <p>Norfolk Harbor Cruises runs nightly departures from Waterside all summer. Locals get 20% off with code ROADS.</p>
+        <div class="from">From Norfolk Harbor Cruises · Paid content, sold &amp; served via our advertising partners</div>
+      </div>
     </aside>
 
     <div class="catchup">
@@ -286,37 +332,48 @@
       </ul>
     </div>
 
-    <article class="card" style="margin-top:28px">
-      <div class="kicker">Chesapeake <span class="topic">· Feature</span></div>
-      <h2><a href="#">Dismal Town: the failed city that George Washington tried to build in the swamp</a></h2>
-      <p>Washington invested heavily in draining the Great Dismal Swamp for a commercial hub. The swamp won.</p>
-      <div class="meta"><b>Priya Anand</b> · 2d ago · 1 min read</div>
+    <article class="card">
+      <div class="photo" role="img" aria-label="Draining works in the Great Dismal Swamp"></div>
+      <div class="cbody">
+        <div class="kicker">Chesapeake <span class="topic">· Feature</span></div>
+        <h2><a href="#">Dismal Town: the failed city that George Washington tried to build in the swamp</a></h2>
+        <p>Washington invested heavily in draining the Great Dismal Swamp for a commercial hub. The swamp won.</p>
+        <div class="meta"><b>Priya Anand</b> · 2d ago · 1 min read</div>
+      </div>
     </article>
 
     <article class="card">
-      <div class="kicker">Suffolk <span class="topic">· Industry</span></div>
-      <h2><a href="#">Peanuts, planters, and Amedeo Obici: how an Italian immigrant turned Suffolk into a global nut capital</a></h2>
-      <p>In 1913, Obici moved his roasting operation to Suffolk for one reason — the best peanut-growing land in America.</p>
-      <div class="meta"><b>Priya Anand</b> · 3d ago · 2 min read</div>
+      <div class="photo" role="img" aria-label="Planters peanut roasting floor in Suffolk"></div>
+      <div class="cbody">
+        <div class="kicker">Suffolk <span class="topic">· Industry</span></div>
+        <h2><a href="#">Peanuts, planters, and Amedeo Obici: how an Italian immigrant turned Suffolk into a global nut capital</a></h2>
+        <p>In 1913, Obici moved his roasting operation to Suffolk for one reason — the best peanut-growing land in America.</p>
+        <div class="meta"><b>Priya Anand</b> · 3d ago · 2 min read</div>
+      </div>
     </article>
 
     <!-- Programmatic slot: GPT + Prebid, lazy-loaded, reserved height (CLS 0) -->
     <div class="gpt">
       <span class="adlabel">Advertisement</span>
-      <small>Third-party programmatic slot · Google Ad Manager + Prebid header bidding · lazy-loaded, fixed reserved height, SafeFrame-sandboxed, consent-gated</small>
+      <small>Third-party programmatic billboard · Google Ad Manager + Prebid header bidding · lazy-loaded, fixed reserved height, SafeFrame-sandboxed, consent-gated</small>
     </div>
 
-    <article class="card" style="margin-top:28px">
-      <div class="kicker">Virginia Beach <span class="topic">· Feature</span></div>
-      <h2><a href="#">Virginia Beach before the beach clubs: 1920s cottage colony life</a></h2>
-      <p>Long before the boardwalk hotels, a scatter of modest cottages made up the region's first seaside community.</p>
-      <div class="meta"><b>Mara Whitfield</b> · 5d ago · 1 min read</div>
+    <article class="card">
+      <div class="photo" role="img" aria-label="1920s cottage colony at Virginia Beach"></div>
+      <div class="cbody">
+        <div class="kicker">Virginia Beach <span class="topic">· Feature</span></div>
+        <h2><a href="#">Virginia Beach before the beach clubs: 1920s cottage colony life</a></h2>
+        <p>Long before the boardwalk hotels, a scatter of modest cottages made up the region's first seaside community.</p>
+        <div class="meta"><b>Mara Whitfield</b> · 5d ago · 1 min read</div>
+      </div>
     </article>
 
     <!-- Newsletter capture #2 -->
     <section class="nl">
-      <h3>Seven cities. Four centuries. Two minutes a day.</h3>
-      <p>Don't come find the news — we'll bring it to you. Join 12,000+ neighbors reading the Dispatch.</p>
+      <div>
+        <h3>Seven cities. Four centuries. Two minutes a day.</h3>
+        <p>Don't come find the news — we'll bring it to you. Join 12,000+ neighbors reading the Dispatch.</p>
+      </div>
       <form onsubmit="return false"><input type="email" placeholder="you@email.com" aria-label="Email address"><button class="btn btn-accent">Subscribe free</button></form>
     </section>
   </div>
@@ -324,7 +381,7 @@
 
 <!-- ================= ARTICLE ================= -->
 <main class="view" id="view-article">
-  <div class="col art">
+  <div class="reading art">
     <div class="kicker">Hampton <span class="topic">· Feature</span></div>
     <h1 style="font-size:34px;line-height:1.15;font-weight:800;letter-spacing:-.02em">Fort Monroe and the birth of freedom: how contraband camps changed American history</h1>
     <p class="lede">Three enslaved men rowed to Union-held Fort Monroe in May 1861 — and the general who refused to return them created the legal crack that emancipation poured through.</p>
@@ -385,8 +442,10 @@
     </div>
 
     <section class="nl">
-      <h3>Get the next story before everyone else</h3>
-      <p>The Morning Dispatch — one flagship story, weekday mornings.</p>
+      <div>
+        <h3>Get the next story before everyone else</h3>
+        <p>The Morning Dispatch — one flagship story, weekday mornings.</p>
+      </div>
       <form onsubmit="return false"><input type="email" placeholder="you@email.com" aria-label="Email address"><button class="btn btn-accent">Subscribe free</button></form>
     </section>
   </div>
@@ -394,31 +453,39 @@
 
 <!-- ================= CITY ================= -->
 <main class="view" id="view-city">
-  <div class="col">
+  <div class="shell">
     <div class="citytabs">
       <a href="#">All cities</a><a href="#" class="on">Hampton</a><a href="#">Newport News</a><a href="#">Norfolk</a>
       <a href="#">Virginia Beach</a><a href="#">Chesapeake</a><a href="#">Portsmouth</a><a href="#">Suffolk</a>
     </div>
     <h1 class="pagetitle">Hampton</h1>
-    <p class="pagesub">Stories from Hampton, Virginia — same single-column feed, filtered. This template applies to all seven city pages.</p>
+    <p class="pagesub">Stories from Hampton, Virginia — same wide single-column feed, filtered. This template applies to all seven city pages.</p>
 
     <article class="card">
-      <div class="kicker">Hampton <span class="topic">· Feature</span></div>
-      <h2><a href="#">Fort Monroe and the birth of freedom: how contraband camps changed American history</a></h2>
-      <p>Three enslaved men rowed across Hampton Roads to Union-held Fort Monroe — and reshaped the course of the Civil War.</p>
-      <div class="meta"><b>Mara Whitfield</b> · 1d ago · 2 min read</div>
+      <div class="photo" role="img" aria-label="Fort Monroe ramparts at dawn"></div>
+      <div class="cbody">
+        <div class="kicker">Hampton <span class="topic">· Feature</span></div>
+        <h2><a href="#">Fort Monroe and the birth of freedom: how contraband camps changed American history</a></h2>
+        <p>Three enslaved men rowed across Hampton Roads to Union-held Fort Monroe — and reshaped the course of the Civil War.</p>
+        <div class="meta"><b>Mara Whitfield</b> · 1d ago · 2 min read</div>
+      </div>
     </article>
 
     <article class="card">
-      <div class="kicker">Hampton <span class="topic">· Archaeology</span></div>
-      <h2><a href="#">Kecoughtan: what archaeologists are finding beneath the ground where Jamestown almost was</a></h2>
-      <p>The Kecoughtan people occupied the Hampton peninsula for thousands of years before English settlers arrived in 1607. Their story is finally being recovered.</p>
-      <div class="meta"><b>Priya Anand</b> · 3d ago · 2 min read</div>
+      <div class="photo" role="img" aria-label="Archaeological dig on the Hampton peninsula"></div>
+      <div class="cbody">
+        <div class="kicker">Hampton <span class="topic">· Archaeology</span></div>
+        <h2><a href="#">Kecoughtan: what archaeologists are finding beneath the ground where Jamestown almost was</a></h2>
+        <p>The Kecoughtan people occupied the Hampton peninsula for thousands of years before English settlers arrived in 1607. Their story is finally being recovered.</p>
+        <div class="meta"><b>Priya Anand</b> · 3d ago · 2 min read</div>
+      </div>
     </article>
 
     <section class="nl">
-      <h3>Hampton, in your inbox</h3>
-      <p>Follow Hampton in the Morning Dispatch — pick your cities at signup.</p>
+      <div>
+        <h3>Hampton, in your inbox</h3>
+        <p>Follow Hampton in the Morning Dispatch — pick your cities at signup.</p>
+      </div>
       <form onsubmit="return false"><input type="email" placeholder="you@email.com" aria-label="Email address"><button class="btn btn-accent">Subscribe free</button></form>
     </section>
   </div>
@@ -426,7 +493,7 @@
 
 <!-- ================= ADVERTISE & LEGAL ================= -->
 <main class="view" id="view-legal">
-  <div class="col prose">
+  <div class="reading prose">
     <h1 class="pagetitle">Advertise with us <span class="tag-updated">UPDATED COPY</span></h1>
     <div class="new">
       <p><b>Hampton Roads History monetizes through third-party advertising.</b> We offer direct-sold sponsorships, native sponsored content in the feed, and programmatic placements served through third-party ad networks and real-time bidding partners. Reach readers who care deeply about this region — get in touch for the rate card.</p>
@@ -459,7 +526,7 @@
 
 <!-- ================= SETTINGS ================= -->
 <main class="view" id="view-settings">
-  <div class="col">
+  <div class="reading">
     <h1 class="pagetitle">Settings</h1>
     <p class="pagesub">Account → Appearance. The header sun/moon button is a shortcut to this same preference.</p>
 
