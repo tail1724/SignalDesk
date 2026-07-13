@@ -42,15 +42,9 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/_next/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      {
+        // Next.js already sets an immutable Cache-Control on hashed
+        // /_next/static assets automatically and doesn't allow overriding
+        // it — no entry needed here.
         source: "/:city([a-z-]+)/:idSlug([a-z0-9-]+)",
         headers: [
           {

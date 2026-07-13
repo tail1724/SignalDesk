@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { getOrCreateSessionId } from "@/lib/hooks/useSessionId";
 
 interface AdResponse {
   slot_id: string;
@@ -12,16 +13,6 @@ interface AdResponse {
   dest_url: string;
   hmac_token?: string;
   layout_variant?: string;
-}
-
-function getOrCreateSessionId(): string {
-  const key = "hr_session_id";
-  let id = sessionStorage.getItem(key);
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem(key, id);
-  }
-  return id;
 }
 
 export function AdSlot({ slotId, articleId }: { slotId: string; articleId?: string }) {

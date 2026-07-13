@@ -5,6 +5,7 @@ import { SectionPills } from "@/components/SectionPills";
 import { ArticleCard } from "@/components/ArticleCard";
 import { WeatherCard } from "@/components/rail/WeatherCard";
 import { NewsletterWidget } from "@/components/rail/NewsletterWidget";
+import { PageViewTracker } from "@/components/PageViewTracker";
 import type { Metadata } from "next";
 
 // Rendered dynamically per-request rather than pre-built with
@@ -48,6 +49,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   return (
     <main className="wrap py-8">
+      <PageViewTracker citySlug={city} />
       <div className="mb-6">
         <SectionPills cities={cities} active={city} />
       </div>

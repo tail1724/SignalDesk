@@ -8,7 +8,8 @@ const bodySchema = z.object({
   city_slug: z.string().optional(),
   article_short_id: z.string().optional(),
   article_id: z.string().uuid().optional(),
-  session_id: z.string().optional(),
+  // hr_page_events.session_id is NOT NULL — required, not optional.
+  session_id: z.string().min(1),
 });
 
 export async function POST(req: Request) {
@@ -26,14 +27,19 @@ export async function POST(req: Request) {
   }
 
   const supabase = await createServerSupabase();
-  await supabase.from("hr_page_events").insert({
+  const { error } = await supabase.from("hr_page_events").insert({
     event_type: parsed.data.event_type,
     city_slug: parsed.data.city_slug ?? null,
     article_short_id: parsed.data.article_short_id ?? null,
     article_id: parsed.data.article_id ?? null,
-    session_id: parsed.data.session_id ?? null,
+    session_id: parsed.data.session_id,
     referrer: req.headers.get("referer") ?? null,
   });
+
+  if (error) {
+    console.error("Failed to record page event:", error);
+    return NextResponse.json({ error: "Could not record event" }, { status: 500 });
+  }
 
   return new NextResponse(null, { status: 204 });
 }

@@ -1,13 +1,18 @@
+import { Fragment } from "react";
 import { getCategories, getFeedArticles } from "@/lib/data";
 import { HeroBentoGrid } from "@/components/HeroBentoGrid";
 import { SectionPills } from "@/components/SectionPills";
 import { ArticleCard } from "@/components/ArticleCard";
 import { ConversionBand } from "@/components/ConversionBand";
 import { TrendingArticles } from "@/components/TrendingArticles";
+import { AdSlot } from "@/components/AdSlot";
 import { WatchlistWidget } from "@/components/rail/WatchlistWidget";
 import { WeatherCard } from "@/components/rail/WeatherCard";
 import { CityDirectory } from "@/components/rail/CityDirectory";
 import { NewsletterWidget } from "@/components/rail/NewsletterWidget";
+import { PageViewTracker } from "@/components/PageViewTracker";
+
+const AD_EVERY_N_CARDS = 5;
 
 // force-dynamic keeps the build from needing Supabase access at build time
 // (this sandbox's egress policy blocks the project host); Coolify's build
@@ -22,6 +27,7 @@ export default async function HomePage() {
 
   return (
     <main className="wrap py-8">
+      <PageViewTracker />
       <div className="mb-6">
         <SectionPills cities={cities} />
       </div>
@@ -30,8 +36,11 @@ export default async function HomePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start mt-10">
         <section aria-label="Latest stories" className="flex flex-col gap-3.5">
-          {feedArticles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+          {feedArticles.map((article, i) => (
+            <Fragment key={article.id}>
+              <ArticleCard article={article} />
+              {(i + 1) % AD_EVERY_N_CARDS === 0 && <AdSlot slotId="home-feed" />}
+            </Fragment>
           ))}
         </section>
 

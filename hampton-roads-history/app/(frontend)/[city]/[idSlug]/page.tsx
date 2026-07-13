@@ -9,6 +9,7 @@ import { WatchlistToggle } from "@/components/WatchlistToggle";
 import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
 import { ArticleBody } from "@/components/ArticleBody";
+import { PageViewTracker } from "@/components/PageViewTracker";
 import { getHeroImageUrl } from "@/lib/images";
 import type { Metadata } from "next";
 
@@ -100,6 +101,7 @@ export default async function ArticlePage({ params }: Props) {
 
   return (
     <main className="wrap py-10 max-w-3xl">
+      <PageViewTracker articleId={article.id} articleShortId={article.short_id} citySlug={city} />
       <script
         type="application/ld+json"
         nonce={nonce}

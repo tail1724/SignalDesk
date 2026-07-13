@@ -61,6 +61,22 @@ export async function proxy(request: NextRequest) {
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", cspHeader);
 
+  // A/B variant assignment (WS-15's ConversionBand experiment). Assigned
+  // once per visitor and stuck to for a year. Patched into the forwarded
+  // Cookie header (not just the outgoing Set-Cookie) so this exact request
+  // sees it via cookies() immediately — a plain Set-Cookie only takes
+  // effect starting the browser's *next* request.
+  let abVariant = request.cookies.get("ab_variant")?.value;
+  const isNewAbVariant = abVariant !== "a" && abVariant !== "b";
+  if (isNewAbVariant) {
+    abVariant = Math.random() < 0.5 ? "a" : "b";
+    const existingCookie = requestHeaders.get("cookie") ?? "";
+    requestHeaders.set(
+      "cookie",
+      existingCookie ? `${existingCookie}; ab_variant=${abVariant}` : `ab_variant=${abVariant}`
+    );
+  }
+
   const response = NextResponse.next({
     request: { headers: requestHeaders },
   });
@@ -71,6 +87,13 @@ export async function proxy(request: NextRequest) {
   });
 
   response.headers.set("Content-Security-Policy", cspHeader);
+
+  if (isNewAbVariant) {
+    response.cookies.set("ab_variant", abVariant!, {
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    });
+  }
 
   return response;
 }
