@@ -9,6 +9,7 @@ import { WatchlistToggle } from "@/components/WatchlistToggle";
 import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
 import { ArticleBody } from "@/components/ArticleBody";
+import { NewsletterBand } from "@/components/NewsletterBand";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { Corrections } from "@/components/Corrections";
 import { ReportCorrection } from "@/components/ReportCorrection";
@@ -102,27 +103,27 @@ export default async function ArticlePage({ params }: Props) {
   };
 
   return (
-    <main className="wrap py-10 max-w-3xl">
+    <main className="reading py-10">
       <PageViewTracker articleId={article.id} articleShortId={article.short_id} citySlug={city} />
       <script
         type="application/ld+json"
         nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="font-mono text-xs tracking-wide uppercase text-accent-soft mb-3">
+      <div className="text-[12px] font-semibold tracking-wider uppercase text-accent mb-3">
         <Link href={`/${city}`} className="hover:underline">
           {article.hr_categories?.name}
         </Link>
-        {article.kicker ? ` · ${article.kicker}` : ""}
+        {article.kicker ? <span className="text-ink-3"> · {article.kicker}</span> : ""}
       </div>
-      <h1 className="font-display font-black text-[clamp(28px,4vw,42px)] leading-[1.05] tracking-tight mb-4">
+      <h1 className="font-display font-black text-[clamp(28px,4vw,40px)] leading-[1.1] tracking-[-0.02em] mb-4">
         {article.title}
       </h1>
-      {article.dek && <p className="text-ink-2 text-lg mb-5 max-w-[58ch]">{article.dek}</p>}
+      {article.dek && <p className="text-ink-2 text-[19px] font-medium leading-relaxed mb-5">{article.dek}</p>}
 
-      <div className="flex items-center justify-between border-y border-line py-3 mb-8">
-        <div className="font-mono text-[11px] text-ink-3">
-          By {article.hr_authors?.name ?? "Staff"} · {timeAgo(article.published_at)}
+      <div className="flex items-center justify-between gap-4 border-y border-line py-3 mb-8">
+        <div className="text-[13px] text-ink-3">
+          By <span className="text-ink-2 font-medium">{article.hr_authors?.name ?? "Staff"}</span> · {timeAgo(article.published_at)}
           {article.read_time_min ? ` · ${article.read_time_min} min read` : ""}
         </div>
         <div className="flex items-center gap-3">
@@ -158,26 +159,31 @@ export default async function ArticlePage({ params }: Props) {
       </div>
 
       {related.length > 0 && (
-        <section className="mt-14">
-          <h2 className="font-mono text-[11px] tracking-wide uppercase text-ink-3 mb-4">
-            More stories like this
+        <section className="mt-14 border-t border-line pt-5">
+          <h2 className="text-[13px] tracking-wider uppercase text-ink-3 font-semibold mb-2">
+            More from {article.hr_categories?.name ?? "Hampton Roads"}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="flex flex-col">
             {related.map((r) => (
               <Link
                 key={r.id}
                 href={articleHref(r)}
-                className="rounded-2xl border border-line p-4 hover:border-line-strong transition-colors"
+                className="py-3 border-t border-line first:border-t-0 font-display font-bold text-[17px] leading-snug hover:text-accent"
               >
-                <div className="font-mono text-[10px] tracking-wide uppercase text-accent-soft mb-1.5">
-                  {r.hr_categories?.name ?? "Hampton Roads"}
-                </div>
-                <h3 className="font-display font-bold text-sm leading-snug">{r.title}</h3>
+                {r.title}
               </Link>
             ))}
           </div>
         </section>
       )}
+
+      <div className="mt-12">
+        <NewsletterBand
+          title="Get the next story before everyone else"
+          copy="The Morning Dispatch — one flagship story, weekday mornings."
+          source="article-footer"
+        />
+      </div>
 
       <Corrections articleId={article.id} />
 

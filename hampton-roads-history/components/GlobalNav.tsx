@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { City } from "@/lib/supabase/types";
 import { OmniSearch } from "@/components/OmniSearch";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function GlobalNav({ cities }: { cities: City[] }) {
   return (
     <nav className="sticky top-0 z-40 bg-base/90 backdrop-blur-md border-b border-line">
-      <div className="wrap flex items-center gap-6 h-16">
+      <div className="wrap flex items-center gap-6 h-14">
         <Link href="/" className="font-display font-extrabold text-lg tracking-tight leading-tight shrink-0">
           Hampton Roads <span className="text-accent">History</span>
         </Link>
@@ -22,17 +23,18 @@ export function GlobalNav({ cities }: { cities: City[] }) {
         </div>
         <div className="ml-auto flex items-center gap-3 shrink-0">
           <OmniSearch />
+          <ThemeToggle />
           <Link
             href="/account"
-            className="hidden sm:inline-flex px-4 py-2 rounded-full border border-line-strong text-[13px] font-semibold hover:bg-surface-2 transition-colors"
+            className="hidden sm:inline-flex text-[13px] font-semibold text-ink-2 hover:text-ink transition-colors"
           >
             Sign in
           </Link>
           <Link
             href="/account?join=1"
-            className="inline-flex px-4 py-2 rounded-full bg-accent text-white text-[13px] font-semibold hover:bg-accent-dim transition-colors"
+            className="inline-flex px-4 py-2 rounded-lg bg-accent text-white text-[13px] font-semibold hover:bg-accent-dim transition-colors"
           >
-            Join free
+            Subscribe
           </Link>
         </div>
       </div>

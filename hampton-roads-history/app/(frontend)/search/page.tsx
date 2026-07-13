@@ -10,7 +10,7 @@ export default async function SearchPage({
   const results = q ? await searchArticles(q, 20) : [];
 
   return (
-    <main className="wrap py-10 max-w-3xl">
+    <main className="reading py-10">
       <h1 className="font-display font-black text-2xl mb-6">
         {q ? `Results for "${q}"` : "Search Hampton Roads history"}
       </h1>

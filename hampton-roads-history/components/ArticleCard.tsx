@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/lib/supabase/types";
-import { timeAgo, thumbGradient } from "@/lib/format";
+import { timeAgo } from "@/lib/format";
 import { getCardImageUrl } from "@/lib/images";
 
 export function articleHref(article: Article): string {
@@ -9,38 +9,50 @@ export function articleHref(article: Article): string {
   return `/${city}/${article.short_id}-${article.slug}`;
 }
 
+// Horizontal feed card: 4:3 thumbnail left, text right. Stories with no real
+// photograph collapse to a clean single text column (no empty placeholder).
 export function ArticleCard({ article }: { article: Article }) {
+  const hasImage = !!article.hero_image_url;
+
   return (
-    <article className="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-4 bg-surface-1 border border-line rounded-[var(--r-card)] p-4 hover:border-line-strong transition-colors">
-      <div className={`aspect-[16/10] rounded-2xl overflow-hidden bg-gradient-to-br ${thumbGradient(article.id)}`}>
-        {article.hero_image_url ? (
+    <article
+      className={`border-t border-line pt-6 ${
+        hasImage ? "grid grid-cols-1 sm:grid-cols-[240px_1fr] gap-5" : ""
+      }`}
+    >
+      {hasImage && (
+        <Link
+          href={articleHref(article)}
+          className="block aspect-[4/3] rounded-lg overflow-hidden bg-surface-3"
+        >
           <Image
-            src={getCardImageUrl(article.hero_image_url)}
+            src={getCardImageUrl(article.hero_image_url!)}
             alt={article.hero_image_alt || article.title}
             width={600}
-            height={400}
+            height={450}
             className="w-full h-full object-cover"
           />
-        ) : (
-          <div aria-hidden />
-        )}
-      </div>
-      <div>
-        <div className="font-mono text-[11px] tracking-wide uppercase text-accent-soft mb-1.5">
+        </Link>
+      )}
+      <div className="min-w-0">
+        <div className="text-[12px] font-semibold uppercase tracking-wider text-accent mb-1.5">
           {article.hr_categories?.name ?? "Hampton Roads"}
-          {article.kicker ? ` · ${article.kicker}` : ""}
+          {article.kicker ? <span className="text-ink-3"> · {article.kicker}</span> : ""}
         </div>
-        <h3 className="font-display font-extrabold text-lg leading-tight mb-2">
-          <Link href={articleHref(article)} className="hover:text-accent-soft">
+        <h3 className="font-display font-bold text-[22px] leading-tight tracking-[-0.01em] mb-1.5">
+          <Link href={articleHref(article)} className="hover:text-accent">
             {article.title}
           </Link>
         </h3>
         {article.dek && (
-          <p className="text-ink-2 text-[13.5px] leading-relaxed line-clamp-2 mb-2.5">{article.dek}</p>
+          <p className="text-ink-2 text-[16px] leading-relaxed line-clamp-2 mb-2.5 max-w-[66ch]">
+            {article.dek}
+          </p>
         )}
-        <div className="flex items-center gap-2 font-mono text-[11px] text-ink-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-accent-blue" />
-          {article.hr_authors?.name ?? "Staff"} · {timeAgo(article.published_at)}
+        <div className="text-[13px] text-ink-3">
+          <span className="text-ink-2 font-medium">{article.hr_authors?.name ?? "Staff"}</span>
+          {" · "}
+          {timeAgo(article.published_at)}
           {article.read_time_min ? ` · ${article.read_time_min} min read` : ""}
         </div>
       </div>

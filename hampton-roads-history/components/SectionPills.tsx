@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import type { City } from "@/lib/supabase/types";
 
 export function SectionPills({ cities, active }: { cities: City[]; active?: string }) {
@@ -14,7 +14,11 @@ export function SectionPills({ cities, active }: { cities: City[]; active?: stri
   const items = [{ slug: undefined, name: "All cities" }, ...cities];
 
   return (
-    <div role="tablist" aria-label="Filter by city" className="flex flex-wrap gap-2">
+    <div
+      role="tablist"
+      aria-label="Filter by city"
+      className="flex gap-1 overflow-x-auto border-b border-line"
+    >
       {items.map((c) => {
         const isActive = c.slug === active || (!c.slug && pathname === "/");
         return (
@@ -23,10 +27,10 @@ export function SectionPills({ cities, active }: { cities: City[]; active?: stri
             role="tab"
             aria-selected={isActive}
             onClick={() => go(c.slug)}
-            className={`font-mono text-[11px] tracking-wide uppercase px-4 py-2 rounded-full border transition-colors ${
+            className={`text-[14px] font-semibold whitespace-nowrap px-3.5 py-2.5 border-b-2 -mb-px transition-colors ${
               isActive
-                ? "bg-accent-blue border-accent-blue text-white"
-                : "border-line-strong text-ink-2 hover:bg-surface-2"
+                ? "text-ink border-accent"
+                : "text-ink-3 border-transparent hover:text-ink"
             }`}
           >
             {c.name}

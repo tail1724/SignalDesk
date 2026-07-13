@@ -35,6 +35,18 @@ export default function TermsPage() {
           attempts to circumvent access controls).
         </p>
 
+        <h2 className="font-display font-bold text-lg text-ink pt-2">Advertising</h2>
+        <p>
+          The Site displays advertising, including third-party advertisements
+          and sponsored content served through our advertising partners.
+          Advertisers, not Hampton Roads History, are responsible for the
+          products and services they promote. See our{" "}
+          <Link href="/ad-choices" className="text-accent hover:underline">
+            Ad Choices
+          </Link>{" "}
+          page for how advertising works and how to manage your choices.
+        </p>
+
         <h2 className="font-display font-bold text-lg text-ink pt-2">No warranty</h2>
         <p>
           The Site is provided &ldquo;as is.&rdquo; We work to keep information

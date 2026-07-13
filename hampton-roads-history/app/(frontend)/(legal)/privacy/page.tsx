@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Privacy Policy — Hampton Roads History" };
 
@@ -10,10 +11,15 @@ export default function PrivacyPage() {
 
       <div className="text-ink-2 leading-relaxed space-y-5">
         <p>
-          We don&apos;t run third-party ad networks, third-party analytics
-          scripts, or trackers of any kind. Everything described below is
-          first-party — collected directly by us, stored in our own
-          database, and never sold or shared with data brokers.
+          Hampton Roads History is funded by advertising, including
+          third-party ad networks. Our own analytics are first-party, but our
+          advertising partners may use cookies and similar identifiers to
+          deliver and measure ads — see the &ldquo;Advertising&rdquo; section below and
+          our{" "}
+          <Link href="/ad-choices" className="text-accent hover:underline">
+            Ad Choices
+          </Link>{" "}
+          page for details and your options.
         </p>
 
         <h2 className="font-display font-bold text-lg text-ink pt-2">What we collect</h2>
@@ -50,19 +56,47 @@ export default function PrivacyPage() {
             stories.
           </li>
           <li>
-            <strong>Ad impressions:</strong> if you see an ad slot, we log
+            <strong>Ad impressions:</strong> when you see an ad slot, we log
             that impression (which creative, which slot, an anonymous
-            session ID) to measure performance and to detect anomalous
-            click patterns automatically. We don&apos;t track you across other
-            websites.
+            session ID) to measure performance and detect anomalous click
+            patterns.
           </li>
         </ul>
+
+        <h2 className="font-display font-bold text-lg text-ink pt-2">Advertising</h2>
+        <p>
+          We use third-party advertising networks and real-time bidding
+          partners to monetize the Site. To deliver and measure ads, these
+          partners may set cookies and collect device identifiers, cookie
+          IDs, and page-context data. You can review partners and adjust your
+          choices at any time through our consent manager (available in the
+          site footer) and industry opt-outs such as the{" "}
+          <a
+            href="https://optout.networkadvertising.org/"
+            className="text-accent hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            NAI
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://optout.aboutads.info/"
+            className="text-accent hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            DAA
+          </a>{" "}
+          tools.
+        </p>
 
         <h2 className="font-display font-bold text-lg text-ink pt-2">Cookies</h2>
         <p>
           We use cookies to keep you signed in and to remember your theme
-          preference. We do not use cookies for cross-site tracking or
-          advertising.
+          preference. Our advertising partners also use cookies and similar
+          technologies to deliver and measure advertising, subject to your
+          consent choices.
         </p>
 
         <h2 className="font-display font-bold text-lg text-ink pt-2">Your rights</h2>
