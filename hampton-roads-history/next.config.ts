@@ -15,9 +15,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // `source` belongs at this top level, one entry per path pattern —
+        // it is NOT a property of individual objects inside `headers`.
         source: "/:path*",
         headers: [
-          // Security headers
           {
             key: "X-Content-Type-Options",
             value: "nosniff",
@@ -34,17 +35,27 @@ const nextConfig: NextConfig = {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
-          // Cache headers for static assets
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+      {
+        source: "/_next/static/:path*",
+        headers: [
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
-            source: "/_next/static/:path*",
           },
-          // Cache ISR pages
+        ],
+      },
+      {
+        source: "/:city([a-z-]+)/:idSlug([a-z0-9-]+)",
+        headers: [
           {
             key: "Cache-Control",
             value: "public, s-maxage=300, stale-while-revalidate=3600",
-            source: "/([a-z0-9-]*)/([a-z0-9]*)-:slug*",
           },
         ],
       },

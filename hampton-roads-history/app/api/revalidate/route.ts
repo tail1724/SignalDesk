@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as crypto from "crypto";
 import {
   revalidateArticle,
   revalidateCategory,
@@ -7,23 +6,16 @@ import {
   revalidateTrending,
   revalidateBreaking,
 } from "@/lib/revalidate";
-
-// HMAC verification for webhook security
-function verifyWebhookSignature(
-  payload: string,
-  signature: string
-): boolean {
-  const secret = process.env.WEBHOOK_SECRET || "dev-only-placeholder";
-  const hash = crypto
-    .createHmac("sha256", secret)
-    .update(payload)
-    .digest("base64");
-  return hash === signature;
-}
+import { verifyWebhookSignature } from "@/lib/webhook";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
-  // Rate limit: 10 reqs/min (enforced at CDN edge, this is fallback)
-  const clientIp = request.headers.get("x-forwarded-for") || "unknown";
+  // Primary enforcement is Traefik (coolify/traefik-middleware.yml, 10/min);
+  // this is a defense-in-depth fallback for single-instance deployments.
+  const clientIp = getClientIp(request.headers);
+  if (!checkRateLimit(`revalidate:${clientIp}`, 10)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
   try {
     // Verify webhook signature

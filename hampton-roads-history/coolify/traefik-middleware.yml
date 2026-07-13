@@ -1,0 +1,43 @@
+# Traefik dynamic configuration for Hampton Roads History rate limiting.
+#
+# This is the primary enforcement layer for the two webhook-style endpoints
+# that don't go through normal user browsing traffic. lib/rate-limit.ts
+# provides an in-process fallback for single-instance deployments, but an
+# in-memory counter doesn't share state across replicas or survive a
+# restart — Traefik is what actually holds under multi-instance load.
+#
+# Apply via Coolify's "Traefik Labels" / dynamic config mount for this
+# service, or drop this file into Traefik's file provider directory
+# (commonly /data/coolify/proxy/dynamic/ on the Coolify host).
+
+http:
+  middlewares:
+    hr-revalidate-ratelimit:
+      rateLimit:
+        average: 10
+        period: 1m
+        burst: 5
+
+    hr-events-ratelimit:
+      rateLimit:
+        average: 100
+        period: 1m
+        burst: 20
+
+  routers:
+    hr-revalidate:
+      rule: "PathPrefix(`/api/revalidate`)"
+      middlewares:
+        - hr-revalidate-ratelimit
+      service: hampton-roads-history
+
+    hr-events:
+      rule: "PathPrefix(`/api/events`)"
+      middlewares:
+        - hr-events-ratelimit
+      service: hampton-roads-history
+
+# Note: `service: hampton-roads-history` must match the Coolify-generated
+# service name for this app's Traefik provider — check the app's
+# "Advanced" > "Traefik Labels" tab in the Coolify UI after first deploy
+# and update this reference if it differs.

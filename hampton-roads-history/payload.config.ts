@@ -1,6 +1,7 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
+import { signWebhookPayload } from "@/lib/webhook";
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || "",
@@ -80,18 +81,19 @@ export default buildConfig({
             // Notify Next.js ISR to revalidate affected pages
             if (doc.status === "published") {
               try {
+                const body = JSON.stringify({
+                  type: "article.published",
+                  data: { id: doc.id, short_id: doc.short_id },
+                });
                 await fetch(
                   `${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`,
                   {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
-                      "x-webhook-signature": "TODO-hmac-sign",
+                      "x-webhook-signature": signWebhookPayload(body),
                     },
-                    body: JSON.stringify({
-                      type: "article.published",
-                      data: { id: doc.id, short_id: doc.short_id },
-                    }),
+                    body,
                   }
                 );
               } catch (err) {
@@ -129,16 +131,17 @@ export default buildConfig({
             }
 
             try {
+              const body = JSON.stringify({
+                type: "breaking.updated",
+                data: { id: doc.id },
+              });
               await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
-                  "x-webhook-signature": "TODO-hmac-sign",
+                  "x-webhook-signature": signWebhookPayload(body),
                 },
-                body: JSON.stringify({
-                  type: "breaking.updated",
-                  data: { id: doc.id },
-                }),
+                body,
               });
             } catch (err) {
               req.payload.logger.error({ err }, "Breaking revalidation webhook failed");

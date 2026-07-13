@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const bodySchema = z.object({
   event_type: z.string(),
@@ -11,6 +12,13 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
+  // Primary enforcement is Traefik (coolify/traefik-middleware.yml, 100/min);
+  // this is a defense-in-depth fallback for single-instance deployments.
+  const clientIp = getClientIp(req.headers);
+  if (!checkRateLimit(`events:${clientIp}`, 100)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const json = await req.json().catch(() => null);
   const parsed = bodySchema.safeParse(json);
   if (!parsed.success) {
