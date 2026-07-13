@@ -1,0 +1,31 @@
+{
+  "name": "Hampton Roads History",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+
+  // The Next.js app lives in the hampton-roads-history/ subdirectory, not at
+  // the repo root (the repo root only holds the original exampleHTML.html
+  // mockup and this config). Open Codespaces straight into the app folder so
+  // the terminal, file tree, and `npm run dev` all "just work" without a cd.
+  "workspaceFolder": "/workspaces/SignalDesk/hampton-roads-history",
+
+  // Runs in workspaceFolder, so this installs the app's dependencies.
+  "postCreateCommand": "npm install",
+
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js dev server",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
+      ]
+    }
+  }
+}
