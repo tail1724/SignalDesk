@@ -5,6 +5,7 @@ import { SectionPills } from "@/components/SectionPills";
 import { ArticleCard } from "@/components/ArticleCard";
 import { ConversionBand } from "@/components/ConversionBand";
 import { TrendingArticles } from "@/components/TrendingArticles";
+import { OnThisDay } from "@/components/OnThisDay";
 import { AdSlot } from "@/components/AdSlot";
 import { WatchlistWidget } from "@/components/rail/WatchlistWidget";
 import { WeatherCard } from "@/components/rail/WeatherCard";
@@ -46,6 +47,7 @@ export default async function HomePage() {
 
         <aside className="lg:sticky lg:top-20 flex flex-col gap-3.5">
           <WatchlistWidget />
+          <OnThisDay />
           <TrendingArticles limit={5} />
           <WeatherCard />
           <CityDirectory cities={cities} />

@@ -18,6 +18,7 @@ function makeArticle(overrides: Partial<Article> = {}): Article {
     status: "published",
     publish_at: null,
     published_at: null,
+    event_date: null,
     read_time_min: null,
     is_pro: false,
     hr_categories: { id: "c1", name: "Norfolk", slug: "norfolk", order: 0, accent_hex: null },

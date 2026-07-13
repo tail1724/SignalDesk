@@ -44,4 +44,17 @@ describeIfConfigured("RLS: anon key access (docs/rls-audit.md)", () => {
     const { error } = await supabase.from("hr_articles").select("id").limit(1);
     expect(error).toBeNull();
   });
+
+  it("allows public read of the corrections log (WS-20: editorial content, no PII)", async () => {
+    const { error } = await supabase.from("hr_corrections").select("id").limit(1);
+    expect(error).toBeNull();
+  });
+
+  it("cannot write to the corrections log directly (staff-authored via Payload only)", async () => {
+    const { error } = await supabase.from("hr_corrections").insert({
+      article_id: "00000000-0000-0000-0000-000000000000",
+      description: "attempted anon write",
+    });
+    expect(error).not.toBeNull();
+  });
 });

@@ -2,7 +2,7 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import type { Article } from "@/lib/supabase/types";
 
 const ARTICLE_SELECT =
-  "id, short_id, title, dek, slug, kicker, section_id, author_id, hero_image_url, hero_image_alt, status, publish_at, published_at, read_time_min, is_pro, hr_categories:section_id(id, name, slug, order, accent_hex), hr_authors:author_id(id, name, slug, bio, avatar_url)";
+  "id, short_id, title, dek, slug, kicker, section_id, author_id, hero_image_url, hero_image_alt, status, publish_at, published_at, event_date, read_time_min, is_pro, hr_categories:section_id(id, name, slug, order, accent_hex), hr_authors:author_id(id, name, slug, bio, avatar_url)";
 
 // Trigram similarity search via the hr_search_articles() RPC (typo-tolerant,
 // ranked by relevance rather than scan order). The RPC returns flat columns

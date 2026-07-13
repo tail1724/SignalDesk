@@ -29,7 +29,8 @@ key on SELECT.**
 Public-read tables (intentional, no PII exposed):
 `hr_categories`, `hr_authors`, `hr_media`, `hr_article_semantics`,
 `hr_gold_trending`, `hr_ad_creatives` (flight-window scoped),
-`hr_articles` (published only), `hr_breaking` (active only).
+`hr_articles` (published only), `hr_breaking` (active only),
+`hr_corrections` (unconditional — see WS-20 note below).
 
 Write-restricted / owner-scoped tables:
 - `hr_page_events`: anon INSERT only; SELECT policy is `USING (false)` —
@@ -62,6 +63,24 @@ check the token match inside the function body, where it isn't optional.
 This matches the existing pattern in this schema (`HR_aggregate_silver`,
 `HR_aggregate_gold_trending`, `HR_flag_ad_anomalies` are all `SECURITY
 DEFINER`).
+
+## WS-20: corrections log
+
+`hr_corrections` is public-read with `USING (true)` — deliberately
+unconditional, since corrections are editorial content with no PII and
+being publicly visible is the entire point (matches the About page's
+editorial-standards promise: "we correct it publicly rather than quietly
+editing it away"). There is no anon INSERT policy — entries are added only
+by editorial staff via Payload (which connects via `DATABASE_URI` and
+bypasses RLS, same as `hr_articles`/`hr_breaking`).
+
+The public-facing "report a correction" flow (`POST /api/corrections`)
+deliberately does not write to this table or any other — it emails
+`CORRECTIONS_EMAIL` via Resend and nothing is persisted. This avoids
+building a moderation queue for the report itself while still publishing
+the reviewed outcome. It also avoids trusting client-supplied
+title/URL in the notification email: the route looks up the article
+server-side by `article_id` and only proceeds if it's a real, published row.
 
 ## Write paths that bypass RLS entirely (by design)
 

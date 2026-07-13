@@ -72,6 +72,14 @@ export default buildConfig({
         { name: "body_lexical", type: "richText", editor: lexicalEditor({}) },
         { name: "publish_at", type: "date" },
         { name: "published_at", type: "date" },
+        {
+          name: "event_date",
+          type: "date",
+          admin: {
+            description:
+              "The calendar date of the historical event this piece is about (not when the article was published). Powers the \"On this day\" widget — leave blank if the piece doesn't cover a single dated event.",
+          },
+        },
         { name: "read_time_min", type: "number" },
         { name: "is_pro", type: "checkbox", defaultValue: false },
       ],
@@ -176,6 +184,52 @@ export default buildConfig({
           },
         },
       ],
+    },
+    {
+      slug: "hr_corrections",
+      admin: {
+        useAsTitle: "description",
+        description:
+          "Public corrections log (WS-20). Reports from readers arrive by email via /api/corrections → corrections@ — after review, add the correction here to publish it at the bottom of the affected article. Never write directly from a public form; this collection is staff-authored only.",
+      },
+      fields: [
+        {
+          name: "article_id",
+          type: "relationship",
+          relationTo: "hr_articles",
+          required: true,
+        },
+        { name: "description", type: "textarea", required: true },
+        { name: "corrected_at", type: "date", defaultValue: () => new Date().toISOString() },
+      ],
+      hooks: {
+        afterChange: [
+          async ({ doc, req }) => {
+            try {
+              const article = await req.payload.findByID({
+                collection: "hr_articles",
+                id: doc.article_id,
+              });
+              if (!article?.short_id) return;
+
+              const body = JSON.stringify({
+                type: "article.updated",
+                data: { id: article.id, short_id: article.short_id },
+              });
+              await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-webhook-signature": signWebhookPayload(body),
+                },
+                body,
+              });
+            } catch (err) {
+              req.payload.logger.error({ err }, "Correction revalidation webhook failed");
+            }
+          },
+        ],
+      },
     },
   ],
   typescript: {

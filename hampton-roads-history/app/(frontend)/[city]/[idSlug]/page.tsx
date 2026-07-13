@@ -10,6 +10,8 @@ import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
 import { ArticleBody } from "@/components/ArticleBody";
 import { PageViewTracker } from "@/components/PageViewTracker";
+import { Corrections } from "@/components/Corrections";
+import { ReportCorrection } from "@/components/ReportCorrection";
 import { getHeroImageUrl } from "@/lib/images";
 import type { Metadata } from "next";
 
@@ -71,7 +73,7 @@ export default async function ArticlePage({ params }: Props) {
     redirect(canonical);
   }
 
-  const related = await getRelatedArticles(city, article.id, 3);
+  const related = await getRelatedArticles(city, article.id, 3, article.kicker);
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
@@ -158,7 +160,7 @@ export default async function ArticlePage({ params }: Props) {
       {related.length > 0 && (
         <section className="mt-14">
           <h2 className="font-mono text-[11px] tracking-wide uppercase text-ink-3 mb-4">
-            More from {article.hr_categories?.name}
+            More stories like this
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {related.map((r) => (
@@ -167,12 +169,21 @@ export default async function ArticlePage({ params }: Props) {
                 href={articleHref(r)}
                 className="rounded-2xl border border-line p-4 hover:border-line-strong transition-colors"
               >
+                <div className="font-mono text-[10px] tracking-wide uppercase text-accent-soft mb-1.5">
+                  {r.hr_categories?.name ?? "Hampton Roads"}
+                </div>
                 <h3 className="font-display font-bold text-sm leading-snug">{r.title}</h3>
               </Link>
             ))}
           </div>
         </section>
       )}
+
+      <Corrections articleId={article.id} />
+
+      <div className="mt-8">
+        <ReportCorrection articleId={article.id} />
+      </div>
     </main>
   );
 }
