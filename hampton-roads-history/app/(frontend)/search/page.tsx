@@ -1,6 +1,5 @@
-import { createServerSupabase } from "@/lib/supabase/server";
+import { searchArticles } from "@/lib/search";
 import { ArticleCard } from "@/components/ArticleCard";
-import type { Article } from "@/lib/supabase/types";
 
 export default async function SearchPage({
   searchParams,
@@ -8,20 +7,7 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-  let results: Article[] = [];
-
-  if (q) {
-    const supabase = await createServerSupabase();
-    const { data } = await supabase
-      .from("hr_articles")
-      .select(
-        "id, short_id, title, dek, slug, kicker, section_id, author_id, hero_image_url, hero_image_alt, status, publish_at, published_at, read_time_min, is_pro, hr_categories:section_id(id, name, slug, order, accent_hex), hr_authors:author_id(id, name, slug, bio, avatar_url)"
-      )
-      .eq("status", "published")
-      .or(`title.ilike.%${q}%,dek.ilike.%${q}%`)
-      .limit(20);
-    results = (data ?? []) as unknown as Article[];
-  }
+  const results = q ? await searchArticles(q, 20) : [];
 
   return (
     <main className="wrap py-10 max-w-3xl">
