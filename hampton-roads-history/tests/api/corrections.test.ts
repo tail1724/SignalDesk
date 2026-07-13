@@ -80,9 +80,10 @@ describe("POST /api/corrections", () => {
     );
 
     expect(res.status).toBe(200);
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
     expect(sendCorrectionReportMock).toHaveBeenCalledWith(
       "The Night Norfolk Burned",
-      "https://hamptonroadshistory.com/norfolk/ab12-the-night-norfolk-burned",
+      `${siteUrl}/norfolk/ab12-the-night-norfolk-burned`,
       "The bombardment date is off by a year.",
       "reader@example.com"
     );
