@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-export function NewsletterWidget({ source = "rail-widget" }: { source?: string }) {
+export function NewsletterWidget({
+  source = "rail-widget",
+  onSuccess,
+}: {
+  source?: string;
+  onSuccess?: () => void;
+}) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
@@ -16,6 +22,7 @@ export function NewsletterWidget({ source = "rail-widget" }: { source?: string }
         body: JSON.stringify({ email, source }),
       });
       setState(res.ok ? "done" : "error");
+      if (res.ok) onSuccess?.();
     } catch {
       setState("error");
     }
@@ -24,7 +31,8 @@ export function NewsletterWidget({ source = "rail-widget" }: { source?: string }
   if (state === "done") {
     return (
       <p className="text-[13px] text-ink-2">
-        You&apos;re in — welcome aboard. Keep an eye on your inbox for our first dispatch.
+        Almost there — check your inbox and click the confirmation link to
+        start receiving the dispatch.
       </p>
     );
   }

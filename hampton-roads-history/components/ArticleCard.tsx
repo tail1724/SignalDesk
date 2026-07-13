@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Article } from "@/lib/supabase/types";
 import { timeAgo, thumbGradient } from "@/lib/format";
+import { getCardImageUrl } from "@/lib/images";
 
 export function articleHref(article: Article): string {
   const city = article.hr_categories?.slug ?? "hampton";
@@ -10,10 +12,19 @@ export function articleHref(article: Article): string {
 export function ArticleCard({ article }: { article: Article }) {
   return (
     <article className="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-4 bg-surface-1 border border-line rounded-[var(--r-card)] p-4 hover:border-line-strong transition-colors">
-      <div
-        className={`aspect-[16/10] rounded-2xl bg-gradient-to-br ${thumbGradient(article.id)}`}
-        aria-hidden
-      />
+      <div className={`aspect-[16/10] rounded-2xl overflow-hidden bg-gradient-to-br ${thumbGradient(article.id)}`}>
+        {article.hero_image_url ? (
+          <Image
+            src={getCardImageUrl(article.hero_image_url)}
+            alt={article.hero_image_alt || article.title}
+            width={600}
+            height={400}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div aria-hidden />
+        )}
+      </div>
       <div>
         <div className="font-mono text-[11px] tracking-wide uppercase text-accent-soft mb-1.5">
           {article.hr_categories?.name ?? "Hampton Roads"}

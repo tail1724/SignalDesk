@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Article } from "@/lib/supabase/types";
 import { articleHref } from "@/components/ArticleCard";
 import { timeAgo } from "@/lib/format";
+import { OceanBackground } from "@/components/three/OceanBackground";
 
 export function HeroBentoGrid({ articles }: { articles: Article[] }) {
   const [hero, second, ...rest] = articles;
@@ -20,6 +21,9 @@ export function HeroBentoGrid({ articles }: { articles: Article[] }) {
           href={articleHref(hero)}
           className="group relative flex flex-col justify-end min-h-[420px] rounded-[var(--r-card)] p-8 overflow-hidden border border-line bg-surface-1"
         >
+          <div className="absolute inset-0 -z-20">
+            <OceanBackground />
+          </div>
           <div
             className="absolute inset-0 -z-10 opacity-70"
             style={{

@@ -4,7 +4,7 @@ import type { City } from "@/lib/supabase/types";
 export function Footer({ cities }: { cities: City[] }) {
   return (
     <footer className="border-t border-line mt-16 py-14 text-ink-3 text-sm">
-      <div className="wrap grid grid-cols-2 md:grid-cols-4 gap-10">
+      <div className="wrap grid grid-cols-2 md:grid-cols-5 gap-10">
         <div className="col-span-2">
           <div className="font-display font-extrabold text-base text-ink mb-3">
             Hampton Roads <span className="text-accent">History</span>
@@ -32,6 +32,15 @@ export function Footer({ cities }: { cities: City[] }) {
             <Link href="/account" className="hover:text-ink">My account</Link>
             <Link href="/watch" className="hover:text-ink">Saved stories</Link>
             <Link href="/rss.xml" className="hover:text-ink">RSS</Link>
+          </div>
+        </div>
+        <div>
+          <h5 className="text-ink-2 font-semibold mb-3 text-xs uppercase tracking-wide">About</h5>
+          <div className="flex flex-col gap-2">
+            <Link href="/about" className="hover:text-ink">About &amp; masthead</Link>
+            <Link href="/terms" className="hover:text-ink">Terms</Link>
+            <Link href="/privacy" className="hover:text-ink">Privacy</Link>
+            <Link href="/ad-choices" className="hover:text-ink">Ad choices</Link>
           </div>
         </div>
       </div>

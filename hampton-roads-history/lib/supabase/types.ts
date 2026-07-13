@@ -28,8 +28,21 @@ export type Article = {
   status: string;
   publish_at: string | null;
   published_at: string | null;
+  // The calendar date of the historical event this piece is about (distinct
+  // from published_at, which is when the article went live on the site).
+  // Nullable — not every piece covers a single dated event.
+  event_date: string | null;
   read_time_min: number | null;
   is_pro: boolean;
   hr_categories?: City | null;
   hr_authors?: Author | null;
+  // Payload Lexical rich-text JSON — only present on the detail-view select.
+  body_lexical?: unknown | null;
+};
+
+export type Correction = {
+  id: string;
+  article_id: string;
+  description: string;
+  corrected_at: string;
 };

@@ -1,3 +1,11 @@
+// Article URLs are /[city]/[short_id]-[slug] — the short_id is looked up by
+// exact match (indexed), collision-proof regardless of what the slug part
+// says. Returns null for a malformed segment with no leading id.
+export function parseShortId(idSlug: string): string | null {
+  const [shortId] = idSlug.split("-");
+  return shortId || null;
+}
+
 export function timeAgo(iso: string | null): string {
   if (!iso) return "";
   const diffMs = Date.now() - new Date(iso).getTime();

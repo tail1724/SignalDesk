@@ -1,0 +1,847 @@
+<title>Hampton Roads History — Production Readiness Roadmap</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    /* Warm military-derived palette, inherited from the product's own tokens */
+    --base: #12140f;
+    --surface-1: #191b15;
+    --surface-2: #21241c;
+    --surface-3: #2b2f24;
+    --line: #34382c;
+    --line-strong: #474d3a;
+    --ink: #f6f2e9;
+    --ink-2: #c9c2ac;
+    --ink-3: #938c76;
+    --rust: #d1543b;
+    --rust-dim: #8f3624;
+    --teal: #6b9dab;
+    --teal-dim: #35606c;
+    --gold: #d3a54e;
+    --good: #7bb673;
+    --warn: #d3a54e;
+    --crit: #d1543b;
+    --info: #6b9dab;
+    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 12px 30px -18px rgba(0,0,0,.7);
+
+    --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+    --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+
+    --maxw: 1180px;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --base: #f4f1e8;
+      --surface-1: #fbf9f2;
+      --surface-2: #efe9d9;
+      --surface-3: #e6dfcb;
+      --line: #ddd4bf;
+      --line-strong: #c9bda0;
+      --ink: #241f16;
+      --ink-2: #55503f;
+      --ink-3: #837a63;
+      --rust: #b53f28;
+      --rust-dim: #8f3624;
+      --teal: #3f6f7e;
+      --teal-dim: #35606c;
+      --gold: #a97a24;
+      --good: #4f8a48;
+      --warn: #a97a24;
+      --crit: #b53f28;
+      --info: #3f6f7e;
+      --shadow: 0 1px 0 rgba(255,255,255,.5), 0 14px 30px -20px rgba(60,50,30,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --base: #12140f; --surface-1: #191b15; --surface-2: #21241c; --surface-3: #2b2f24;
+    --line: #34382c; --line-strong: #474d3a;
+    --ink: #f6f2e9; --ink-2: #c9c2ac; --ink-3: #938c76;
+    --rust: #d1543b; --rust-dim: #8f3624; --teal: #6b9dab; --teal-dim: #35606c; --gold: #d3a54e;
+    --good: #7bb673; --warn: #d3a54e; --crit: #d1543b; --info: #6b9dab;
+    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 12px 30px -18px rgba(0,0,0,.7);
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --base: #f4f1e8; --surface-1: #fbf9f2; --surface-2: #efe9d9; --surface-3: #e6dfcb;
+    --line: #ddd4bf; --line-strong: #c9bda0;
+    --ink: #241f16; --ink-2: #55503f; --ink-3: #837a63;
+    --rust: #b53f28; --rust-dim: #8f3624; --teal: #3f6f7e; --teal-dim: #35606c; --gold: #a97a24;
+    --good: #4f8a48; --warn: #a97a24; --crit: #b53f28; --info: #3f6f7e;
+    --shadow: 0 1px 0 rgba(255,255,255,.5), 0 14px 30px -20px rgba(60,50,30,.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+
+  body {
+    background: var(--base);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: .022;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  a { color: var(--rust); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; border-radius: 3px; }
+
+  .mono { font-family: var(--font-mono); }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* ---- Theme toggle ---- */
+  .toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 1000;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line-strong);
+    border-radius: 999px; padding: 8px 14px; cursor: pointer;
+  }
+  .toggle:hover { color: var(--ink); border-color: var(--rust); }
+
+  /* ---- Masthead ---- */
+  header.masthead { border-bottom: 1px solid var(--line); padding: 84px 0 40px; }
+  .flag {
+    display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px;
+  }
+  .flag .bars { display: flex; gap: 3px; }
+  .flag .bars i { width: 4px; height: 22px; border-radius: 2px; display: block; }
+  .flag .bars i:nth-child(1){ background: var(--rust); }
+  .flag .bars i:nth-child(2){ background: var(--ink-2); }
+  .flag .bars i:nth-child(3){ background: var(--teal); }
+  .flag span { font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-2); }
+
+  h1.title {
+    font-family: var(--font-display); font-weight: 800; letter-spacing: -.025em; line-height: 1.02;
+    font-size: clamp(34px, 6vw, 62px); text-wrap: balance; max-width: 16ch;
+  }
+  h1.title em { font-style: normal; color: var(--rust); }
+  .lede {
+    margin-top: 20px; max-width: 62ch; font-size: clamp(16px, 2vw, 19px); color: var(--ink-2); line-height: 1.55;
+  }
+  .meta-row {
+    margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px 26px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-3);
+  }
+  .meta-row b { color: var(--ink-2); font-weight: 500; }
+
+  /* ---- Section scaffold ---- */
+  section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+  .sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 30px; flex-wrap: wrap; }
+  .sec-head h2 {
+    font-family: var(--font-display); font-weight: 800; letter-spacing: -.02em; line-height: 1.05;
+    font-size: clamp(24px, 3.4vw, 34px); text-wrap: balance;
+  }
+  .sec-head .sec-no { font-family: var(--font-mono); font-size: 13px; color: var(--teal); letter-spacing: .1em; }
+  .sec-sub { color: var(--ink-2); max-width: 68ch; margin-top: -14px; margin-bottom: 30px; }
+
+  /* ---- Executive callout ---- */
+  .callout {
+    display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px;
+  }
+  .card {
+    background: var(--surface-1); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .blocker {
+    border-left: 3px solid var(--crit);
+  }
+  .card h3 { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: -.01em; margin-bottom: 6px; }
+  .card p { color: var(--ink-2); font-size: 14.5px; }
+  .card p + p { margin-top: 8px; }
+  .tag-need {
+    display: inline-block; margin-top: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--crit); border: 1px solid color-mix(in srgb, var(--crit) 45%, transparent);
+    padding: 4px 9px; border-radius: 6px;
+  }
+
+  /* ---- Dashboard meters ---- */
+  .meters { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .meter {
+    background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+  }
+  .meter .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .meter .name { font-weight: 600; font-size: 14.5px; }
+  .meter .pct { font-family: var(--font-mono); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  .meter .note { font-size: 12.5px; color: var(--ink-3); margin: 6px 0 12px; line-height: 1.45; }
+  .bar { height: 7px; border-radius: 4px; background: var(--surface-3); overflow: hidden; }
+  .bar > i { display: block; height: 100%; border-radius: 4px; }
+
+  /* ---- Legend ---- */
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono);
+    font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+
+  /* ---- Tier bands ---- */
+  .tier { margin-top: 40px; }
+  .tier:first-of-type { margin-top: 8px; }
+  .tier-head {
+    display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-radius: 12px;
+    background: var(--surface-2); border: 1px solid var(--line); margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .tier-badge {
+    font-family: var(--font-mono); font-weight: 700; font-size: 13px; letter-spacing: .1em;
+    padding: 6px 12px; border-radius: 8px; color: var(--base); flex: none;
+  }
+  .tier-head .tier-name { font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -.01em; }
+  .tier-head .tier-goal { color: var(--ink-2); font-size: 14px; }
+  .tier-head .tier-meta { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+  /* ---- Workstream cards ---- */
+  .ws { background: var(--surface-1); border: 1px solid var(--line); border-radius: 14px; padding: 0; margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .ws-stripe { height: 3px; width: 100%; }
+  .ws-body { padding: 22px 24px 24px; }
+  .ws-top { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .ws-id { font-family: var(--font-mono); font-size: 12px; color: var(--teal); letter-spacing: .08em; flex: none; }
+  .ws-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -.015em; line-height: 1.15; }
+  .ws-pills { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+    padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--ink-2); white-space: nowrap;
+  }
+  .pill.status { border: none; color: var(--base); font-weight: 700; }
+  .pill.effort { color: var(--ink-2); }
+  .pill.need { color: var(--crit); border-color: color-mix(in srgb, var(--crit) 45%, transparent); }
+
+  .ws-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 18px; }
+  @media (max-width: 760px){ .ws-grid { grid-template-columns: 1fr; gap: 16px; } }
+  .block h4 {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 8px;
+  }
+  .block p, .block li { font-size: 14px; color: var(--ink-2); }
+  ol.steps { list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 7px; }
+  ol.steps li { counter-increment: s; display: flex; gap: 10px; }
+  ol.steps li::before {
+    content: counter(s); font-family: var(--font-mono); font-size: 11px; color: var(--teal);
+    background: var(--surface-3); border-radius: 5px; min-width: 20px; height: 20px; display: inline-flex;
+    align-items: center; justify-content: center; flex: none; margin-top: 1px; font-variant-numeric: tabular-nums;
+  }
+  ul.crit { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  ul.crit li { display: flex; gap: 10px; }
+  ul.crit li::before { content: "✓"; color: var(--good); font-weight: 700; flex: none; }
+  ul.plain { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  ul.plain li { display: flex; gap: 9px; }
+  ul.plain li::before { content: "›"; color: var(--rust); flex: none; }
+  code {
+    font-family: var(--font-mono); font-size: 12.5px; background: var(--surface-3);
+    padding: 1.5px 6px; border-radius: 5px; color: var(--ink); word-break: break-word;
+  }
+  .files { display: flex; flex-wrap: wrap; gap: 6px; }
+  .files code { background: color-mix(in srgb, var(--teal) 14%, transparent); }
+
+  .dep { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-top: 14px; }
+  .dep b { color: var(--ink-2); font-weight: 500; }
+
+  /* ---- Gates table ---- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); }
+  tr:last-child td { border-bottom: none; }
+  td.g { white-space: nowrap; }
+  .mini { font-family: var(--font-mono); font-size: 11px; padding: 2px 7px; border-radius: 5px; color: var(--base); font-weight: 700; }
+
+  /* ---- Critical path ---- */
+  .path { display: flex; flex-direction: column; gap: 2px; }
+  .lane { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+  .lane:last-child { border-bottom: none; }
+  .lane .wk { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+  .lane .items { display: flex; flex-wrap: wrap; gap: 8px; }
+  .lane .items span {
+    font-family: var(--font-mono); font-size: 11.5px; padding: 5px 10px; border-radius: 7px;
+    background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2);
+  }
+  .lane .items span.p0 { border-color: color-mix(in srgb, var(--crit) 50%, var(--line)); color: var(--ink); }
+  .lane .items span.p1 { border-color: color-mix(in srgb, var(--gold) 50%, var(--line)); }
+
+  footer { padding: 44px 0 70px; color: var(--ink-3); font-family: var(--font-mono); font-size: 12px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px){ .two-col { grid-template-columns: 1fr; } }
+</style>
+
+<button class="toggle" id="themeToggle" aria-label="Toggle light and dark theme">◐ Theme</button>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="flag" aria-hidden="true">
+      <span class="bars"><i></i><i></i><i></i></span>
+      <span>Hampton Roads History · Mid-Atlantic Labs</span>
+    </div>
+    <h1 class="title">Production Readiness <em>Roadmap</em></h1>
+    <p class="lede">
+      The front-end shell is built and reading live data. This document sequences everything
+      standing between that shell and a publication real editors can run and real readers can
+      trust — the editorial layer, accounts, article rendering, discovery, revenue, and the
+      hardening a public news site is held to.
+    </p>
+    <div class="meta-row">
+      <span>Prepared <b>2026-07-12</b></span>
+      <span>Repo <b>tail1724/SignalDesk</b></span>
+      <span>Branch <b>claude/hampton-roads-history-build-rvw91c</b></span>
+      <span>Stack <b>Next.js 16 · Payload 3 · Supabase odogjtrpcpqicgqaraih</b></span>
+      <span>20 workstreams · 4 tiers</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ EXECUTIVE SUMMARY ============ -->
+<section id="summary">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">00</span><h2>Where it stands, honestly</h2></div>
+    <p class="sec-sub">
+      What shipped is a well-structured reading surface: collision-proof <code>/[city]/[id]-[slug]</code>
+      routing, the hero bento, feed, sticky rail, and the warm editorial design system, all reading the
+      live <code>hr_*</code> tables through the RLS wall. What is <em>not</em> built is most of what makes
+      this a publication rather than a template: there is no way for a human to author content, article
+      bodies are never actually rendered, there are no accounts, no images, no discovery surface, and no
+      ad or analytics machinery. The 12 seeded stories all carry placeholder bodies.
+    </p>
+
+    <div class="callout">
+      <div class="card blocker">
+        <h3>Two hard blockers to unblock before P0 can finish</h3>
+        <p><b>1 · Supabase Postgres password / connection string.</b> Payload CMS connects directly to
+        Postgres via <code>@payloadcms/db-postgres</code>. Schema work can go through the Supabase MCP
+        channel, but the running <code>/admin</code> needs the real <code>DATABASE_URI</code>.</p>
+        <p><b>2 · Resend (or Mailchimp) API key.</b> The newsletter writes rows today but cannot send a
+        confirmation or a dispatch without an ESP credential.</p>
+        <span class="tag-need">Neither blocks rendering + auth work, which can start immediately</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ READINESS DASHBOARD ============ -->
+<section id="dashboard">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">01</span><h2>Readiness by domain</h2></div>
+    <p class="sec-sub">Percent complete is measured against the PRD's stated scope for each area, not against
+      an MVP. Green bars are effectively done; amber is partial; rust is barely started.</p>
+    <div class="meters" id="meters"></div>
+  </div>
+</section>
+
+<!-- ============ THE PLAN ============ -->
+<section id="plan">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">02</span><h2>The build, sequenced by tier</h2></div>
+    <p class="sec-sub">
+      Tiers are dependency-ordered, not just priority-ordered: P0 is the set a local news site cannot
+      operate without, and later tiers assume it exists. Effort is a rough engineer-day estimate for one
+      experienced full-stack developer.
+    </p>
+
+    <div class="legend" style="margin-bottom:8px;">
+      <span class="chip"><span class="dot" style="background:var(--crit)"></span>Not started</span>
+      <span class="chip"><span class="dot" style="background:var(--warn)"></span>Partial</span>
+      <span class="chip"><span class="dot" style="background:var(--good)"></span>Done</span>
+      <span class="chip"><span class="dot" style="background:var(--teal)"></span>Needs credential / external access</span>
+    </div>
+
+    <div id="tiers"></div>
+  </div>
+</section>
+
+<!-- ============ LAUNCH GATES ============ -->
+<section id="gates">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">03</span><h2>PRD launch gates → owning workstream</h2></div>
+    <p class="sec-sub">Every gate from PRD §4 mapped to the workstream that satisfies it, so nothing on the
+      original checklist falls through.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Launch gate</th><th class="g">Owner</th><th class="g">Status</th></tr></thead>
+        <tbody id="gatesBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CRITICAL PATH ============ -->
+<section id="path">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">04</span><h2>Suggested critical path</h2></div>
+    <p class="sec-sub">A staging order for a single developer. Parallelizable with a second engineer by
+      splitting the editorial track (WS-01/02/03/05) from the reader track (WS-04/06/08). Weeks are
+      indicative, not committed.</p>
+    <div class="path" id="pathLanes"></div>
+  </div>
+</section>
+
+<!-- ============ DECISIONS ============ -->
+<section id="decisions" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">05</span><h2>Open decisions &amp; risks</h2></div>
+    <div class="two-col" id="decisionCards"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Hampton Roads History — internal engineering roadmap</span>
+    <span>Hampton · Newport News · Norfolk · Virginia Beach · Chesapeake · Portsmouth · Suffolk</span>
+  </div>
+</footer>
+
+<script>
+  // ---------- Theme toggle ----------
+  const root = document.documentElement;
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const current = root.getAttribute('data-theme')
+      || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+
+  // ---------- Readiness meters ----------
+  const domains = [
+    ['Front-end shell &amp; routing', 90, 'good', 'Routing, hero bento, feed, rail, design system all working.'],
+    ['Supabase read layer (RLS)', 85, 'good', 'Anon reads verified against every hr_* policy.'],
+    ['Editorial content', 20, 'crit', '12 stories exist but all bodies are placeholder; no images.'],
+    ['Content management (Payload)', 0, 'crit', 'Not installed. No way for a non-engineer to publish.'],
+    ['Article body rendering', 0, 'crit', 'body_lexical stored but never serialized to the page.'],
+    ['Accounts &amp; watchlist', 5, 'crit', 'Pages and toggles are stubs; no Supabase Auth wired.'],
+    ['Images &amp; media pipeline', 0, 'crit', 'Gradient fallbacks only; no CDN transform, no upload.'],
+    ['Caching &amp; revalidation', 25, 'warn', 'force-dynamic workaround in place; no ISR / revalidateTag.'],
+    ['SEO &amp; discovery', 5, 'crit', 'Per-page titles only. No sitemap, RSS, OG, or JSON-LD.'],
+    ['Newsletter', 40, 'warn', 'Writes rows; no ESP send, no double opt-in.'],
+    ['Analytics pipeline', 10, 'crit', 'Endpoint exists but nothing fires it; trending is empty.'],
+    ['First-party ads', 5, 'crit', 'House-ad endpoint only; no slot in feed, no HMAC, no logging.'],
+    ['Security &amp; headers', 10, 'crit', 'Empty next.config; no CSP, rate limits, or RLS audit.'],
+    ['Trust pages (legal / masthead)', 0, 'crit', 'Footer links to terms/privacy/about — none exist.'],
+    ['Observability &amp; deploy', 0, 'crit', 'No health check, error tracking, or Coolify service yet.'],
+    ['Testing &amp; CI', 0, 'crit', 'No unit, integration, e2e, or RLS tests.'],
+  ];
+  const colorFor = k => k === 'good' ? 'var(--good)' : k === 'warn' ? 'var(--warn)' : 'var(--crit)';
+  document.getElementById('meters').innerHTML = domains.map(([n,p,k,note]) => `
+    <div class="meter">
+      <div class="top"><span class="name">${n}</span><span class="pct">${p}%</span></div>
+      <div class="note">${note}</div>
+      <div class="bar"><i style="width:${p}%;background:${colorFor(k)}"></i></div>
+    </div>`).join('');
+
+  // ---------- Workstreams ----------
+  const S = { done:['Done','var(--good)'], partial:['Partial','var(--warn)'], none:['Not started','var(--crit)'] };
+  const tiers = [
+    {
+      badge:'P0', color:'var(--crit)', name:'Cannot launch without',
+      goal:'The editorial and reading core. A news site that fails any of these is not operable.',
+      ws:[
+        {
+          id:'WS-01', title:'Payload CMS 3, embedded', status:'none', effort:'4–6 d', need:'DATABASE_URI',
+          exists:'Nothing. No Payload install, no /admin, no collections.',
+          missing:'The entire authoring layer — drafts, scheduling, roles, rich-text entry.',
+          steps:[
+            'Add Payload 3 into the existing Next app (payload, @payloadcms/next, @payloadcms/db-postgres, @payloadcms/richtext-lexical).',
+            'Point the Postgres adapter at Supabase using DATABASE_URI; set schemaName so Payload’s own tables never collide with hr_*.',
+            'Define collections that read/write the existing hr_ tables: articles, authors, categories, media, ad-creatives.',
+            'Add the breakingBanner global with an afterChange hook that broadcasts on supabase.channel("breaking").',
+            'Map fields exactly to columns: title, dek, slug, kicker, section_id, author_id, body_lexical, hero_image_url, status, publish_at, is_pro.',
+            'Wire access control so only editor/admin roles can mutate; seed one admin user.'
+          ],
+          files:['app/(payload)/admin/[[...segments]]/page.tsx','payload.config.ts','collections/Articles.ts','collections/Media.ts','lib/payload.ts'],
+          crit:['A non-engineer can create, edit, schedule and publish an article from /admin','Publishing sets status=published and stamps published_at','Roles enforced: anonymous cannot reach /admin'],
+          dep:'Blocks WS-02, WS-03, WS-05, WS-06. Blocked by: Supabase DB password.'
+        },
+        {
+          id:'WS-02', title:'Article body renderer (Lexical → React)', status:'none', effort:'2 d',
+          exists:'Article page renders a hardcoded “still being written” paragraph.',
+          missing:'Any serialization of body_lexical. The core act of showing a story is faked.',
+          steps:[
+            'Add @payloadcms/richtext-lexical’s React serializer (or a custom converter) for the stored body_lexical JSON.',
+            'Render headings, paragraphs, lists, blockquotes, inline links, and image nodes with the site’s type scale.',
+            'Style a .prose-hr scope: 65ch measure, Archivo subheads, DM Sans body, pull-quotes in rust.',
+            'Handle empty/malformed body gracefully (fall back to dek + “coming soon”, never a crash).',
+            'Add reading-progress affordance and ensure images inside body use next/image with locked aspect ratio.'
+          ],
+          files:['components/LexicalContent.tsx','app/[city]/[idSlug]/page.tsx','app/globals.css'],
+          crit:['A published article displays its full formatted body','Links, lists, quotes and inline images all render','No layout shift as body images load (CLS ≤ 0.02)'],
+          dep:'Blocked by: WS-01 (needs real Lexical bodies to render).'
+        },
+        {
+          id:'WS-03', title:'Real editorial content, authors &amp; imagery', status:'partial', effort:'ongoing',
+          exists:'12 stories across all 7 cities, 3 authors — but every body is placeholder and no images.',
+          missing:'Actual written journalism, author bios + headshots, hero images per story.',
+          steps:[
+            'Replace all 12 placeholder body_lexical documents with real, reported copy authored in /admin.',
+            'Write real author bios and attach headshots via the media pipeline (WS-05).',
+            'Commission or source properly licensed hero imagery for each flagship; set hero_image_alt on every one.',
+            'Establish an editorial calendar: 3–5 flagship pieces/week as the PRD cadence specifies.',
+            'Define a topic/tag vocabulary beyond the seven cities (Civil War, Navy, Archaeology, Industry…).'
+          ],
+          files:['(content authored in Payload, not code)'],
+          crit:['Zero placeholder bodies remain','Every published story has a hero image with alt text','Every author has a bio and photo'],
+          dep:'Blocked by: WS-01 (authoring) and WS-05 (images). Never a one-time task — this is the ongoing product.'
+        },
+        {
+          id:'WS-04', title:'Accounts &amp; watchlist, end-to-end', status:'partial', effort:'3–4 d',
+          exists:'/account, /watch, WatchlistToggle, WatchlistWidget all render as stubs. handle_new_user trigger already creates hr_profiles.',
+          missing:'Supabase Auth wiring, session in middleware, real reads/writes to hr_watchlists.',
+          steps:[
+            'Build the sign-in / join UI: Supabase Auth magic-link + email-password, using @supabase/ssr cookie sessions.',
+            'Add middleware.ts to refresh the session cookie and guard /account/* and /watch.',
+            'Wire WatchlistToggle to insert/delete hr_watchlists rows (RLS “users manage own watchlist” already exists).',
+            'WatchlistWidget: authenticated → saved count + last 2 saves; anonymous → the existing CTA.',
+            'Account page: profile edit (hr_profiles SELECT/UPDATE own), newsletter status, sign-out.',
+            'Persist and hydrate watchlist state across devices via the DB, not localStorage.'
+          ],
+          files:['middleware.ts','app/account/page.tsx','app/watch/page.tsx','components/WatchlistToggle.tsx','components/rail/WatchlistWidget.tsx','lib/supabase/middleware.ts'],
+          crit:['Sign up → hr_profiles row auto-created (trigger) → visible in /account','Saving an article persists and reappears on another device','/account and /watch redirect anonymous users to sign-in'],
+          dep:'Independent of the editorial track — can run in parallel with WS-01.'
+        },
+        {
+          id:'WS-05', title:'Image upload pipeline &amp; CDN delivery', status:'none', effort:'2–3 d',
+          exists:'Deterministic gradient placeholders keyed off article id.',
+          missing:'Upload → Supabase Storage, the ingestion transform, and next/image CDN delivery.',
+          steps:[
+            'Payload media collection beforeChange hook: rename to UUID, strip EXIF, convert to WebP/AVIF, write to hr-media at YYYY/MM/uuid.ext.',
+            'Persist original filename, alt, and dimensions in hr_media (owns the UUID↔metadata relationship).',
+            'Configure next.config images.remotePatterns for the Supabase render endpoint (/storage/v1/render/image/public/hr-media/*).',
+            'Swap ArticleCard / hero gradients to next/image with the CDN transform (width, quality, format) and keep the gradient as the loading fallback.',
+            'Set sizes attributes correctly per breakpoint to protect LCP on the hero.'
+          ],
+          files:['collections/Media.ts','next.config.ts','components/ArticleCard.tsx','components/HeroBentoGrid.tsx','lib/image.ts'],
+          crit:['Uploading in /admin lands a WebP at hr-media/YYYY/MM/uuid.webp','Article hero served via CDN transform, not the Next process','LCP < 1.5s on the article template with a real hero'],
+          dep:'Blocked by: WS-01. Blocks WS-03 imagery.'
+        },
+        {
+          id:'WS-06', title:'Caching &amp; on-demand revalidation', status:'partial', effort:'2 d',
+          exists:'force-dynamic on every route as a sandbox-egress workaround; every request hits the DB.',
+          missing:'ISR, tagged fetches, and the /api/revalidate webhook the PRD specifies.',
+          steps:[
+            'Remove force-dynamic; restore ISR (revalidate 300) on home and city indexes, static generation on articles.',
+            'Tag data reads with next tags: article:{slug}, city:{slug}, home.',
+            'Build POST /api/revalidate: validate x-webhook-secret + HMAC, then revalidateTag() per tag.',
+            'Fire it from Payload articles afterChange / afterDelete with the tag set from the PRD.',
+            'Re-enable generateStaticParams for the 7 cities and published articles once build-time network access exists (Coolify has it).'
+          ],
+          files:['app/api/revalidate/route.ts','app/page.tsx','app/[city]/page.tsx','app/[city]/[idSlug]/page.tsx','collections/Articles.ts'],
+          crit:['Publish in /admin → live on the site in < 10s','No route is needlessly dynamic; home + city are edge-cached','Revalidate endpoint rejects unsigned requests'],
+          dep:'Blocked by: WS-01 (afterChange hook lives in Payload).'
+        },
+        {
+          id:'WS-07', title:'Health, error states &amp; trust pages', status:'none', effort:'2 d',
+          exists:'Footer links to /about, /terms, /privacy, /ad-choices; none resolve. No health/error/404 UI.',
+          missing:'GET /api/health, not-found + error boundaries, and the standing publication pages.',
+          steps:[
+            'Add GET /api/health returning 200 with a DB round-trip check (Coolify health probe depends on it).',
+            'Build not-found.tsx and error.tsx in the site’s voice, not the default Next screens.',
+            'Write real About / masthead (who runs this, editorial standards, corrections policy, contact).',
+            'Write Terms, Privacy (state the zero-third-party-tracking stance plainly), and Ad Choices.',
+            'Add a corrections + contact path — table stakes for a credible local outlet.'
+          ],
+          files:['app/api/health/route.ts','app/not-found.tsx','app/error.tsx','app/about/page.tsx','app/(legal)/terms/page.tsx','app/(legal)/privacy/page.tsx'],
+          crit:['/api/health returns 200 only when the DB is reachable','Every footer link resolves to a real page','Privacy policy accurately describes data practices'],
+          dep:'Independent; good parallel work.'
+        }
+      ]
+    },
+    {
+      badge:'P1', color:'var(--gold)', name:'Needed for a credible public launch',
+      goal:'Discovery, delivery, and the security posture a public site is judged on.',
+      ws:[
+        {
+          id:'WS-08', title:'SEO &amp; discovery suite', status:'none', effort:'3 d',
+          exists:'Per-page <title> via generateMetadata on the article route only.',
+          missing:'Sitemap, robots, RSS, OG image generation, JSON-LD, canonical tags.',
+          steps:[
+            'sitemap.ts: all 7 city indexes + every published article at its canonical /[city]/[id]-[slug].',
+            'robots.ts and an rss.xml route handler (full-text or summary per editorial call).',
+            'Dynamic OG images at /api/og/[idSlug] (1200×630) using next/og with the brand type.',
+            'Article JSON-LD (schema.org NewsArticle) with author, datePublished, section, image.',
+            'Canonical <link> on every article; confirm the stale-slug 301 already emits canonical URLs.',
+            'Fill generateMetadata across home + city routes (title, description, OG, Twitter).'
+          ],
+          files:['app/sitemap.ts','app/robots.ts','app/rss.xml/route.ts','app/api/og/[idSlug]/route.tsx','components/ArticleJsonLd.tsx'],
+          crit:['All city sections + published articles indexed at canonical URLs','Every article returns a valid 1200×630 OG image','Two identically-titled articles produce distinct, both-resolving URLs'],
+          dep:'Best after WS-06 so canonical/ISR behavior is settled.'
+        },
+        {
+          id:'WS-09', title:'Newsletter for real (Resend + double opt-in)', status:'partial', effort:'2 d', need:'RESEND_API_KEY',
+          exists:'/api/newsletter validates and upserts hr_newsletter_subscribers correctly.',
+          missing:'Any actual send: confirmation email, opt-in state machine, unsubscribe flow.',
+          steps:[
+            'Integrate Resend; send a double opt-in confirmation on subscribe, flip status confirmed on click.',
+            'Build the confirm + unsubscribe routes (unsubscribe RLS policy already exists).',
+            'Add a “Morning Dispatch” send template; wire pg_net → ESP webhook per PRD flow F.',
+            'Surface honest states in the widgets (pending confirmation vs subscribed).'
+          ],
+          files:['app/api/newsletter/route.ts','app/api/newsletter/confirm/route.ts','app/api/newsletter/unsubscribe/route.ts','lib/resend.ts','emails/Confirm.tsx'],
+          crit:['Subscribe → confirmation email arrives → status becomes confirmed','Unsubscribe link works and is honored','Email appears in hr_newsletter_subscribers immediately'],
+          dep:'Blocked by: Resend API key.'
+        },
+        {
+          id:'WS-10', title:'Security headers, CSP, rate limits &amp; RLS audit', status:'none', effort:'2–3 d',
+          exists:'Empty next.config.ts. No headers, no rate limiting, no audit.',
+          missing:'The full CSP from PRD §8, security headers, Traefik limits, and the launch-blocking RLS audit.',
+          steps:[
+            'Add the PRD CSP (nonce-based script-src, self + Supabase connect-src, frame-src none) via middleware with a per-request nonce.',
+            'Set HSTS, X-Frame-Options DENY, X-Content-Type-Options, Referrer-Policy.',
+            'Validate x-webhook-secret + HMAC on every inbound webhook route; document AD_HMAC_SECRET / WEBHOOK_SECRET rotation.',
+            'Configure Traefik middleware in Coolify: 10 req/min on /api/revalidate, 100 req/min on /api/events.',
+            'Run the RLS audit with the anon key: hr_profiles, hr_watchlists, hr_ad_impressions must return 0 rows on SELECT.'
+          ],
+          files:['middleware.ts','next.config.ts','lib/csp.ts','docs/rls-audit.md','coolify/traefik-middleware.yml'],
+          crit:['Anon key returns 0 rows on all restricted tables','CSP blocks any third-party script; no inline script without nonce','Rate limits active on both webhook endpoints'],
+          dep:'RLS audit re-runs after any schema change; treat as a standing gate.'
+        },
+        {
+          id:'WS-11', title:'Analytics beacon, trending &amp; realtime', status:'none', effort:'2–3 d',
+          exists:'/api/events endpoint matches the real hr_page_events schema — but nothing calls it.',
+          missing:'Client beacons, a running medallion pipeline, and live-refreshing trending.',
+          steps:[
+            'Fire navigator.sendBeacon(/api/events) on pageview, scroll_75, and ad_impression from a small client island.',
+            'Parse city_slug + article_short_id from the path into the dedicated columns (already modeled).',
+            'Verify the pg_cron jobs (HR-silver-hourly, HR-gold-trending) are scheduled and populating hr_gold_trending.',
+            'Subscribe TrendingList to hr_gold_trending Realtime so the rail refreshes without reload.',
+            'Confirm decimal-leading-zero counters reflect real trending order, not recency fallback.'
+          ],
+          files:['components/Analytics.tsx','components/HeroBentoGrid.tsx','app/api/events/route.ts'],
+          crit:['Reading a story writes rows to hr_page_events','hr_gold_trending fills within one cron cycle','TrendingList updates live on a gold-trending change'],
+          dep:'Depends on real traffic + cron; validate on staging.'
+        },
+        {
+          id:'WS-12', title:'Real search (pg_trgm) &amp; ⌘K palette', status:'partial', effort:'1–2 d',
+          exists:'/search uses a naive ILIKE; OmniSearch is a minimal input.',
+          missing:'Trigram full-text ranking and the proper command palette.',
+          steps:[
+            'Replace ILIKE with a pg_trgm similarity query over title + dek (extension already enabled).',
+            'Add a GIN trigram index if not present; order by similarity, not scan order.',
+            'Build the ⌘K palette: 150ms debounce, keyboard nav, recent + top results, escape to close.',
+            'Return city + kicker context per result so readers orient quickly.'
+          ],
+          files:['app/search/page.tsx','components/OmniSearch.tsx','lib/search.ts'],
+          crit:['Typo-tolerant results ranked by relevance','⌘K opens, navigates by keyboard, and routes on enter'],
+          dep:'Independent.'
+        }
+      ]
+    },
+    {
+      badge:'P2', color:'var(--teal)', name:'Revenue, growth &amp; hardening',
+      goal:'The systems that make it a sustainable, measured, maintainable operation.',
+      ws:[
+        {
+          id:'WS-13', title:'First-party ad system', status:'none', effort:'4 d',
+          exists:'/api/ads/slot returns a signed house ad; no slot in the feed, no logging, 0 creatives.',
+          missing:'In-feed insertion, HMAC verification, impression logging, real creatives, anomaly enforcement.',
+          steps:[
+            'AdInsertionSlot injected every 5 cards with three layouts (native-inline, minimal-banner, spatial-card), always labeled Sponsored + slot id.',
+            'Client verifies the HMAC token before rendering; trusted creatives render natively, untrusted (future) sandboxed.',
+            'Log hr_ad_impressions with the token on render; rows without a valid token are blocked at the app layer.',
+            'Seed real house + sponsor creatives in hr_ad_creatives with flight windows and slot_targets.',
+            'Confirm the hourly HR_flag_ad_anomalies pg_cron job backdates flight_end on 3σ outliers.'
+          ],
+          files:['components/AdInsertionSlot.tsx','components/VirtualFeedContainer.tsx','app/api/ads/slot/[id]/route.ts','lib/hmac.ts'],
+          crit:['Ads appear every 5 cards, clearly labeled','Impressions log with a valid HMAC; forged tokens rejected','Synthetic outlier click-rate auto-pauses the creative within 1h'],
+          dep:'Targeting improves with WS-14 but does not require it.'
+        },
+        {
+          id:'WS-14', title:'Semantic tagger Edge Function', status:'none', effort:'3 d', need:'Embedding/LLM key',
+          exists:'hr_article_semantics table exists and is empty.',
+          missing:'The pg_net-triggered Edge Function that embeds + tags on publish.',
+          steps:[
+            'Deploy HR_semantic_tagger: extract text from body_lexical, embed to a 1536-dim vector, LLM pass for topics/tone/brand_safety.',
+            'Wrap article text in <ARTICLE_TEXT>…</ARTICLE_TEXT> and zod-validate output before UPSERT (prompt-injection defense).',
+            'Quarantine + log schema failures in HR_semantic_errors (migration 008 when the function ships).',
+            'Trigger via pg_net on status→published; ad slot resolution reads semantics at request time (P99 < 10ms).'
+          ],
+          files:['supabase/functions/HR_semantic_tagger/index.ts','migrations/hr_011_semantic_errors.sql'],
+          crit:['Publishing a story populates hr_article_semantics','Malformed model output is quarantined, never written','Ad targeting reads topics with no hot-path inference'],
+          dep:'Blocked by: an embedding/LLM API key.'
+        },
+        {
+          id:'WS-15', title:'A/B ConversionBand via edge cookie', status:'none', effort:'1 d',
+          exists:'ConversionBand renders a single variant.',
+          missing:'Edge-cookie variant assignment and result tracking.',
+          steps:[
+            'Middleware sets ab_variant on first visit; band reads it to pick Variant A (long, duo-CTA) or B (tight, single field).',
+            'Track exposure + conversion through hr_page_events for later analysis.'
+          ],
+          files:['middleware.ts','components/ConversionBand.tsx'],
+          crit:['Variant is stable per visitor','Conversions attributable to a variant'],
+          dep:'Rides on WS-04/WS-11 plumbing.'
+        },
+        {
+          id:'WS-16', title:'Testing &amp; CI', status:'none', effort:'3–4 d',
+          exists:'No tests, no pipeline.',
+          missing:'Unit, integration, e2e, RLS suites, and a GitHub Actions gate.',
+          steps:[
+            'Unit: short_id parsing + stale-slug 301 logic, format helpers, HMAC.',
+            'Integration: /api/newsletter, /api/events, /api/revalidate (signed + unsigned).',
+            'e2e (Playwright, pre-installed Chromium): home → article → save → newsletter subscribe.',
+            'RLS suite: anon key asserts 0 rows on restricted tables (codifies WS-10’s audit).',
+            'GitHub Actions: typecheck, lint, build, test on PR; the session-start-hook skill can make web sessions test-ready.'
+          ],
+          files:['tests/routing.test.ts','tests/api/*.test.ts','e2e/reader-journey.spec.ts','tests/rls.test.ts','.github/workflows/ci.yml'],
+          crit:['CI blocks merge on type / lint / build / test failure','RLS regressions caught automatically','Critical reader journey covered end-to-end'],
+          dep:'Start early on stable surfaces; expand per workstream.'
+        },
+        {
+          id:'WS-17', title:'Observability &amp; Coolify deploy', status:'none', effort:'2–3 d', need:'Coolify + DNS access',
+          exists:'Nothing deployed; no error tracking.',
+          missing:'The hrh-web service, env, DNS cutover, error tracking, uptime monitoring.',
+          steps:[
+            'Create the hrh-web Coolify service on 159.223.163.11 (Node 22, Nixpacks), all env vars, Traefik proxy + health check on /api/health.',
+            'Add error tracking (Sentry or equivalent) for server + client, scrubbing PII.',
+            'Uptime monitor against /api/health; alert on the 99.99% target.',
+            'Auto-deploy on main; keep 5-build rollback retention; then DNS cutover to HamptonRoadsHistory.com.'
+          ],
+          files:['coolify/service.json','instrumentation.ts','sentry.*.config.ts'],
+          crit:['Publish → Coolify auto-deploys → live in production','Health probe drives restarts; uptime alerting live','Errors captured with actionable context'],
+          dep:'Blocked by: Coolify server + DNS access (outside this environment).'
+        }
+      ]
+    },
+    {
+      badge:'P3', color:'var(--ink-3)', name:'Post-launch',
+      goal:'Deferred by the PRD or genuinely optional. Revisit against launch metrics.',
+      ws:[
+        {
+          id:'WS-18', title:'Three.js hero (PRD-deferred)', status:'none', effort:'—',
+          exists:'Stub route reserved per PRD blocker #9.',
+          missing:'Any 3D work; explicitly out of v1.',
+          steps:['Re-evaluate against launch performance metrics before adding any WebGL weight.'],
+          files:['(reserved)'],
+          crit:['Only pursued if it does not threaten the LCP / CLS gates'],
+          dep:'Deferred by decision.'
+        },
+        {
+          id:'WS-19', title:'Personalization &amp; evergreen resurfacing', status:'none', effort:'—',
+          exists:'Related = same-city, 3 most recent.',
+          missing:'Vector-similarity recirculation and reader-tailored surfaces.',
+          steps:['Use hr_article_semantics embeddings (WS-14) for “more like this” beyond same-city.','Resurface evergreen pieces on anniversaries via the trending engine.'],
+          files:['components/RelatedArticles.tsx'],
+          crit:['Recirculation lifts time-on-page toward the 3-min target'],
+          dep:'Depends on WS-14.'
+        },
+        {
+          id:'WS-20', title:'Community &amp; corrections (optional)', status:'none', effort:'—',
+          exists:'Not in PRD scope.',
+          missing:'Comments/moderation, letters to the editor, public corrections log.',
+          steps:['Decide whether community features fit the low-cadence/high-trust editorial model before building.'],
+          files:['(TBD)'],
+          crit:['Only if it strengthens trust rather than adding moderation load'],
+          dep:'Product decision.'
+        }
+      ]
+    }
+  ];
+
+  document.getElementById('tiers').innerHTML = tiers.map(t => `
+    <div class="tier">
+      <div class="tier-head">
+        <span class="tier-badge" style="background:${t.color}">${t.badge}</span>
+        <span class="tier-name">${t.name}</span>
+        <span class="tier-goal">${t.goal}</span>
+        <span class="tier-meta">${t.ws.length} workstreams</span>
+      </div>
+      ${t.ws.map(w => {
+        const [label, col] = S[w.status];
+        return `
+        <div class="ws">
+          <div class="ws-stripe" style="background:${col}"></div>
+          <div class="ws-body">
+            <div class="ws-top">
+              <span class="ws-id">${w.id}</span>
+              <span class="ws-title">${w.title}</span>
+              <span class="ws-pills">
+                <span class="pill status" style="background:${col}">${label}</span>
+                ${w.effort ? `<span class="pill effort">${w.effort}</span>` : ''}
+                ${w.need ? `<span class="pill need">needs ${w.need}</span>` : ''}
+              </span>
+            </div>
+            <div class="ws-grid">
+              <div class="block">
+                <h4>What exists</h4>
+                <p style="margin-bottom:14px">${w.exists}</p>
+                <h4>What's missing</h4>
+                <p>${w.missing}</p>
+                <div class="dep"><b>Dependencies:</b> ${w.dep}</div>
+              </div>
+              <div class="block">
+                <h4>Build steps</h4>
+                <ol class="steps">${w.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+              </div>
+            </div>
+            <div class="ws-grid" style="margin-top:18px">
+              <div class="block">
+                <h4>Files &amp; surfaces</h4>
+                <div class="files">${w.files.map(f=>`<code>${f}</code>`).join('')}</div>
+              </div>
+              <div class="block">
+                <h4>Acceptance criteria</h4>
+                <ul class="crit">${w.crit.map(c=>`<li>${c}</li>`).join('')}</ul>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+
+  // ---------- Launch gates ----------
+  const gates = [
+    ['Lighthouse mobile perf ≥ 90','WS-05, WS-06','partial'],
+    ['LCP < 1.5s on article template','WS-05','none'],
+    ['CLS ≤ 0.02 on homepage, cold cache','WS-05','partial'],
+    ['RLS audit: anon 0 rows on restricted tables','WS-10','none'],
+    ['Revalidation: publish → live < 10s','WS-06','none'],
+    ['Breaking banner renders on open tabs < 2s','WS-01','partial'],
+    ['Newsletter subscribe appears immediately','WS-09','partial'],
+    ['Watchlist persists across devices','WS-04','none'],
+    ['Reduced-motion: no animation fires','WS (design system)','done'],
+    ['OG images valid 1200×630 for all slugs','WS-08','none'],
+    ['RSS + sitemap cover all sections + articles','WS-08','none'],
+    ['Route collision test: identical titles resolve','WS (routing)','done'],
+    ['Ad anomaly auto-pause within 1h','WS-13','none'],
+    ['Zero third-party scripts in bundle','WS-10','done'],
+  ];
+  const gcol = {done:['Pass','var(--good)'],partial:['Partial','var(--warn)'],none:['Open','var(--crit)']};
+  document.getElementById('gatesBody').innerHTML = gates.map(([g,o,s])=>{
+    const [lab,c]=gcol[s];
+    return `<tr><td>${g}</td><td class="g mono" style="color:var(--teal)">${o}</td><td class="g"><span class="mini" style="background:${c}">${lab}</span></td></tr>`;
+  }).join('');
+
+  // ---------- Critical path ----------
+  const lanes = [
+    ['Weeks 1–2', [['WS-01 Payload','p0'],['WS-04 Auth','p0'],['WS-07 Health/trust','p0']]],
+    ['Weeks 2–3', [['WS-02 Body render','p0'],['WS-05 Images','p0'],['WS-06 Revalidation','p0']]],
+    ['Weeks 3–4', [['WS-03 Real content','p0'],['WS-08 SEO','p1'],['WS-12 Search','p1']]],
+    ['Weeks 4–5', [['WS-09 Newsletter','p1'],['WS-10 Security/RLS','p1'],['WS-11 Analytics','p1']]],
+    ['Weeks 5–7', [['WS-13 Ads','p1'],['WS-16 Testing/CI','p1'],['WS-17 Deploy','p1']]],
+    ['Post-launch', [['WS-14 Semantics',''],['WS-15 A/B',''],['WS-18–20 Deferred','']]],
+  ];
+  document.getElementById('pathLanes').innerHTML = lanes.map(([w,items])=>`
+    <div class="lane">
+      <span class="wk">${w}</span>
+      <span class="items">${items.map(([n,c])=>`<span class="${c}">${n}</span>`).join('')}</span>
+    </div>`).join('');
+
+  // ---------- Decisions ----------
+  const decisions = [
+    ['Payload vs. a lighter custom admin','The PRD commits to Payload 3 embedded. It is heavier to stand up but is the right call for non-technical editors and matches the schema already in place. Recommendation: keep Payload.'],
+    ['Sandbox egress blocks the Supabase host','This environment’s network policy returns 403 for the project host, so live browser verification could not run here. Coolify’s build/runtime should have real egress; confirm before relying on ISR + generateStaticParams (WS-06).'],
+    ['RSS: full-text vs. summary','A low-cadence, high-trust outlet often benefits from full-text RSS for loyal readers, at some scraping risk. Editorial call needed in WS-08.'],
+    ['Community features','Comments add moderation load that can undercut a small, high-trust masthead. WS-20 is deliberately optional — decide against the editorial model, not by default.'],
+    ['Credential custody','DATABASE_URI, service-role key, AD_HMAC_SECRET, WEBHOOK_SECRET, RESEND_API_KEY must live only in Coolify env — never the client bundle, never the repo. Establish rotation before launch.'],
+    ['Analytics honesty','The PRD’s “zero tracking blackouts” goal is achievable precisely because the stack is first-party. Keep it that way; resist adding any third-party tag in WS-11.'],
+  ];
+  document.getElementById('decisionCards').innerHTML = decisions.map(([h,b])=>`
+    <div class="card"><h3>${h}</h3><p>${b}</p></div>`).join('');
+</script>
