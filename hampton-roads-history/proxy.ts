@@ -16,6 +16,7 @@ const OWN_API_PREFIXES = [
   "/api/breaking",
   "/api/revalidate",
   "/api/images",
+  "/api/health",
 ];
 
 function isOwnRoute(pathname: string): boolean {

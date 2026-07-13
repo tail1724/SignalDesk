@@ -30,7 +30,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
   const url = `${siteUrl}${articleHref(article)}`;
-  const heroImage = article.hero_image_url ? getHeroImageUrl(article.hero_image_url) : undefined;
+  // Every article gets a valid 1200x630 share image, even without a hero
+  // photo: the hero (if present) for stories that have one, otherwise the
+  // branded dynamic OG generator at /api/og/[idSlug].
+  const ogImage = article.hero_image_url
+    ? getHeroImageUrl(article.hero_image_url)
+    : `${siteUrl}/api/og/${idSlug}`;
 
   return {
     title: `${article.title} — Hampton Roads History`,
@@ -43,13 +48,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url,
       publishedTime: article.published_at ?? undefined,
       authors: article.hr_authors?.name ? [article.hr_authors.name] : undefined,
-      images: heroImage ? [{ url: heroImage, width: 1200, height: 630 }] : undefined,
+      images: [{ url: ogImage, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
       description: article.dek ?? undefined,
-      images: heroImage ? [heroImage] : undefined,
+      images: [ogImage],
     },
   };
 }
@@ -70,14 +75,16 @@ export default async function ArticlePage({ params }: Props) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
   const articleUrl = `${siteUrl}${canonical}`;
-  const heroImage = article.hero_image_url ? getHeroImageUrl(article.hero_image_url) : undefined;
+  const heroImage = article.hero_image_url
+    ? getHeroImageUrl(article.hero_image_url)
+    : `${siteUrl}/api/og/${idSlug}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     headline: article.title,
     description: article.dek ?? undefined,
-    image: heroImage ? [heroImage] : undefined,
+    image: [heroImage],
     datePublished: article.published_at ?? undefined,
     dateModified: article.published_at ?? undefined,
     author: article.hr_authors?.name

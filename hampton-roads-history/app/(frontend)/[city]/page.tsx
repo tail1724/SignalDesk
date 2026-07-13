@@ -5,11 +5,35 @@ import { SectionPills } from "@/components/SectionPills";
 import { ArticleCard } from "@/components/ArticleCard";
 import { WeatherCard } from "@/components/rail/WeatherCard";
 import { NewsletterWidget } from "@/components/rail/NewsletterWidget";
+import type { Metadata } from "next";
 
 // Rendered dynamically per-request rather than pre-built with
 // generateStaticParams, so the build itself never needs Supabase access
 // (useful in sandboxed CI where outbound egress is restricted).
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ city: string }>;
+}): Promise<Metadata> {
+  const { city } = await params;
+  const cities = await getCategories();
+  const current = cities.find((c) => c.slug === city);
+  if (!current) return {};
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
+  const title = `${current.name} — Hampton Roads History`;
+  const description = `Deeply reported local history from ${current.name}, Virginia — part of Hampton Roads History's coverage of the seven cities.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `${siteUrl}/${city}` },
+    openGraph: { title, description, url: `${siteUrl}/${city}` },
+    twitter: { card: "summary", title, description },
+  };
+}
 
 export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
   const { city } = await params;

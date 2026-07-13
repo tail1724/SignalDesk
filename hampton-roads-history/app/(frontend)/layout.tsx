@@ -29,10 +29,28 @@ const jetbrainsMono = JetBrains_Mono({
 // this sandbox's Supabase egress restriction).
 export const dynamic = "force-dynamic";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
+const title = "Hampton Roads History — Seven Cities, Four Centuries";
+const description =
+  "Warm, deeply reported local history for Hampton, Newport News, Norfolk, Virginia Beach, Chesapeake, Portsmouth, and Suffolk.";
+
 export const metadata: Metadata = {
-  title: "Hampton Roads History — Seven Cities, Four Centuries",
-  description:
-    "Warm, deeply reported local history for Hampton, Newport News, Norfolk, Virginia Beach, Chesapeake, Portsmouth, and Suffolk.",
+  metadataBase: new URL(siteUrl),
+  title: { default: title, template: "%s" },
+  description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Hampton Roads History",
+    title,
+    description,
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default async function RootLayout({
