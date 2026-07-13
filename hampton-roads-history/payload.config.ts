@@ -116,6 +116,36 @@ export default buildConfig({
         },
         { name: "is_active", type: "checkbox", defaultValue: false },
       ],
+      hooks: {
+        afterChange: [
+          async ({ doc, previousDoc, req }) => {
+            // Only one banner may be active at a time
+            if (doc.is_active && !previousDoc?.is_active) {
+              await req.payload.update({
+                collection: "hr_breaking",
+                where: { and: [{ id: { not_equals: doc.id } }, { is_active: { equals: true } }] },
+                data: { is_active: false },
+              });
+            }
+
+            try {
+              await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-webhook-signature": "TODO-hmac-sign",
+                },
+                body: JSON.stringify({
+                  type: "breaking.updated",
+                  data: { id: doc.id },
+                }),
+              });
+            } catch (err) {
+              req.payload.logger.error({ err }, "Breaking revalidation webhook failed");
+            }
+          },
+        ],
+      },
     },
   ],
   typescript: {

@@ -15,7 +15,7 @@ interface Article {
 
 interface WatchlistItem {
   article_id: string;
-  created_at: string;
+  saved_at: string;
 }
 
 export function UserWatchlist() {

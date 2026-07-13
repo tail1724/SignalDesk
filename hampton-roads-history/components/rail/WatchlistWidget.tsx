@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 
 interface WatchlistItem {
   article_id: string;
-  created_at: string;
+  saved_at: string;
   title?: string;
   excerpt?: string;
 }

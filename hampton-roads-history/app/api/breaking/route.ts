@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { revalidateBreaking } from "@/lib/revalidate";
 
-export async function GET(request: NextRequest) {
+// Breaking banner content is authored via Payload admin (/admin), whose
+// hooks handle exclusivity (only one active banner) and revalidation.
+// This route is read-only, matching the RLS policy (public SELECT only).
+export async function GET() {
   const supabase = await createServerSupabase();
 
   const { data, error } = await supabase
@@ -16,61 +18,4 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.json({ breaking: data });
-}
-
-export async function POST(request: NextRequest) {
-  const supabase = await createServerSupabase();
-  const { headline, description, imageUrl, articleId } = await request.json();
-
-  if (!headline) {
-    return NextResponse.json(
-      { error: "Headline is required" },
-      { status: 400 }
-    );
-  }
-
-  // Deactivate any existing breaking banners
-  await supabase
-    .from("hr_breaking")
-    .update({ is_active: false })
-    .eq("is_active", true);
-
-  // Create new breaking banner
-  const { data, error } = await supabase
-    .from("hr_breaking")
-    .insert({
-      headline,
-      description: description || null,
-      image_url: imageUrl || null,
-      article_id: articleId || null,
-      is_active: true,
-    })
-    .select()
-    .single();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  // Revalidate home page and city pages
-  await revalidateBreaking();
-
-  return NextResponse.json({ breaking: data });
-}
-
-export async function DELETE(request: NextRequest) {
-  const supabase = await createServerSupabase();
-
-  const { error } = await supabase
-    .from("hr_breaking")
-    .update({ is_active: false })
-    .eq("is_active", true);
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  await revalidateBreaking();
-
-  return NextResponse.json({ success: true });
 }

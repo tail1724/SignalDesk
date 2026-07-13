@@ -16,9 +16,9 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase
     .from("hr_watchlists")
-    .select("article_id, created_at")
+    .select("article_id, saved_at")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("saved_at", { ascending: false });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
