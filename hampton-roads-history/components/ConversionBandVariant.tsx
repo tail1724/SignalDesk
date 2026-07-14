@@ -30,11 +30,11 @@ export function ConversionBandVariant({ variant }: { variant: "a" | "b" }) {
 
   if (variant === "b") {
     return (
-      <section className="my-14 rounded-[var(--r-card)] border border-line-strong p-6 flex flex-col sm:flex-row items-center gap-4 bg-surface-1">
+      <section className="rounded-xl border border-line bg-band p-6 flex flex-col sm:flex-row items-center gap-4">
         <h2 className="font-display font-bold text-lg flex-1 text-center sm:text-left">
           Get one great Hampton Roads story a week.
         </h2>
-        <div className="w-full sm:w-56">
+        <div className="w-full sm:w-64">
           <NewsletterWidget
             source="conversion-band-b"
             onSuccess={() => track("ab_conversion_b")}
@@ -45,15 +45,14 @@ export function ConversionBandVariant({ variant }: { variant: "a" | "b" }) {
   }
 
   return (
-    <section className="my-14 rounded-[var(--r-card)] border border-line-strong p-8 md:p-10 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-center bg-gradient-to-br from-surface-2 to-surface-1">
+    <section className="rounded-xl border border-line bg-band p-7 md:p-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-center">
       <div>
-        <h2 className="font-display font-black text-2xl md:text-3xl tracking-tight mb-2">
-          Seven cities. Four centuries. One friendly dispatch.
+        <h2 className="font-display font-black text-2xl md:text-3xl tracking-[-0.02em] mb-2">
+          Seven cities. Four centuries. Two minutes a day.
         </h2>
         <p className="text-ink-2 max-w-[52ch] mb-4">
-          Hampton Roads is one of the most storied places in America. We bring
-          you the good stuff — well-researched, warmly told — a few mornings
-          a week.
+          Don&apos;t come find the news — we&apos;ll bring it to you. Well-researched,
+          warmly told, a few mornings a week.
         </p>
         <Link
           href="/search"

@@ -1,21 +1,19 @@
 import type { Metadata } from "next";
-import { Archivo, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { headers } from "next/headers";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "../globals.css";
 import { GlobalNav } from "@/components/GlobalNav";
 import { BreakingBanner } from "@/components/BreakingBanner";
 import { Footer } from "@/components/Footer";
 import { getCategories } from "@/lib/data";
 
-const archivo = Archivo({
-  variable: "--font-display",
+// One modern sans for headlines and body — high-contrast digital readability
+// over the old serif/archival treatment. Mono is kept only for data accents
+// (timestamps, the weather widget, the search hint).
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
-});
-
-const dmSans = DM_Sans({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -23,6 +21,11 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
+
+// Applied before first paint so the chosen theme never flashes. Reads the
+// persisted preference (or the OS setting when "system"/unset) and stamps
+// data-theme on <html>. Nonce'd so it passes the strict CSP in proxy.ts.
+const THEME_INIT = `(function(){try{var p=localStorage.getItem('hrh-theme')||'system';var d=p==='dark'||(p!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();`;
 
 // The root layout fetches hr_categories on every render, so the whole app
 // must be dynamic rather than prerendered (see note in app/page.tsx about
@@ -59,12 +62,23 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cities = await getCategories();
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${dmSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* suppressHydrationWarning: browsers clear the nonce attribute from
+            the DOM after use, so it hydrates as empty — a benign mismatch. */}
+        <script
+          nonce={nonce}
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: THEME_INIT }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-base text-ink">
         <BreakingBanner />
         <GlobalNav cities={cities} />

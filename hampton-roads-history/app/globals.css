@@ -1,12 +1,53 @@
 @import "tailwindcss";
 
 /* ============================================================
-   HAMPTON ROADS HISTORY — Warm Editorial design tokens
-   A softened, friendly take on the military palette: same
-   navy/red/blue family, shifted warmer and rounder so the
-   region's history reads as inviting, not tactical.
+   HAMPTON ROADS HISTORY — design tokens
+   Light is the default (clinical, Axios-style news reading);
+   the archival dark palette is retained under [data-theme="dark"]
+   and chosen via the theme switcher (header toggle + Settings).
    ============================================================ */
 :root {
+  --base: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f6f3;
+  --surface-3: #efede8;
+  --line: #e7e4dd;
+  --line-strong: #d5d1c6;
+
+  --ink: #15140f;
+  --ink-2: #4c4a42;
+  --ink-3: #8b877b;
+
+  --accent: #c0472f;
+  --accent-dim: #9c3a26;
+  /* readable terracotta for kicker/label text on light */
+  --accent-soft: #a8442c;
+
+  --accent-blue: #2f6577;
+  --accent-blue-dim: #24505f;
+
+  /* soft tinted fill used by newsletter/conversion bands */
+  --band: #f7e4db;
+
+  --gold: #997327;
+
+  --up: #2f7d3a;
+  --down: #c0472f;
+
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-mono: "JetBrains Mono", monospace;
+
+  --maxw: 1280px;
+  --shell: 1080px;
+  --reading: 720px;
+  --r-card: 16px;
+  --r-btn: 999px;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
   --base: #12140f;
   --surface-1: #191b15;
   --surface-2: #21241c;
@@ -18,25 +59,19 @@
   --ink-2: #c9c2ac;
   --ink-3: #938c76;
 
-  --accent: #c0472f;
+  --accent: #d95c41;
   --accent-dim: #8f3624;
+  /* light peach reads as the accent-text color on dark */
   --accent-soft: #e0a98f;
 
-  --accent-blue: #4f7d8c;
-  --accent-blue-dim: #35606c;
+  --accent-blue: #7fa9b8;
+  --accent-blue-dim: #4f7d8c;
+
+  --band: #241b16;
 
   --gold: #d3a54e;
 
-  --up: #6fae6a;
-  --down: #c0472f;
-
-  --font-display: "Archivo", sans-serif;
-  --font-body: "DM Sans", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
-
-  --maxw: 1280px;
-  --r-card: 18px;
-  --r-btn: 999px;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -54,6 +89,7 @@
   --color-accent-soft: var(--accent-soft);
   --color-accent-blue: var(--accent-blue);
   --color-accent-blue-dim: var(--accent-blue-dim);
+  --color-band: var(--band);
   --color-gold: var(--gold);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -74,20 +110,9 @@ body {
   background: var(--base);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-}
-
-/* subtle warm paper grain, kept faint and untouchable */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 a {
@@ -95,7 +120,7 @@ a {
   text-decoration: none;
 }
 a:hover {
-  color: var(--accent-soft);
+  color: var(--accent);
 }
 a:focus-visible,
 button:focus-visible,
@@ -109,10 +134,104 @@ img {
   display: block;
 }
 
+/* full-width chrome (nav/footer) */
 .wrap {
   max-width: var(--maxw);
   margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* wide feed shell — home & city pages fill the viewport instead of
+   sitting in a narrow ribbon */
+.shell {
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* comfortable reading measure — article body, legal, settings, auth */
+.reading {
+  max-width: var(--reading);
+  margin: 0 auto;
   padding: 0 20px;
+}
+
+/* ============================================================
+   Article body (Payload Lexical rich text) — Smart Brevity look:
+   bold axiom headings, accent-dotted bullets, strong emphasis.
+   ============================================================ */
+.prose-hr {
+  color: var(--ink-2);
+  font-size: 18px;
+  line-height: 1.7;
+}
+.prose-hr > * + * {
+  margin-top: 1.15em;
+}
+.prose-hr h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-top: 1.6em;
+}
+.prose-hr h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--ink);
+  margin-top: 1.4em;
+}
+.prose-hr strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+.prose-hr a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-hr ul,
+.prose-hr ol {
+  padding-left: 0;
+  list-style: none;
+}
+.prose-hr li {
+  position: relative;
+  padding-left: 1.4em;
+  margin-top: 0.5em;
+}
+.prose-hr ul li::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.prose-hr ol {
+  counter-reset: hr-ol;
+}
+.prose-hr ol li {
+  counter-increment: hr-ol;
+}
+.prose-hr ol li::before {
+  content: counter(hr-ol) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 800;
+  color: var(--accent);
+}
+.prose-hr blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1em;
+  color: var(--ink);
+  font-weight: 500;
 }
 
 @media (prefers-reduced-motion: reduce) {

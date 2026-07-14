@@ -1,19 +1,18 @@
 import { Fragment } from "react";
-import { getCategories, getFeedArticles } from "@/lib/data";
-import { HeroBentoGrid } from "@/components/HeroBentoGrid";
-import { SectionPills } from "@/components/SectionPills";
+import { getFeedArticles } from "@/lib/data";
+import { FeedHero } from "@/components/FeedHero";
 import { ArticleCard } from "@/components/ArticleCard";
+import { NewsletterBand } from "@/components/NewsletterBand";
+import { CatchUpCard } from "@/components/CatchUpCard";
 import { ConversionBand } from "@/components/ConversionBand";
-import { TrendingArticles } from "@/components/TrendingArticles";
-import { OnThisDay } from "@/components/OnThisDay";
 import { AdSlot } from "@/components/AdSlot";
-import { WatchlistWidget } from "@/components/rail/WatchlistWidget";
-import { WeatherCard } from "@/components/rail/WeatherCard";
-import { CityDirectory } from "@/components/rail/CityDirectory";
-import { NewsletterWidget } from "@/components/rail/NewsletterWidget";
+import { WeatherChip } from "@/components/WeatherChip";
 import { PageViewTracker } from "@/components/PageViewTracker";
 
-const AD_EVERY_N_CARDS = 5;
+// After which feed positions to inject an inline sponsored unit.
+const AD_AFTER_POSITIONS = new Set([3, 9]);
+// Where the "Catch up fast" card lands in the feed.
+const CATCHUP_AFTER_POSITION = 5;
 
 // force-dynamic keeps the build from needing Supabase access at build time
 // (this sandbox's egress policy blocks the project host); Coolify's build
@@ -22,48 +21,40 @@ const AD_EVERY_N_CARDS = 5;
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [cities, articles] = await Promise.all([getCategories(), getFeedArticles(undefined, 20)]);
-  const bentoArticles = articles.slice(0, 9);
+  const articles = await getFeedArticles(undefined, 20);
+  const hero = articles[0];
   const feedArticles = articles.slice(1);
+  const catchUp = articles.slice(1, 5);
 
   return (
-    <main className="wrap py-8">
+    <main className="shell py-8">
       <PageViewTracker />
-      <div className="mb-6">
-        <SectionPills cities={cities} />
-      </div>
+      <WeatherChip />
 
-      <HeroBentoGrid articles={bentoArticles} />
+      {hero && <FeedHero article={hero} />}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start mt-10">
-        <section aria-label="Latest stories" className="flex flex-col gap-3.5">
-          {feedArticles.map((article, i) => (
+      <div className="mt-8 flex flex-col gap-7">
+        <NewsletterBand
+          title="The Morning Dispatch"
+          copy="One flagship story, a few quick reads — Hampton Roads history in your inbox, weekday mornings. Free."
+          source="home-band-top"
+        />
+
+        {feedArticles.map((article, i) => {
+          const position = i + 1;
+          return (
             <Fragment key={article.id}>
               <ArticleCard article={article} />
-              {(i + 1) % AD_EVERY_N_CARDS === 0 && <AdSlot slotId="home-feed" />}
+              {AD_AFTER_POSITIONS.has(position) && <AdSlot slotId="home-feed" />}
+              {position === CATCHUP_AFTER_POSITION && <CatchUpCard articles={catchUp} />}
             </Fragment>
-          ))}
-        </section>
-
-        <aside className="lg:sticky lg:top-20 flex flex-col gap-3.5">
-          <WatchlistWidget />
-          <OnThisDay />
-          <TrendingArticles limit={5} />
-          <WeatherCard />
-          <CityDirectory cities={cities} />
-          <div className="bg-surface-1 border border-line rounded-[var(--r-card)] p-5">
-            <h4 className="font-mono text-[11px] tracking-wide uppercase text-ink-3 mb-2">
-              The morning dispatch
-            </h4>
-            <p className="text-[13px] text-ink-2 mb-3">
-              One flagship story, a few quick reads — Hampton Roads history, weekday mornings.
-            </p>
-            <NewsletterWidget />
-          </div>
-        </aside>
+          );
+        })}
       </div>
 
-      <ConversionBand />
+      <div className="mt-10">
+        <ConversionBand />
+      </div>
     </main>
   );
 }

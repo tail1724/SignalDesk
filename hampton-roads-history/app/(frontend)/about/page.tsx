@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="wrap py-16 max-w-2xl">
+    <main className="reading py-16">
       <h1 className="font-display font-black text-3xl mb-8">About Hampton Roads History</h1>
 
       <section className="mb-10">
@@ -24,11 +24,16 @@ export default function AboutPage() {
         </p>
         <p className="text-ink-2 leading-relaxed">
           We&apos;re an independent publication, owned and operated by Mid-Atlantic
-          Labs. We don&apos;t run third-party ad networks or trackers — see our{" "}
+          Labs. Our journalism is funded by advertising, including third-party
+          ad partners — see our{" "}
+          <Link href="/ad-choices" className="text-accent hover:underline">
+            Ad Choices
+          </Link>{" "}
+          and{" "}
           <Link href="/privacy" className="text-accent hover:underline">
             privacy policy
           </Link>{" "}
-          for the specifics.
+          pages for how that works.
         </p>
       </section>
 
