@@ -1,7 +1,14 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
-import { signWebhookPayload } from "@/lib/webhook";
+
+import { Users } from "@/payload/collections/Users";
+import { Categories } from "@/payload/collections/Categories";
+import { Authors } from "@/payload/collections/Authors";
+import { Articles } from "@/payload/collections/Articles";
+import { Breaking } from "@/payload/collections/Breaking";
+import { AdCreatives } from "@/payload/collections/AdCreatives";
+import { Corrections } from "@/payload/collections/Corrections";
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || "",
@@ -15,222 +22,13 @@ export default buildConfig({
     user: "hr_cms_users",
   },
   collections: [
-    {
-      slug: "hr_cms_users",
-      auth: true,
-      admin: { useAsTitle: "email" },
-      fields: [],
-    },
-    {
-      slug: "hr_categories",
-      admin: { useAsTitle: "name" },
-      fields: [
-        { name: "name", type: "text", required: true },
-        { name: "slug", type: "text", required: true, unique: true },
-        { name: "order", type: "number", defaultValue: 0 },
-        { name: "accent_hex", type: "text" },
-      ],
-    },
-    {
-      slug: "hr_authors",
-      admin: { useAsTitle: "name" },
-      fields: [
-        { name: "name", type: "text", required: true },
-        { name: "slug", type: "text", required: true, unique: true },
-        { name: "bio", type: "textarea" },
-        { name: "avatar_url", type: "text" },
-      ],
-    },
-    {
-      slug: "hr_articles",
-      admin: { useAsTitle: "title" },
-      versions: { drafts: true },
-      fields: [
-        { name: "short_id", type: "text", required: true, unique: true },
-        { name: "title", type: "text", required: true },
-        { name: "dek", type: "textarea" },
-        { name: "slug", type: "text", required: true },
-        { name: "kicker", type: "text" },
-        {
-          name: "section_id",
-          type: "relationship",
-          relationTo: "hr_categories",
-        },
-        {
-          name: "author_id",
-          type: "relationship",
-          relationTo: "hr_authors",
-        },
-        { name: "hero_image_url", type: "text" },
-        { name: "hero_image_alt", type: "text" },
-        {
-          name: "status",
-          type: "select",
-          options: ["draft", "published", "archived"],
-          defaultValue: "draft",
-        },
-        { name: "body_lexical", type: "richText", editor: lexicalEditor({}) },
-        { name: "publish_at", type: "date" },
-        { name: "published_at", type: "date" },
-        {
-          name: "event_date",
-          type: "date",
-          admin: {
-            description:
-              "The calendar date of the historical event this piece is about (not when the article was published). Powers the \"On this day\" widget — leave blank if the piece doesn't cover a single dated event.",
-          },
-        },
-        { name: "read_time_min", type: "number" },
-        { name: "is_pro", type: "checkbox", defaultValue: false },
-      ],
-      hooks: {
-        afterChange: [
-          async ({ doc, req }) => {
-            // Notify Next.js ISR to revalidate affected pages
-            if (doc.status === "published") {
-              try {
-                const body = JSON.stringify({
-                  type: "article.published",
-                  data: { id: doc.id, short_id: doc.short_id },
-                });
-                await fetch(
-                  `${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      "x-webhook-signature": signWebhookPayload(body),
-                    },
-                    body,
-                  }
-                );
-              } catch (err) {
-                req.payload.logger.error({ err }, "Revalidation webhook failed");
-              }
-            }
-          },
-        ],
-      },
-    },
-    {
-      slug: "hr_breaking",
-      admin: { useAsTitle: "headline" },
-      fields: [
-        { name: "headline", type: "text", required: true },
-        { name: "description", type: "textarea" },
-        { name: "image_url", type: "text" },
-        {
-          name: "article_id",
-          type: "relationship",
-          relationTo: "hr_articles",
-        },
-        { name: "is_active", type: "checkbox", defaultValue: false },
-      ],
-      hooks: {
-        afterChange: [
-          async ({ doc, previousDoc, req }) => {
-            // Only one banner may be active at a time
-            if (doc.is_active && !previousDoc?.is_active) {
-              await req.payload.update({
-                collection: "hr_breaking",
-                where: { and: [{ id: { not_equals: doc.id } }, { is_active: { equals: true } }] },
-                data: { is_active: false },
-              });
-            }
-
-            try {
-              const body = JSON.stringify({
-                type: "breaking.updated",
-                data: { id: doc.id },
-              });
-              await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "x-webhook-signature": signWebhookPayload(body),
-                },
-                body,
-              });
-            } catch (err) {
-              req.payload.logger.error({ err }, "Breaking revalidation webhook failed");
-            }
-          },
-        ],
-      },
-    },
-    {
-      slug: "hr_ad_creatives",
-      admin: { useAsTitle: "advertiser" },
-      fields: [
-        { name: "advertiser", type: "text", required: true },
-        {
-          name: "slot_targets",
-          type: "select",
-          hasMany: true,
-          options: ["article-inline", "sidebar", "home-feed"],
-        },
-        { name: "creative_url", type: "text", required: true },
-        { name: "dest_url", type: "text", required: true },
-        { name: "weight", type: "number", defaultValue: 1, min: 1, max: 100 },
-        { name: "flight_start", type: "date" },
-        { name: "flight_end", type: "date" },
-        {
-          name: "is_trusted",
-          type: "checkbox",
-          defaultValue: false,
-          admin: {
-            description:
-              "Only trusted creatives are served. HR_flag_ad_anomalies() (pg_cron, hourly) auto-expires flight_end for creatives whose click-through rate deviates >3 std dev from the hourly mean.",
-          },
-        },
-      ],
-    },
-    {
-      slug: "hr_corrections",
-      admin: {
-        useAsTitle: "description",
-        description:
-          "Public corrections log (WS-20). Reports from readers arrive by email via /api/corrections → corrections@ — after review, add the correction here to publish it at the bottom of the affected article. Never write directly from a public form; this collection is staff-authored only.",
-      },
-      fields: [
-        {
-          name: "article_id",
-          type: "relationship",
-          relationTo: "hr_articles",
-          required: true,
-        },
-        { name: "description", type: "textarea", required: true },
-        { name: "corrected_at", type: "date", defaultValue: () => new Date().toISOString() },
-      ],
-      hooks: {
-        afterChange: [
-          async ({ doc, req }) => {
-            try {
-              const article = await req.payload.findByID({
-                collection: "hr_articles",
-                id: doc.article_id,
-              });
-              if (!article?.short_id) return;
-
-              const body = JSON.stringify({
-                type: "article.updated",
-                data: { id: article.id, short_id: article.short_id },
-              });
-              await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "x-webhook-signature": signWebhookPayload(body),
-                },
-                body,
-              });
-            } catch (err) {
-              req.payload.logger.error({ err }, "Correction revalidation webhook failed");
-            }
-          },
-        ],
-      },
-    },
+    Users,
+    Categories,
+    Authors,
+    Articles,
+    Breaking,
+    AdCreatives,
+    Corrections,
   ],
   typescript: {
     outputFile: "./payload-types.ts",
