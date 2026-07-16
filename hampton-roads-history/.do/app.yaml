@@ -1,0 +1,118 @@
+# DigitalOcean App Platform spec for SignalDesk (hampton-roads-history).
+# Create the app from this file, then set every SECRET value in the dashboard
+# (they are intentionally blank here). Deploys from GitHub on push.
+#
+# Notes:
+# - Next.js `next start` binds to $PORT automatically (App Platform injects it).
+# - The PRE_DEPLOY job runs `npm run migrate` with NODE_ENV=production, which
+#   runs committed Payload migrations non-interactively. On the already-reconciled
+#   prod DB this is a no-op; new migrations (0002+) apply here.
+# - NEXT_PUBLIC_* are needed at BUILD time (baked into the client bundle); the
+#   rest are RUN-time. Media stays in Supabase Storage — no persistent disk.
+name: signaldesk
+region: nyc
+
+features:
+  - buildpack-stack=ubuntu-22
+
+services:
+  - name: web
+    source_dir: hampton-roads-history
+    github:
+      repo: tail1724/SignalDesk
+      branch: main
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    run_command: npm run start
+    environment_slug: node-js
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    http_port: 8080
+    health_check:
+      http_path: /api/health
+    envs:
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: https://odogjtrpcpqicgqaraih.supabase.co
+      - key: NEXT_PUBLIC_SITE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${APP_URL}
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: ""
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+      - key: DATABASE_URI
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: ""
+      - key: PAYLOAD_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: ""
+      - key: AD_HMAC_SECRET
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+      - key: WEBHOOK_SECRET
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+      - key: RESEND_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+      - key: NEWSLETTER_FROM_EMAIL
+        scope: RUN_TIME
+        value: onboarding@resend.dev
+      - key: CORRECTIONS_EMAIL
+        scope: RUN_TIME
+        value: ""
+      - key: SUPABASE_S3_ENDPOINT
+        scope: RUN_TIME
+        value: https://odogjtrpcpqicgqaraih.supabase.co/storage/v1/s3
+      - key: SUPABASE_S3_REGION
+        scope: RUN_TIME
+        value: us-east-1
+      - key: SUPABASE_S3_ACCESS_KEY_ID
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+      - key: SUPABASE_S3_SECRET_ACCESS_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+
+jobs:
+  - name: migrate
+    kind: PRE_DEPLOY
+    source_dir: hampton-roads-history
+    github:
+      repo: tail1724/SignalDesk
+      branch: main
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    run_command: npm run migrate
+    environment_slug: node-js
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    envs:
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+      - key: DATABASE_URI
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+      - key: PAYLOAD_SECRET
+        scope: RUN_TIME
+        type: SECRET
+        value: ""
+      - key: NEXT_PUBLIC_SITE_URL
+        scope: RUN_TIME
+        value: ${APP_URL}

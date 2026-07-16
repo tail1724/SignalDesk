@@ -13,7 +13,7 @@ import { NewsletterBand } from "@/components/NewsletterBand";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { Corrections } from "@/components/Corrections";
 import { ReportCorrection } from "@/components/ReportCorrection";
-import { getHeroImageUrl } from "@/lib/images";
+import { getHeroImageUrl, articleHeroSrc, articleHeroAlt } from "@/lib/images";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ city: string; idSlug: string }> };
@@ -132,11 +132,11 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       </div>
 
-      {article.hero_image_url ? (
+      {articleHeroSrc(article) ? (
         <div className="aspect-[16/9] rounded-[var(--r-card)] overflow-hidden mb-8">
           <Image
-            src={getHeroImageUrl(article.hero_image_url)}
-            alt={article.hero_image_alt || article.title}
+            src={articleHeroSrc(article)!}
+            alt={articleHeroAlt(article)}
             width={1200}
             height={630}
             priority

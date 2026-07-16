@@ -25,6 +25,16 @@ export type Article = {
   author_id: string | null;
   hero_image_url: string | null;
   hero_image_alt: string | null;
+  // Payload-managed upload (hr_media). Preferred over hero_image_url when set;
+  // `url` is a ready-to-use URL (not a storage path).
+  hero_media?: {
+    id: string;
+    filename: string | null;
+    url: string | null;
+    alt: string | null;
+    width: number | null;
+    height: number | null;
+  } | null;
   status: string;
   publish_at: string | null;
   published_at: string | null;

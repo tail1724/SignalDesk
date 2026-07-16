@@ -1,13 +1,30 @@
 import type { NextConfig } from "next";
 import { withPayload } from "@payloadcms/next/withPayload";
 
+// Derive the Supabase host from the env instead of hardcoding a project ref,
+// so staging/prod point at their own project automatically. Falls back to the
+// current prod ref if the env is unset at build time.
+const supabaseHost = (() => {
+  try {
+    return (
+      new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").hostname ||
+      "odogjtrpcpqicgqaraih.supabase.co"
+    );
+  } catch {
+    return "odogjtrpcpqicgqaraih.supabase.co";
+  }
+})();
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "odogjtrpcpqicgqaraih.supabase.co",
-        pathname: "/storage/v1/object/public/hr-images/**",
+        hostname: supabaseHost,
+        // Any public Storage bucket (hr-media, content-images, etc.). The old
+        // value pinned a non-existent "hr-images" bucket — hero images live in
+        // "hr-media".
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },

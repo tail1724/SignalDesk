@@ -2,6 +2,8 @@
 // Images are stored at: [bucket]/[year]/[month]/[uuid].[ext]
 // Transform URLs apply on-the-fly via query params
 
+import type { Article } from "@/lib/supabase/types";
+
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const IMAGE_BUCKET = "hr-images";
 
@@ -75,4 +77,25 @@ export function generateImagePath(uuid: string, ext: string): string {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   return `${year}/${month}/${uuid}.${ext}`;
+}
+
+// Preferred hero image for an article: the uploaded hr_media (a ready-to-use
+// URL) when present, otherwise the legacy hero_image_url storage path run
+// through the transform pipeline. `variant` selects the transform for the
+// legacy path.
+export function articleHeroSrc(
+  article: Pick<Article, "hero_image_url" | "hero_media">,
+  variant: "hero" | "card" = "hero"
+): string | null {
+  if (article.hero_media?.url) return article.hero_media.url;
+  if (!article.hero_image_url) return null;
+  return variant === "card"
+    ? getCardImageUrl(article.hero_image_url)
+    : getHeroImageUrl(article.hero_image_url);
+}
+
+export function articleHeroAlt(
+  article: Pick<Article, "hero_image_url" | "hero_image_alt" | "hero_media" | "title">
+): string {
+  return article.hero_media?.alt || article.hero_image_alt || article.title;
 }

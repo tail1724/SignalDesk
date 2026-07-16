@@ -1,11 +1,17 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import { signWebhookPayload } from "@/lib/webhook";
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
+    // hr_* tables use uuid primary keys (uuid_generate_v4 / gen_random_uuid).
+    // Without this, Payload defaults to serial/integer PKs and conflicts with
+    // the existing schema on the very first migration.
+    idType: "uuid",
+    migrationDir: "./migrations",
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
@@ -20,6 +26,26 @@ export default buildConfig({
       auth: true,
       admin: { useAsTitle: "email" },
       fields: [],
+    },
+    {
+      // Upload-enabled media library. Files are stored in Supabase Storage's
+      // "hr-media" bucket via the s3Storage plugin (see `plugins` below).
+      slug: "hr_media",
+      admin: { useAsTitle: "filename" },
+      upload: {
+        mimeTypes: ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"],
+      },
+      fields: [
+        {
+          name: "alt",
+          type: "text",
+          required: true,
+          admin: { description: "Accessibility alt text — describe the image." },
+        },
+        { name: "caption", type: "text" },
+        { name: "photographer", type: "text" },
+        { name: "credit", type: "text" },
+      ],
     },
     {
       slug: "hr_categories",
@@ -52,23 +78,34 @@ export default buildConfig({
         { name: "slug", type: "text", required: true },
         { name: "kicker", type: "text" },
         {
-          name: "section_id",
+          // Field is named `section` so Payload's relationship column is
+          // `section_id` (name + _id), matching the existing DB column that
+          // data.ts / RPCs / RLS all reference. Renaming to `section_id` here
+          // would make Payload generate `section_id_id` and break them.
+          name: "section",
           type: "relationship",
           relationTo: "hr_categories",
         },
         {
-          name: "author_id",
+          name: "author",
           type: "relationship",
           relationTo: "hr_authors",
         },
         { name: "hero_image_url", type: "text" },
         { name: "hero_image_alt", type: "text" },
         {
-          name: "status",
-          type: "select",
-          options: ["draft", "published", "archived"],
-          defaultValue: "draft",
+          // Editors pick/upload the hero here (column: hero_media_id).
+          // hero_image_url is kept for existing articles + Hunt's Pointe
+          // compatibility; frontend prefers hero_media when set.
+          name: "hero_media",
+          type: "upload",
+          relationTo: "hr_media",
         },
+        // Publication state is Payload's built-in `_status` (versions.drafts).
+        // The legacy `status` text column that data.ts / RLS / the RPCs read is
+        // NOT a Payload field — it is derived from `_status` by a DB trigger
+        // (see the Supabase migration), so it stays in sync no matter who
+        // writes the row (Payload, the Hunt's Pointe ingest, or raw SQL).
         { name: "body_lexical", type: "richText", editor: lexicalEditor({}) },
         { name: "publish_at", type: "date" },
         { name: "published_at", type: "date" },
@@ -86,8 +123,9 @@ export default buildConfig({
       hooks: {
         afterChange: [
           async ({ doc, req }) => {
-            // Notify Next.js ISR to revalidate affected pages
-            if (doc.status === "published") {
+            // Notify Next.js ISR to revalidate affected pages. `_status` is
+            // Payload's canonical publish state (versions.drafts).
+            if (doc._status === "published") {
               try {
                 const body = JSON.stringify({
                   type: "article.published",
@@ -120,7 +158,8 @@ export default buildConfig({
         { name: "description", type: "textarea" },
         { name: "image_url", type: "text" },
         {
-          name: "article_id",
+          // → column `article_id` (matches existing hr_breaking.article_id)
+          name: "article",
           type: "relationship",
           relationTo: "hr_articles",
         },
@@ -194,7 +233,8 @@ export default buildConfig({
       },
       fields: [
         {
-          name: "article_id",
+          // → column `article_id` (matches existing hr_corrections.article_id)
+          name: "article",
           type: "relationship",
           relationTo: "hr_articles",
           required: true,
@@ -208,7 +248,7 @@ export default buildConfig({
             try {
               const article = await req.payload.findByID({
                 collection: "hr_articles",
-                id: doc.article_id,
+                id: doc.article,
               });
               if (!article?.short_id) return;
 
@@ -231,6 +271,24 @@ export default buildConfig({
         ],
       },
     },
+  ],
+  plugins: [
+    s3Storage({
+      collections: {
+        hr_media: { prefix: "media" },
+      },
+      bucket: "hr-media",
+      config: {
+        endpoint: process.env.SUPABASE_S3_ENDPOINT,
+        region: process.env.SUPABASE_S3_REGION || "us-east-1",
+        credentials: {
+          accessKeyId: process.env.SUPABASE_S3_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.SUPABASE_S3_SECRET_ACCESS_KEY || "",
+        },
+        // Supabase's S3-compatible endpoint requires path-style addressing.
+        forcePathStyle: true,
+      },
+    }),
   ],
   typescript: {
     outputFile: "./payload-types.ts",
