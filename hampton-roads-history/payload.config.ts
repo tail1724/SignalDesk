@@ -72,12 +72,11 @@ export default buildConfig({
         },
         { name: "hero_image_url", type: "text" },
         { name: "hero_image_alt", type: "text" },
-        {
-          name: "status",
-          type: "select",
-          options: ["draft", "published", "archived"],
-          defaultValue: "draft",
-        },
+        // Publication state is Payload's built-in `_status` (versions.drafts).
+        // The legacy `status` text column that data.ts / RLS / the RPCs read is
+        // NOT a Payload field — it is derived from `_status` by a DB trigger
+        // (see the Supabase migration), so it stays in sync no matter who
+        // writes the row (Payload, the Hunt's Pointe ingest, or raw SQL).
         { name: "body_lexical", type: "richText", editor: lexicalEditor({}) },
         { name: "publish_at", type: "date" },
         { name: "published_at", type: "date" },
@@ -95,8 +94,9 @@ export default buildConfig({
       hooks: {
         afterChange: [
           async ({ doc, req }) => {
-            // Notify Next.js ISR to revalidate affected pages
-            if (doc.status === "published") {
+            // Notify Next.js ISR to revalidate affected pages. `_status` is
+            // Payload's canonical publish state (versions.drafts).
+            if (doc._status === "published") {
               try {
                 const body = JSON.stringify({
                   type: "article.published",

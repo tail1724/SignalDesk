@@ -487,14 +487,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "enum_hr_articles_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'draft'"
-        },
         "body_lexical": {
           "name": "body_lexical",
           "type": "jsonb",
@@ -751,14 +743,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "version_status": {
-          "name": "version_status",
-          "type": "enum__hr_articles_v_version_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'draft'"
         },
         "version_body_lexical": {
           "name": "version_body_lexical",
@@ -2274,6 +2258,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "93cea89f-21b2-4450-80bf-67dbbcc670e0",
+  "id": "09a2f5ed-e2ad-447d-b8e1-4f3682d5b33e",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
