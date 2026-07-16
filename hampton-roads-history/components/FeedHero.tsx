@@ -3,7 +3,7 @@ import Image from "next/image";
 import type { Article } from "@/lib/supabase/types";
 import { articleHref } from "@/components/ArticleCard";
 import { timeAgo, thumbGradient } from "@/lib/format";
-import { getHeroImageUrl } from "@/lib/images";
+import { articleHeroSrc, articleHeroAlt } from "@/lib/images";
 
 // Top-story hero: headline + lede on the left, a 4:3 lead image on the right.
 // Fills the wide feed shell; stacks (image first) on small screens.
@@ -38,13 +38,13 @@ export function FeedHero({ article }: { article: Article }) {
       <Link
         href={articleHref(article)}
         className={`order-1 lg:order-2 block aspect-[4/3] rounded-xl overflow-hidden ${
-          article.hero_image_url ? "bg-surface-3" : `bg-gradient-to-br ${thumbGradient(article.id)}`
+          articleHeroSrc(article) ? "bg-surface-3" : `bg-gradient-to-br ${thumbGradient(article.id)}`
         }`}
       >
-        {article.hero_image_url && (
+        {articleHeroSrc(article) && (
           <Image
-            src={getHeroImageUrl(article.hero_image_url)}
-            alt={article.hero_image_alt || article.title}
+            src={articleHeroSrc(article)!}
+            alt={articleHeroAlt(article)}
             width={900}
             height={675}
             priority

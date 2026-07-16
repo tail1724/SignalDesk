@@ -18,7 +18,7 @@ const { loadEnvConfig } = require("@next/env") as typeof import("@next/env");
 loadEnvConfig(process.cwd(), true);
 
 const { getPayload } = await import("payload");
-const { default: config } = await import("../payload.config.ts");
+const { default: config } = await import("@payload-config");
 
 const payload = await getPayload({ config, disableOnInit: true });
 await payload.db.migrate();

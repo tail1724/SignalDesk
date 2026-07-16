@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/lib/supabase/types";
 import { timeAgo } from "@/lib/format";
-import { getCardImageUrl } from "@/lib/images";
+import { articleHeroSrc, articleHeroAlt } from "@/lib/images";
 
 export function articleHref(article: Article): string {
   const city = article.hr_categories?.slug ?? "hampton";
@@ -12,7 +12,8 @@ export function articleHref(article: Article): string {
 // Horizontal feed card: 4:3 thumbnail left, text right. Stories with no real
 // photograph collapse to a clean single text column (no empty placeholder).
 export function ArticleCard({ article }: { article: Article }) {
-  const hasImage = !!article.hero_image_url;
+  const cardImage = articleHeroSrc(article, "card");
+  const hasImage = !!cardImage;
 
   return (
     <article
@@ -26,8 +27,8 @@ export function ArticleCard({ article }: { article: Article }) {
           className="block aspect-[4/3] rounded-lg overflow-hidden bg-surface-3"
         >
           <Image
-            src={getCardImageUrl(article.hero_image_url!)}
-            alt={article.hero_image_alt || article.title}
+            src={cardImage!}
+            alt={articleHeroAlt(article)}
             width={600}
             height={450}
             className="w-full h-full object-cover"
