@@ -6,6 +6,11 @@ import { signWebhookPayload } from "@/lib/webhook";
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
+    // hr_* tables use uuid primary keys (uuid_generate_v4 / gen_random_uuid).
+    // Without this, Payload defaults to serial/integer PKs and conflicts with
+    // the existing schema on the very first migration.
+    idType: "uuid",
+    migrationDir: "./migrations",
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
@@ -52,12 +57,16 @@ export default buildConfig({
         { name: "slug", type: "text", required: true },
         { name: "kicker", type: "text" },
         {
-          name: "section_id",
+          // Field is named `section` so Payload's relationship column is
+          // `section_id` (name + _id), matching the existing DB column that
+          // data.ts / RPCs / RLS all reference. Renaming to `section_id` here
+          // would make Payload generate `section_id_id` and break them.
+          name: "section",
           type: "relationship",
           relationTo: "hr_categories",
         },
         {
-          name: "author_id",
+          name: "author",
           type: "relationship",
           relationTo: "hr_authors",
         },
@@ -120,7 +129,8 @@ export default buildConfig({
         { name: "description", type: "textarea" },
         { name: "image_url", type: "text" },
         {
-          name: "article_id",
+          // → column `article_id` (matches existing hr_breaking.article_id)
+          name: "article",
           type: "relationship",
           relationTo: "hr_articles",
         },
@@ -194,7 +204,8 @@ export default buildConfig({
       },
       fields: [
         {
-          name: "article_id",
+          // → column `article_id` (matches existing hr_corrections.article_id)
+          name: "article",
           type: "relationship",
           relationTo: "hr_articles",
           required: true,
@@ -208,7 +219,7 @@ export default buildConfig({
             try {
               const article = await req.payload.findByID({
                 collection: "hr_articles",
-                id: doc.article_id,
+                id: doc.article,
               });
               if (!article?.short_id) return;
 
