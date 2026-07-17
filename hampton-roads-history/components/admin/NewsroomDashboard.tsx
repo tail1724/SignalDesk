@@ -36,11 +36,18 @@ export default async function NewsroomDashboard({ payload, user }: ServerProps) 
 
   const seedRefinerUrl = process.env.SEED_REFINER_ORIGIN || "https://seed-refiner.lovable.app/";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "/";
+  // hr_advertisers/hr_campaigns/hr_placements only exist once Epic G's
+  // migration has run — a live count (not a hardcoded true) so this panel
+  // reports "Configure" honestly on an environment that hasn't migrated yet.
+  const advertiserSeparation = await payload
+    .count({ collection: "hr_advertisers", overrideAccess: true })
+    .then(() => true)
+    .catch(() => false);
   const governance = [
     ["Consent enforcement", process.env.CONSENT_ENFORCEMENT === "enabled"],
     ["Retention jobs", process.env.RETENTION_JOBS_ENABLED === "true"],
     ["Role-based access", true],
-    ["Advertiser separation", true],
+    ["Advertiser separation", advertiserSeparation],
     ["Creative trust gate", true],
     ["Append-only audit", true],
     ["ads.txt declaration", Boolean(process.env.ADS_TXT_CONTENT)],
