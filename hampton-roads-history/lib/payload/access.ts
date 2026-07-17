@@ -6,6 +6,7 @@ export const newsroomRoles = [
   "copy_editor",
   "reporter",
   "ad_ops",
+  "sales",
   "analyst",
   "ai_service",
 ] as const;
@@ -69,6 +70,45 @@ export const canPublish = (req: PayloadRequest): boolean =>
 export const canUseRevenue: Access = ({ req }) =>
   hasRole(req.user, ["super_admin", "ad_ops"]);
 
+// Managing editors need visibility into what's sponsored where (to avoid
+// coverage/sponsorship conflicts) without seeing budget or pricing fields —
+// those individual fields carry their own tighter `access.read`.
+export const canReadRevenue: Access = ({ req }) =>
+  hasRole(req.user, ["super_admin", "ad_ops", "managing_editor"]);
+
+// Budget/pricing-sensitive fields: ad_ops and above only, never
+// managing_editor or sales — see the RBAC table in design-blueprint.html §07.
+export const canReadRevenueFinancials: Access = ({ req }) =>
+  hasRole(req.user, ["super_admin", "ad_ops"]);
+
+// Sales reps get an advertiser/campaign relationship, not a role check
+// alone — access is scoped per-row to rows where sales_rep is them. Only
+// super_admin/ad_ops bypass the scope entirely. Not meaningful for create
+// (no row exists yet to scope against) — use canUseRevenueOrSales there,
+// paired with the beforeChange hook that pins sales_rep to the creator.
+// update/delete only — managing_editor is read-only on advertiser/campaign
+// data (see canReadOwnedRevenueRow), never able to mutate it.
+export const ownAdvertiserOrRevenueStaff: Access = ({ req }): boolean | Where => {
+  if (hasRole(req.user, ["super_admin", "ad_ops"])) return true;
+  if (!hasRole(req.user, ["sales"])) return false;
+  const id = (req.user as RoleUser | null)?.id;
+  return id ? { sales_rep: { equals: id } } : false;
+};
+
+// Read access for hr_advertisers/hr_campaigns: managing_editor sees every
+// row (unscoped) to spot sponsorship/coverage conflicts — budget_note stays
+// hidden from them via that field's own access, not row scoping. Sales sees
+// only rows they own.
+export const canReadOwnedRevenueRow: Access = ({ req }): boolean | Where => {
+  if (hasRole(req.user, ["super_admin", "ad_ops", "managing_editor"])) return true;
+  if (!hasRole(req.user, ["sales"])) return false;
+  const id = (req.user as RoleUser | null)?.id;
+  return id ? { sales_rep: { equals: id } } : false;
+};
+
+export const canUseRevenueOrSales: Access = ({ req }) =>
+  hasRole(req.user, ["super_admin", "ad_ops", "sales"]);
+
 export const canReadGovernance: Access = ({ req }) =>
   hasRole(req.user, ["super_admin", "managing_editor", "ad_ops", "analyst"]);
 
@@ -96,6 +136,10 @@ export const never: Access = () => false;
 
 export function hideRevenueForUser({ user }: { user: ClientUser }): boolean {
   return !hasRole(user, ["super_admin", "ad_ops"]);
+}
+
+export function hideRevenueForUserExceptSales({ user }: { user: ClientUser }): boolean {
+  return !hasRole(user, ["super_admin", "ad_ops", "sales"]);
 }
 
 export function hideGovernanceForUser({ user }: { user: ClientUser }): boolean {

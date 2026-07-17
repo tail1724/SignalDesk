@@ -73,6 +73,9 @@ export interface Config {
     hr_authors: HrAuthor;
     hr_articles: HrArticle;
     hr_breaking: HrBreaking;
+    hr_advertisers: HrAdvertiser;
+    hr_campaigns: HrCampaign;
+    hr_placements: HrPlacement;
     hr_ad_creatives: HrAdCreative;
     hr_integration_receipts: HrIntegrationReceipt;
     hr_audit_events: HrAuditEvent;
@@ -90,6 +93,9 @@ export interface Config {
     hr_authors: HrAuthorsSelect<false> | HrAuthorsSelect<true>;
     hr_articles: HrArticlesSelect<false> | HrArticlesSelect<true>;
     hr_breaking: HrBreakingSelect<false> | HrBreakingSelect<true>;
+    hr_advertisers: HrAdvertisersSelect<false> | HrAdvertisersSelect<true>;
+    hr_campaigns: HrCampaignsSelect<false> | HrCampaignsSelect<true>;
+    hr_placements: HrPlacementsSelect<false> | HrPlacementsSelect<true>;
     hr_ad_creatives: HrAdCreativesSelect<false> | HrAdCreativesSelect<true>;
     hr_integration_receipts: HrIntegrationReceiptsSelect<false> | HrIntegrationReceiptsSelect<true>;
     hr_audit_events: HrAuditEventsSelect<false> | HrAuditEventsSelect<true>;
@@ -143,7 +149,7 @@ export interface HrCmsUser {
   /**
    * Deny-by-default newsroom role. AI service accounts cannot publish or operate advertising.
    */
-  role: 'super_admin' | 'managing_editor' | 'copy_editor' | 'reporter' | 'ad_ops' | 'analyst' | 'ai_service';
+  role: 'super_admin' | 'managing_editor' | 'copy_editor' | 'reporter' | 'ad_ops' | 'sales' | 'analyst' | 'ai_service';
   desk?: ('Audience' | 'Business' | 'Civic' | 'Culture' | 'Defense & port' | 'History' | 'Service') | null;
   active?: boolean | null;
   updatedAt: string;
@@ -262,6 +268,10 @@ export interface HrArticle {
     | number
     | boolean
     | null;
+  /**
+   * "Pending review" means at least one submitted media item is quarantined (rights: review) and was not copied into hr_media.
+   */
+  rights_status?: ('none' | 'clear' | 'pending_review') | null;
   workflow_stage:
     | 'intake'
     | 'reporting'
@@ -364,11 +374,91 @@ export interface HrBreaking {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hr_advertisers".
+ */
+export interface HrAdvertiser {
+  id: string;
+  name: string;
+  contact_name?: string | null;
+  contact_email?: string | null;
+  sales_rep?: (string | null) | HrCmsUser;
+  /**
+   * hr_categories slugs this advertiser must never be placed against.
+   */
+  blocked_categories?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hr_campaigns".
+ */
+export interface HrCampaign {
+  id: string;
+  name: string;
+  advertiser: string | HrAdvertiser;
+  sales_rep?: (string | null) | HrCmsUser;
+  flight_start?: string | null;
+  flight_end?: string | null;
+  status: 'draft' | 'active' | 'paused' | 'completed';
+  budget_note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hr_placements".
+ */
+export interface HrPlacement {
+  id: string;
+  placement_id: string;
+  label?: string | null;
+  desktop_width?: number | null;
+  desktop_height?: number | null;
+  mobile_width?: number | null;
+  mobile_height?: number | null;
+  /**
+   * e.g. "After hero + newsletter value"
+   */
+  eligibility_rule?: string | null;
+  /**
+   * Ordered array, e.g. ["direct", "pmp", "backfill", "house"].
+   */
+  demand_tier_order?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * v1 invariant: no timed refresh. Leave off.
+   */
+  refresh_allowed?: boolean | null;
+  route_type: 'home' | 'section' | 'article';
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hr_ad_creatives".
  */
 export interface HrAdCreative {
   id: string;
   advertiser: string;
+  campaign?: (string | null) | HrCampaign;
   slot_targets?: ('article-inline' | 'sidebar' | 'home-feed')[] | null;
   creative_url: string;
   dest_url: string;
@@ -376,7 +466,7 @@ export interface HrAdCreative {
   flight_start?: string | null;
   flight_end?: string | null;
   /**
-   * Only a passed scan plus human approval can set the serving trust flag.
+   * Scanner-owned state. Only a passed scan plus human approval can set the serving trust flag.
    */
   scan_status: 'pending' | 'scanning' | 'passed' | 'failed' | 'quarantined';
   human_approved?: boolean | null;
@@ -440,7 +530,15 @@ export interface HrAuditEvent {
   actor_email: string;
   actor_id?: string | null;
   actor_role:
-    'system' | 'super_admin' | 'managing_editor' | 'copy_editor' | 'reporter' | 'ad_ops' | 'analyst' | 'ai_service';
+    | 'system'
+    | 'super_admin'
+    | 'managing_editor'
+    | 'copy_editor'
+    | 'reporter'
+    | 'ad_ops'
+    | 'sales'
+    | 'analyst'
+    | 'ai_service';
   object_type: string;
   object_id?: string | null;
   before_hash?: string | null;
@@ -519,6 +617,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'hr_breaking';
         value: string | HrBreaking;
+      } | null)
+    | ({
+        relationTo: 'hr_advertisers';
+        value: string | HrAdvertiser;
+      } | null)
+    | ({
+        relationTo: 'hr_campaigns';
+        value: string | HrCampaign;
+      } | null)
+    | ({
+        relationTo: 'hr_placements';
+        value: string | HrPlacement;
       } | null)
     | ({
         relationTo: 'hr_ad_creatives';
@@ -667,6 +777,7 @@ export interface HrArticlesSelect<T extends boolean = true> {
   hero_image_url?: T;
   hero_image_alt?: T;
   media_provenance?: T;
+  rights_status?: T;
   workflow_stage?: T;
   priority?: T;
   desk?: T;
@@ -708,10 +819,59 @@ export interface HrBreakingSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hr_advertisers_select".
+ */
+export interface HrAdvertisersSelect<T extends boolean = true> {
+  name?: T;
+  contact_name?: T;
+  contact_email?: T;
+  sales_rep?: T;
+  blocked_categories?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hr_campaigns_select".
+ */
+export interface HrCampaignsSelect<T extends boolean = true> {
+  name?: T;
+  advertiser?: T;
+  sales_rep?: T;
+  flight_start?: T;
+  flight_end?: T;
+  status?: T;
+  budget_note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hr_placements_select".
+ */
+export interface HrPlacementsSelect<T extends boolean = true> {
+  placement_id?: T;
+  label?: T;
+  desktop_width?: T;
+  desktop_height?: T;
+  mobile_width?: T;
+  mobile_height?: T;
+  eligibility_rule?: T;
+  demand_tier_order?: T;
+  refresh_allowed?: T;
+  route_type?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hr_ad_creatives_select".
  */
 export interface HrAdCreativesSelect<T extends boolean = true> {
   advertiser?: T;
+  campaign?: T;
   slot_targets?: T;
   creative_url?: T;
   dest_url?: T;
