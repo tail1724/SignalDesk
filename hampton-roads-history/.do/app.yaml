@@ -4,9 +4,20 @@
 #
 # Notes:
 # - Next.js `next start` binds to $PORT automatically (App Platform injects it).
-# - The PRE_DEPLOY job runs `npm run migrate` with NODE_ENV=production, which
-#   runs committed Payload migrations non-interactively. On the already-reconciled
-#   prod DB this is a no-op; new migrations (0002+) apply here.
+# - Migrations run on deploy via TWO layered mechanisms, so a stale schema can't
+#   silently ship again (which is how prod once drifted two migrations behind):
+#     1. PRIMARY — the PRE_DEPLOY `migrate` job below runs `npm run migrate`
+#        (NODE_ENV=production, non-interactive) once per deploy, BEFORE traffic
+#        shifts. If it fails, the deploy aborts and the old version keeps serving.
+#     2. FALLBACK — package.json's `prestart` hook runs the same migrations when
+#        NODE_ENV=production, so migrations still apply even on an app whose spec
+#        is missing the job. The web service sets SKIP_START_MIGRATIONS=true so
+#        that once this spec is live the job is authoritative and prestart is a
+#        no-op (no double run).
+# - IMPORTANT: editing this file does NOT update a running app. Apply it once to
+#   the live app so the job takes effect (see the "Apply to the live app" note at
+#   the bottom). `tsx` and `patch-package` are runtime deps (not devDeps) so the
+#   migrate toolchain survives buildpack pruning.
 # - NEXT_PUBLIC_* are needed at BUILD time (baked into the client bundle); the
 #   rest are RUN-time. Media stays in Supabase Storage — no persistent disk.
 name: signaldesk
@@ -34,6 +45,12 @@ services:
       - key: NODE_ENV
         scope: RUN_AND_BUILD_TIME
         value: production
+      # The PRE_DEPLOY job owns migrations, so skip the prestart fallback here to
+      # avoid running migrate twice per deploy. Remove this (or set to "false")
+      # if you ever drop the migrate job and want prestart to carry migrations.
+      - key: SKIP_START_MIGRATIONS
+        scope: RUN_TIME
+        value: "true"
       - key: NEXT_PUBLIC_SUPABASE_URL
         scope: RUN_AND_BUILD_TIME
         value: https://odogjtrpcpqicgqaraih.supabase.co
@@ -90,6 +107,10 @@ services:
         value: ""
 
 jobs:
+  # Applies committed Payload migrations before the new version goes live.
+  # build_command is just `npm ci` — migrate needs the deps (tsx/patch-package
+  # are runtime deps) but not a Next build, which would only add time and
+  # failure surface. run_command is non-interactive under NODE_ENV=production.
   - name: migrate
     kind: PRE_DEPLOY
     source_dir: hampton-roads-history
@@ -97,7 +118,7 @@ jobs:
       repo: tail1724/SignalDesk
       branch: main
       deploy_on_push: true
-    build_command: npm ci && npm run build
+    build_command: npm ci
     run_command: npm run migrate
     environment_slug: node-js
     instance_size_slug: apps-s-1vcpu-0.5gb
@@ -116,3 +137,23 @@ jobs:
       - key: NEXT_PUBLIC_SITE_URL
         scope: RUN_TIME
         value: ${APP_URL}
+
+# ---------------------------------------------------------------------------
+# Apply to the live app (do this once — the running app was created off-spec,
+# which is why the migrate job never ran):
+#
+#   doctl apps list                          # find the app id
+#   doctl apps spec get <APP_ID> > live.yaml # pull the CURRENT spec (keeps the
+#                                            # already-set SECRET values intact)
+#   # merge the `jobs:` block above and the web service's SKIP_START_MIGRATIONS
+#   # env into live.yaml, then:
+#   doctl apps update <APP_ID> --spec live.yaml
+#
+# Do NOT `doctl apps update --spec .do/app.yaml` directly: the SECRET values
+# here are intentionally blank and would overwrite the live secrets. Pull the
+# live spec, add just the job + env, and push that back.
+#
+# Even before that, the next deploy already self-heals: package.json's prestart
+# hook runs migrations because the web service has NODE_ENV=production and no
+# SKIP_START_MIGRATIONS set yet.
+# ---------------------------------------------------------------------------
