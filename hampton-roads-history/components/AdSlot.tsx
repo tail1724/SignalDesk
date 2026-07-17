@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { getOrCreateSessionId } from "@/lib/hooks/useSessionId";
+import { useConsent } from "@/lib/consent";
 
 interface AdResponse {
   slot_id: string;
@@ -33,9 +34,14 @@ export function AdSlot({
   const [ad, setAd] = useState<AdResponse | null>(null);
   const impressionSent = useRef(false);
   const containerRef = useRef<HTMLAnchorElement>(null);
+  // Reactive: re-fires once the reader resolves consent (accept or
+  // essential-only) so a slot mounted before that moment still serves —
+  // no ad request goes out before resolution either way.
+  const consent = useConsent();
 
   useEffect(() => {
     const sessionId = getOrCreateSessionId();
+    if (!sessionId) return;
 
     fetch(`/api/ads/slot/${slotId}`, {
       headers: { "x-session-id": sessionId },
@@ -43,7 +49,7 @@ export function AdSlot({
       .then((res) => res.json())
       .then((data: AdResponse) => setAd(data))
       .catch(() => setAd(null));
-  }, [slotId]);
+  }, [slotId, consent]);
 
   // Fire impression once, when the slot scrolls into view
   useEffect(() => {
@@ -195,6 +201,7 @@ function recordAdEvent(
   if (!ad.creative_id || !ad.hmac_token) return;
 
   const sessionId = getOrCreateSessionId();
+  if (!sessionId) return;
 
   fetch("/api/ads/event", {
     method: "POST",

@@ -1,15 +1,18 @@
-import Link from "next/link";
+"use client";
 
-// Trigger for the reader-facing ad-transparency surface. There is no consent
-// center yet (Epic G) — for now this links to the existing /ad-choices legal
-// page rather than opening a modal that doesn't exist.
+import { openConsentCenter } from "@/lib/consent";
+
+// Trigger for the reader-facing ad-transparency surface — opens the consent
+// center (Epic G). The label sits outside the creative markup wherever
+// this is used (see AdFrame).
 export function AdChoices({ label = "Ad choices" }: { label?: string }) {
   return (
-    <Link
-      href="/ad-choices"
-      className="border-0 border-b border-current pb-px text-inherit no-underline hover:text-ink"
+    <button
+      type="button"
+      onClick={openConsentCenter}
+      className="border-0 border-b border-current bg-transparent pb-px text-inherit no-underline hover:text-ink"
     >
       {label}
-    </Link>
+    </button>
   );
 }

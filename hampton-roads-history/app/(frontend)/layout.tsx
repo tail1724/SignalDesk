@@ -5,6 +5,8 @@ import "../globals.css";
 import { GlobalNav } from "@/components/GlobalNav";
 import { LiveRibbon } from "@/components/editorial/LiveRibbon";
 import { Footer } from "@/components/Footer";
+import { ConsentCenter } from "@/components/ConsentCenter";
+import { ConsentChip } from "@/components/ConsentChip";
 import { getCategories } from "@/lib/data";
 
 // Inter carries UI/body copy; JetBrains Mono is kept for data accents
@@ -94,6 +96,8 @@ export default async function RootLayout({
         <GlobalNav cities={cities} />
         <div className="flex-1">{children}</div>
         <Footer cities={cities} />
+        <ConsentChip />
+        <ConsentCenter />
       </body>
     </html>
   );

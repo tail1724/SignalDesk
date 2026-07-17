@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { OpenConsentCenterButton } from "@/components/OpenConsentCenterButton";
 
 export const metadata: Metadata = { title: "Ad Choices — Hampton Roads History" };
 
@@ -9,6 +10,8 @@ export default function AdChoicesPage() {
       <h1 className="font-display font-black text-3xl mb-6">Ad Choices</h1>
 
       <div className="text-ink-2 leading-relaxed space-y-5">
+        <OpenConsentCenterButton>Open privacy &amp; ad choices</OpenConsentCenterButton>
+
         <p>
           Hampton Roads History works with third-party ad networks and
           real-time bidding partners to select and serve many of the ads you
@@ -23,8 +26,8 @@ export default function AdChoicesPage() {
           the slot you&rsquo;re viewing. Others are filled programmatically through
           our advertising partners, who may use context about the page and
           limited device or cookie identifiers to match an ad. You can control
-          personalization through our consent manager and industry opt-outs
-          (NAI / DAA / Your Privacy Choices).
+          personalization through our consent manager above and industry
+          opt-outs (NAI / DAA / Your Privacy Choices).
         </p>
 
         <h2 className="font-display font-bold text-lg text-ink pt-2">Sponsored content</h2>
