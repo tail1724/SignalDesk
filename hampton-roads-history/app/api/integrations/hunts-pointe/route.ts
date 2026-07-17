@@ -4,6 +4,8 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { z } from "zod";
 import { verifyWebhookSignature } from "@/lib/webhook";
+import { computeRightsStatus, copyRemoteMediaToHrMedia } from "@/lib/payload/media";
+import { relationshipId } from "@/lib/payload/relationships";
 
 // Seed Refiner / Hunt's Pointe draft-ingest endpoint.
 //
@@ -69,15 +71,6 @@ function makeShortId(): string {
 
 function sha256(value: string): string {
   return createHash("sha256").update(value).digest("hex");
-}
-
-function relationshipId(value: unknown): string | undefined {
-  if (typeof value === "string" || typeof value === "number") return String(value);
-  if (value && typeof value === "object" && "id" in value) {
-    const id = (value as { id?: unknown }).id;
-    if (typeof id === "string" || typeof id === "number") return String(id);
-  }
-  return undefined;
 }
 
 function estimateReadTime(text: string): number {
@@ -302,6 +295,15 @@ export async function POST(req: NextRequest) {
     const shortId = makeShortId();
     const tags = [...new Set([...(body.story_tags || []), ...(body.tags || [])])];
 
+    // Only rights-cleared media gets copied server-side; rights:"review"
+    // items stay quarantined in media_provenance for a human editor to
+    // resolve, never served or attached as hero_media.
+    const approvedMedia = (body.media || []).filter((item) => item.rights !== "review");
+    const heroMediaId = approvedMedia[0]
+      ? (await copyRemoteMediaToHrMedia(payload, approvedMedia[0])) ?? undefined
+      : undefined;
+    const rightsStatus = computeRightsStatus(body.media);
+
     const created = await payload.create({
       collection: "hr_articles",
       draft: true,
@@ -321,7 +323,9 @@ export async function POST(req: NextRequest) {
         workflow_stage: "intake",
         priority: "standard",
         story_tags: tags,
+        hero_media: heroMediaId,
         media_provenance: body.media || [],
+        rights_status: rightsStatus,
         ai_provenance: {
           ...(body.provenance || {}),
           received_from: "Seed Refiner",
