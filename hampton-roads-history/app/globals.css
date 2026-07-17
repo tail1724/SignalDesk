@@ -1,75 +1,91 @@
 @import "tailwindcss";
 
 /* ============================================================
-   HAMPTON ROADS HISTORY — design tokens
-   Light is the default (clinical, Axios-style news reading);
-   the archival dark palette is retained under [data-theme="dark"]
-   and chosen via the theme switcher (header toggle + Settings).
+   VAPORNET AMERICANA — design tokens
+   Source of truth: redesign/vapornet/styles.css (design package,
+   see design-blueprint.html §03 "Brand and design system"). The
+   first block below is the verbatim VaporNet token set — names
+   and values must not drift from the source file. The semantic
+   layer that follows maps the existing Tailwind utility classes
+   (bg-base, text-ink, bg-accent, font-display, etc.) onto those
+   primitives so every page repaints without a per-component pass.
+   Night mode mirrors redesign/vapornet/styles.css .night-mode:
+   federal navy / civic blue / signal red / gold stay constant
+   across themes — only ink, line and surface values invert.
    ============================================================ */
 :root {
-  --base: #ffffff;
-  --surface-1: #ffffff;
-  --surface-2: #f7f6f3;
-  --surface-3: #efede8;
-  --line: #e7e4dd;
-  --line-strong: #d5d1c6;
+  /* --- VaporNet primitives (verbatim — keep in sync with styles.css) --- */
+  --federal: #0a1d35;
+  --federal-2: #102b4d;
+  --civic-blue: #17618b;
+  --signal-red: #c93d37;
+  --signal-red-dark: #ad302a;
+  --parchment: #f2ede1;
+  --newsprint: #fcfaf5;
+  --white: #fff;
+  --ink: #111a24;
+  --ink-2: #3d4854;
+  --ink-3: #6d7780;
+  --line: #d9d4c8;
+  --line-dark: #b8b2a5;
+  --gold: #c99a42;
+  --success: #267252;
+  --warning: #a96518;
+  --shadow-sm: 0 1px 2px rgba(10, 29, 53, 0.08), 0 10px 30px rgba(10, 29, 53, 0.05);
+  --shadow-lg: 0 30px 90px rgba(3, 12, 25, 0.24);
+  --radius: 18px;
+  --shell: 1180px;
 
-  --ink: #15140f;
-  --ink-2: #4c4a42;
-  --ink-3: #8b877b;
+  /* --- Semantic layer consumed by @theme inline + existing components --- */
+  --base: var(--newsprint);
+  --surface-1: var(--white);
+  --surface-2: var(--parchment);
+  --surface-3: #ece4d2;
+  --line-strong: var(--line-dark);
 
-  --accent: #c0472f;
-  --accent-dim: #9c3a26;
-  /* readable terracotta for kicker/label text on light */
-  --accent-soft: #a8442c;
+  --accent: var(--signal-red);
+  --accent-dim: var(--signal-red-dark);
+  /* readable signal-red for kicker/label text on light */
+  --accent-soft: var(--signal-red-dark);
 
-  --accent-blue: #2f6577;
-  --accent-blue-dim: #24505f;
+  --accent-blue: var(--civic-blue);
+  --accent-blue-dim: #124a6d;
 
   /* soft tinted fill used by newsletter/conversion bands */
-  --band: #f7e4db;
+  --band: var(--parchment);
 
-  --gold: #997327;
+  --up: var(--success);
+  --down: var(--signal-red);
 
-  --up: #2f7d3a;
-  --down: #c0472f;
-
-  --font-display: var(--font-sans);
+  --font-display: var(--font-serif), "Iowan Old Style", Baskerville, "Times New Roman", serif;
   --font-body: var(--font-sans);
   --font-mono: "JetBrains Mono", monospace;
 
   --maxw: 1280px;
-  --shell: 1080px;
   --reading: 720px;
-  --r-card: 16px;
+  --r-card: var(--radius);
   --r-btn: 999px;
 
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --base: #12140f;
-  --surface-1: #191b15;
-  --surface-2: #21241c;
-  --surface-3: #2b2f24;
-  --line: #34382c;
-  --line-strong: #464b3a;
+  --base: #0d1720;
+  --surface-1: #172431;
+  --surface-2: #14222d;
+  --surface-3: #1c2e3c;
+  --line: #293744;
+  --line-strong: #3e5060;
 
-  --ink: #f6f2e9;
-  --ink-2: #c9c2ac;
-  --ink-3: #938c76;
+  --ink: #f3eee3;
+  --ink-2: #bdc6cc;
+  --ink-3: #87959f;
 
-  --accent: #d95c41;
-  --accent-dim: #8f3624;
-  /* light peach reads as the accent-text color on dark */
-  --accent-soft: #e0a98f;
+  /* signal-red-dark reads too low-contrast as label text on near-black —
+     lighten it for dark-surface kicker/label use only. */
+  --accent-soft: #e2867d;
 
-  --accent-blue: #7fa9b8;
-  --accent-blue-dim: #4f7d8c;
-
-  --band: #241b16;
-
-  --gold: #d3a54e;
+  --band: #172431;
 
   color-scheme: dark;
 }
@@ -91,6 +107,11 @@
   --color-accent-blue-dim: var(--accent-blue-dim);
   --color-band: var(--band);
   --color-gold: var(--gold);
+  --color-federal: var(--federal);
+  --color-signal-red: var(--signal-red);
+  --color-civic-blue: var(--civic-blue);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
@@ -243,4 +264,31 @@ img {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ============================================================
+   CivicHero / StoryWorldPoster decorative layers
+   ============================================================ */
+@keyframes vn-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.vn-orbit {
+  position: absolute;
+  z-index: 3;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 50%;
+  animation: vn-orbit 18s linear infinite;
+}
+.vn-orbit::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 18px var(--gold);
 }

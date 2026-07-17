@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import "../globals.css";
 import { GlobalNav } from "@/components/GlobalNav";
-import { BreakingBanner } from "@/components/BreakingBanner";
+import { LiveRibbon } from "@/components/editorial/LiveRibbon";
 import { Footer } from "@/components/Footer";
 import { getCategories } from "@/lib/data";
 
-// One modern sans for headlines and body — high-contrast digital readability
-// over the old serif/archival treatment. Mono is kept only for data accents
-// (timestamps, the weather widget, the search hint).
+// Inter carries UI/body copy; JetBrains Mono is kept for data accents
+// (timestamps, the weather widget, the search hint, ad labels). Newsreader
+// is the VaporNet display serif for headlines and the masthead wordmark —
+// self-hosted via next/font, variable axis so `font: 900 …` in component
+// CSS clamps to the font's max (800) instead of erroring.
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -20,6 +22,14 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
+});
+
+const newsreader = Newsreader({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "variable",
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
 // Applied before first paint so the chosen theme never flashes. Reads the
@@ -68,7 +78,7 @@ export default async function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${newsreader.variable} h-full antialiased`}
     >
       <head>
         {/* suppressHydrationWarning: browsers clear the nonce attribute from
@@ -80,7 +90,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-base text-ink">
-        <BreakingBanner />
+        <LiveRibbon />
         <GlobalNav cities={cities} />
         <div className="flex-1">{children}</div>
         <Footer cities={cities} />
