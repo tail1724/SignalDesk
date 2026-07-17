@@ -18,10 +18,10 @@ export function timeAgo(iso: string | null): string {
 }
 
 const THUMB_CLASSES = [
-  "from-[#5a3c2e] to-[#2b2f24]",
-  "from-[#3a4a3f] to-[#21241c]",
-  "from-[#4f7d8c] to-[#21241c]",
-  "from-[#8f3624] to-[#2b2318]",
+  "from-[#0a1d35] to-[#17618b]",
+  "from-[#17618b] to-[#0a1d35]",
+  "from-[#0a1d35] to-[#ad302a]",
+  "from-[#102b4d] to-[#c99a42]",
 ];
 
 export function thumbGradient(seed: string): string {

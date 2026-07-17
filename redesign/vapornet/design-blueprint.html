@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VaporNet — Hampton Roads production redesign blueprint</title>
+  <style>
+    :root{--navy:#0a1d35;--blue:#17618b;--red:#c93d37;--paper:#fcfaf5;--cream:#f2ede1;--ink:#111a24;--muted:#5c6872;--line:#d9d4c8;--gold:#c99a42;--green:#267252;--mono:"SFMono-Regular",Consolas,monospace;--sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--serif:"Iowan Old Style",Baskerville,"Times New Roman",serif}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font-family:var(--sans);font-size:15px;line-height:1.58}a{color:var(--blue);text-underline-offset:3px}code{font-family:var(--mono);font-size:.88em}.cover{min-height:72vh;display:grid;align-content:end;padding:64px max(28px,calc((100vw - 1120px)/2));color:#fff;background:radial-gradient(circle at 80% 15%,rgba(201,154,66,.28),transparent 21%),linear-gradient(135deg,#071627,#123859)}.cover .tag{font:11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#edcf85}.cover h1{max-width:960px;margin:20px 0 14px;font:900 clamp(52px,8vw,105px)/.87 var(--serif);letter-spacing:-.055em}.cover p{max-width:730px;margin:0;color:#c8d4dd;font-size:19px}.cover-meta{display:flex;flex-wrap:wrap;gap:20px;margin-top:48px;padding-top:18px;border-top:1px solid rgba(255,255,255,.22);color:#9fb1c0;font:10px var(--mono);text-transform:uppercase}.shell{max-width:1120px;margin:auto;padding:0 28px}.toc{position:sticky;z-index:10;top:0;display:flex;gap:18px;overflow:auto;padding:13px max(28px,calc((100vw - 1120px)/2));background:rgba(252,250,245,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}.toc a{color:var(--muted);text-decoration:none;white-space:nowrap;font-size:11px;font-weight:750}.toc a:hover{color:var(--red)}section{padding:72px 0;border-bottom:1px solid var(--line)}.kicker{display:block;margin-bottom:9px;color:var(--red);font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase}h2{max-width:840px;margin:0 0 20px;font:900 clamp(36px,5vw,59px)/.96 var(--serif);letter-spacing:-.04em}h3{margin:32px 0 10px;font:900 26px/1.05 var(--serif);letter-spacing:-.02em}h4{margin:20px 0 6px;font-size:15px}p{max-width:780px;color:#35424c}.lede{font:21px/1.5 var(--serif);color:#26333e}.callout{margin:28px 0;padding:24px;border-left:5px solid var(--red);background:var(--cream)}.callout strong{font-family:var(--serif);font-size:21px}.equation{margin:28px 0;padding:24px;color:#e8eef3;background:var(--navy);border-radius:3px 18px 3px 18px;font:15px/1.8 var(--mono)}.equation b{color:#edcf85}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:24px 0}.card{padding:22px;border:1px solid var(--line);background:#fff;border-radius:3px 14px 3px 14px}.card h3,.card h4{margin-top:0}.card p:last-child{margin-bottom:0}.decision{display:grid;grid-template-columns:35px 1fr;gap:12px;padding:15px 0;border-top:1px solid var(--line)}.decision>span{width:30px;height:30px;display:grid;place-items:center;color:#fff;background:var(--navy);border-radius:50%;font:10px var(--mono)}.decision strong{display:block}.decision p{margin:4px 0 0;font-size:13px}.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin:24px 0}.swatch{min-height:120px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;border-radius:3px 12px 3px 12px;color:#fff}.swatch span,.swatch code{display:block}.swatch span{font-weight:800}.swatch code{font-size:9px;color:rgba(255,255,255,.72)}.swatch.paper{color:var(--ink);border:1px solid var(--line)}.swatch.paper code{color:var(--muted)}table{width:100%;margin:24px 0;border-collapse:collapse;background:#fff;font-size:12px}th,td{padding:12px 11px;text-align:left;vertical-align:top;border:1px solid var(--line)}th{color:#fff;background:var(--navy);font-size:10px;text-transform:uppercase;letter-spacing:.05em}td strong{display:block}ul,ol{padding-left:22px}li{margin:7px 0}.status{display:inline-block;padding:3px 7px;border-radius:999px;font:9px var(--mono);text-transform:uppercase}.status.now{color:#fff;background:var(--red)}.status.next{color:#fff;background:var(--blue)}.status.gate{color:#fff;background:#a96518}.status.pass{color:#fff;background:var(--green)}.phase{display:grid;grid-template-columns:95px 1fr;gap:22px;padding:26px 0;border-top:1px solid var(--line)}.phase-label{font:10px var(--mono);color:var(--red);text-transform:uppercase}.phase h3{margin:0 0 9px}.phase p{margin:0}.checklist{list-style:none;padding:0}.checklist li{position:relative;padding:8px 0 8px 26px;border-bottom:1px solid var(--line)}.checklist li:before{content:"✓";position:absolute;left:0;top:8px;width:17px;height:17px;display:grid;place-items:center;color:#fff;background:var(--green);border-radius:50%;font-size:9px}.prototype-link{display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:13px 18px;color:#fff;background:var(--red);border-radius:999px;text-decoration:none;font-size:12px;font-weight:850}.footer{padding:50px 28px;color:#aebdca;background:#071627;text-align:center}.footer strong{display:block;color:#fff;font:900 24px var(--serif)}.small{font-size:11px;color:var(--muted)}@media(max-width:760px){.cover{min-height:620px}.grid,.swatches{grid-template-columns:1fr}.phase{grid-template-columns:1fr}.toc{padding-inline:15px}section{padding:52px 0}.shell{padding:0 18px}table{display:block;overflow:auto;white-space:nowrap}.cover h1{font-size:58px}}@media print{.toc,.prototype-link{display:none}.cover{min-height:auto;padding:48px;color:#000;background:#fff;border-bottom:4px solid #000}.cover p,.cover-meta,.cover .tag{color:#444}section{break-inside:auto}.card,table,.callout{break-inside:avoid}.shell{max-width:none}.footer{color:#333;background:#fff;border-top:2px solid #000}}
+  </style>
+</head>
+<body>
+  <header class="cover">
+    <span class="tag">VaporNet · VP EPD production blueprint</span>
+    <h1>America begins at the water.</h1>
+    <p>A design, revenue, governance and implementation plan for a broader Hampton Roads news publication, the Hunt’s Pointe drafting workflow and the SignalDesk/Payload control plane.</p>
+    <div class="cover-meta"><span>Decision set: regional news + civic life</span><span>Primary Money Path: viewability</span><span>Publishing invariant: human-approved drafts</span><span>Version 1.0 · July 16, 2026</span></div>
+  </header>
+  <nav class="toc" aria-label="Blueprint sections"><a href="#diagnosis">Diagnosis</a><a href="#call">The call</a><a href="#brand">Brand system</a><a href="#templates">Templates</a><a href="#ads">Advertising</a><a href="#workflow">Workflow</a><a href="#governance">Governance</a><a href="#implementation">Build plan</a><a href="#verification">Verification</a><a href="#deferred">Deferred</a></nav>
+
+  <main class="shell">
+    <section id="diagnosis">
+      <span class="kicker">01 · Diagnosis</span>
+      <h2>The product has the right parts, but not yet one system.</h2>
+      <p class="lede">SignalDesk already contains public routes, Payload drafts, advertising primitives, corrections, search, newsletters, city editions and a lazy Three.js layer. Hunt’s Pointe already stages signed drafts. The redesign should connect those assets into a distinctive regional habit instead of replacing the stack.</p>
+      <div class="equation">Revenue = Traffic × RPM<br>Traffic = Sessions × Pages/Session<br>RPM = AdDensity × Fill × <b>Viewability</b> × eCPM × (1 − Discrepancy)</div>
+      <p>The selected business posture is advertising-led, but increasing raw ad count first would optimize the wrong local metric. The single term this engagement drives is <strong>viewability</strong>: attention-aware positions, reserved geometry, lazy requests and editorial pauses that let ads enter the viewport without displacing or disguising the story.</p>
+      <div class="callout"><strong>Testable hypothesis:</strong><p>Moving from feed-position-only ads to attention-aware, reserved placements should raise viewability by 8–12 percentage points and, if fill and eCPM remain stable, lift RPM roughly 6–9%. This is a hypothesis, not a forecast. Production data must validate it.</p></div>
+      <h3>Verified current state</h3>
+      <table><thead><tr><th>Surface</th><th>What exists</th><th>Design or operating gap</th></tr></thead><tbody>
+        <tr><td>Public homepage</td><td><code>FeedHero</code>, article feed, newsletter, feed ads, search, theme, weather.</td><td>The live hero media is a placeholder gradient; hierarchy is flat; an existing <code>HeroBentoGrid</code> and lazy <code>OceanCanvas</code> are not used by the homepage.</td></tr>
+        <tr><td>City pages</td><td>Canonical city routes and category filtering.</td><td>Plain article list, little edition identity, low recirculation and no premium local sponsorship frame.</td></tr>
+        <tr><td>Articles</td><td>NewsArticle schema, canonical routes, media, Lexical body, inline ad, watchlist, sharing, corrections.</td><td>One ad after the body, minimal sourcing UI, weak “why it matters” structure and no desktop attention rail.</td></tr>
+        <tr><td>Hunt’s Pointe</td><td><code>DistributePanel</code> calls <code>push-signaldesk</code>; Supabase signs an HMAC request.</td><td>The action is visually secondary and does not show taxonomy, media rights, provenance, idempotency or downstream status.</td></tr>
+        <tr><td>SignalDesk ingestion</td><td><code>POST /api/integrations/hunts-pointe</code> always creates a Payload draft.</td><td>Tags are accepted but not stored; only the first byline is used; media and full provenance are absent; unknown taxonomy is auto-created; duplicate retries are possible.</td></tr>
+        <tr><td>Payload</td><td>Articles, media, categories, authors, breaking news, creatives and corrections.</td><td>Generated UI is unbranded; roles/access are incomplete; campaign, placement, audit and supply-chain controls need first-class collections.</td></tr>
+        <tr><td>Ad delivery</td><td>Trusted-creative filter, HMAC event tokens, view-triggered impression beacon, house-ad fallback.</td><td>No complete consent gate, stable opportunity/decision event chain, placement policy model, creative scan pipeline, ads.txt or sellers.json implementation.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section id="call">
+      <span class="kicker">02 · The call</span>
+      <h2>Build a regional story world around useful attention.</h2>
+      <div class="grid">
+        <div class="card"><h3>Yield &amp; Ad Ops</h3><p>Favors reserved, lazy, visible inventory: one premium leader, natural in-feed units, an article rail and a capped mobile anchor. It rejects refresh until a trusted viewability baseline exists.</p></div>
+        <div class="card"><h3>Traffic &amp; SEO</h3><p>Pushes back on density. Server-rendered story value must lead; LCP, INP, CLS, internal linking, author trust and question-shaped passages protect qualified sessions and pages per session.</p></div>
+        <div class="card"><h3>Editorial Integrity</h3><p>Requires visible bylines, sources, corrections and hard separation between newsroom, partner studio and standard advertising. AI assists structure; humans choose and publish coverage.</p></div>
+        <div class="card"><h3>VFX + Game Design</h3><p>Uses motion to reveal place, hierarchy and state. The “core loop” is scan → understand → choose a city/topic → read → continue. Visual effects must clarify that loop within a low-end mobile budget.</p></div>
+      </div>
+      <h3>Product decisions</h3>
+      <div class="decision"><span>1</span><div><strong>Retain Hampton Roads equity.</strong><p>The mockup uses “Hampton Roads” as the master wordmark, moves History into a section and uses “America begins at the water” as a campaign line. Final legal naming remains an approval gate.</p></div></div>
+      <div class="decision"><span>2</span><div><strong>Make civic utility the daily habit.</strong><p>Today, Business, Civic, Culture, Defense &amp; Port, History, Cities and Watch cover the expanded brief without becoming a generic national feed.</p></div></div>
+      <div class="decision"><span>3</span><div><strong>Separate atmosphere from evidence.</strong><p>Cinematic illustration carries the brand hero and evergreen packages. News photography, maps and charts document factual stories with captions, credits and alt text.</p></div></div>
+      <div class="decision"><span>4</span><div><strong>Use Payload as the control plane.</strong><p>Editorial lifecycle, placement rules, campaigns, blocked categories, sponsorship conflicts, consent policy, roles and audit history live in one owned system.</p></div></div>
+      <div class="decision"><span>5</span><div><strong>Keep the draft-only boundary.</strong><p>Hunt’s Pointe may stage and observe status. It cannot publish, bypass review or select coverage because of estimated CPM.</p></div></div>
+      <a class="prototype-link" href="index.html">Open the interactive HTML mockups →</a>
+    </section>
+
+    <section id="brand">
+      <span class="kicker">03 · Brand and design system</span>
+      <h2>Modern civic authority with cinematic Americana.</h2>
+      <p class="lede">The system is nonpartisan and place-specific. It borrows the confidence of American civic graphics, the tactility of regional print and the clarity of modern digital briefing products without copying any competitor’s visual identity.</p>
+      <h3>Palette</h3>
+      <div class="swatches"><div class="swatch" style="background:#0a1d35"><span>Federal navy</span><code>#0A1D35</code></div><div class="swatch" style="background:#17618b"><span>Civic blue</span><code>#17618B</code></div><div class="swatch" style="background:#c93d37"><span>Signal red</span><code>#C93D37</code></div><div class="swatch" style="background:#c99a42"><span>Brass gold</span><code>#C99A42</code></div><div class="swatch paper" style="background:#fcfaf5"><span>Newsprint</span><code>#FCFAF5</code></div><div class="swatch" style="background:#111a24"><span>Editorial ink</span><code>#111A24</code></div></div>
+      <ul>
+        <li>Navy anchors mastheads, governance, direct sponsorship and evening mode.</li>
+        <li>Red marks urgency, primary action and the Roads half of the wordmark; it is never the only signal.</li>
+        <li>Gold belongs to civic coordinates, premium direct sponsorship and restrained motion highlights.</li>
+        <li>Newsprint replaces sterile white; night mode uses a true navy-charcoal rather than pure black.</li>
+      </ul>
+      <h3>Typography</h3>
+      <table><thead><tr><th>Role</th><th>Prototype</th><th>Production recommendation</th><th>Rules</th></tr></thead><tbody><tr><td>Display</td><td>Iowan/Baskerville fallback</td><td>Newsreader or Source Serif 4, self-hosted</td><td>900/700 weights; tight tracking; sentence case; headlines max 15ch on lead stories.</td></tr><tr><td>Interface/body</td><td>System sans</td><td>Inter already present, or Inter Tight for display UI</td><td>Body 17–19px, 1.55–1.7 line height, 65–72ch maximum.</td></tr><tr><td>Data</td><td>System mono</td><td>JetBrains Mono already present</td><td>Dates, coordinates, ad labels, source notes and operational state only.</td></tr></tbody></table>
+      <h3>Motion and VFX budget</h3>
+      <ul>
+        <li>Static AVIF/WebP poster is the LCP element. Three.js loads after LCP, on idle, only when motion is allowed and WebGL capability passes.</li>
+        <li>Use the existing client-only dynamic-import pattern in <code>OceanBackground.tsx</code>; extend it into a small scene system rather than adding another renderer.</li>
+        <li>Desktop renderer DPR ≤2; mobile DPR ≤1.5. Pause when the hero leaves the viewport or the tab is hidden.</li>
+        <li>Scene: ≤45 draw calls, ≤60k triangles, texture memory ≤32 MB, p95 frame time ≤12 ms on the agreed mid-tier Android reference device.</li>
+        <li>Reduced motion, Save-Data, low battery or failed WebGL receives the static poster with identical text and navigation.</li>
+        <li>No scroll-jacking, camera fly-through, autoplay sound, full-page shader or decorative WebGL on article pages.</li>
+      </ul>
+    </section>
+
+    <section id="templates">
+      <span class="kicker">04 · Editorial templates</span>
+      <h2>Every page answers a reader question before asking for attention.</h2>
+      <table><thead><tr><th>Surface</th><th>Composition</th><th>Behavior</th><th>Commercial inventory</th></tr></thead><tbody>
+        <tr><td><strong>Homepage</strong></td><td>Live strip → cinematic lead + “why it matters” → morning brief → premium sponsor → regional story grid → city editions.</td><td>City follow, theme, search, audio brief, density-aware feed and static motion fallback.</td><td>One reserved leader, native partner unit after meaningful value, desktop rail, optional later feed unit in revenue variant.</td></tr>
+        <tr><td><strong>City/section</strong></td><td>Edition identity, coordinates, city follow, lead package, city desk, local data card.</td><td>Canonical city routing; remembered but non-blocking city preference; no cached personalized ad state.</td><td>One local sponsor band and one rail position; sponsorship cannot change story order.</td></tr>
+        <tr><td><strong>Article</strong></td><td>Category + city → headline/dek → author/update → media → briefing → evidence → sources/corrections → context recirculation.</td><td>Save, share, listen, story follow, reading progress and accessible source disclosure.</td><td>Inline after ≥35% content or ≥600 words, sticky desktop rail, dismissible mobile anchor; optional second inline only for ≥1,400 words.</td></tr>
+        <tr><td><strong>Mobile</strong></td><td>Value on first screen, swipe-free section rail, 390px lead composition, single-column story rhythm.</td><td>44px targets, safe-area support, no hover dependency, static scene default on constrained devices.</td><td>No ad before first useful module. Anchor ≤15% viewport, close control persists for the session.</td></tr>
+        <tr><td><strong>Hunt’s Pointe</strong></td><td>Manuscript, quality/provenance rail, destination card, transfer preflight and success receipt.</td><td>Connection state, field validation, media rights flag, draft-only acknowledgement and downstream status.</td><td>No CPM/topic recommendation in the writing surface. Commercial packages are produced after editorial approval.</td></tr>
+        <tr><td><strong>Payload</strong></td><td>Editorial queue, live desk, revenue health, creative safety, governance status and immutable audit access.</td><td>Role-aware navigation; editors see workflow, Ad Ops sees campaigns, executives see aggregates; service accounts have no UI login.</td><td>Campaign, creative and placement controls are separate from article editing; sponsored content carries explicit ownership.</td></tr>
+      </tbody></table>
+      <h3>Component inventory</h3>
+      <div class="grid"><div class="card"><h4>Story primitives</h4><p><code>CivicHero</code>, <code>SmartBrief</code>, <code>StoryCard</code>, <code>LiveRibbon</code>, <code>CityEdition</code>, <code>SourceNotes</code>, <code>ContextRail</code>, <code>CorrectionsLog</code>.</p></div><div class="card"><h4>Commercial primitives</h4><p><code>AdFrame</code>, <code>DirectSponsor</code>, <code>PartnerStudioCard</code>, <code>RailPlacement</code>, <code>MobileAnchor</code>, <code>AdChoices</code>. The label is outside creative HTML.</p></div><div class="card"><h4>Control-plane primitives</h4><p><code>WorkflowQueue</code>, <code>GovernanceGate</code>, <code>YieldHealth</code>, <code>CreativeScanStatus</code>, <code>SupplyChainStatus</code>, <code>AuditTimeline</code>.</p></div><div class="card"><h4>Motion primitives</h4><p><code>StoryWorldPoster</code>, <code>StoryWorldCanvas</code>, <code>CoordinateGrid</code>, <code>FocusOrbit</code>. All decorative canvases are <code>aria-hidden</code>.</p></div></div>
+    </section>
+
+    <section id="ads">
+      <span class="kicker">05 · Viewability-led advertising system</span>
+      <h2>Higher density, negotiated against trust and speed.</h2>
+      <p class="lede">The selected ad-led posture is implemented as more <em>eligible</em> opportunities, not unconditional requests. Payload defines positions and policy; the ad-decision service chooses guaranteed/direct → PMP → programmatic backfill; the client requests only near-viewable inventory after consent rules are known.</p>
+      <table><thead><tr><th>Placement ID</th><th>Desktop/mobile reserve</th><th>Eligibility</th><th>Demand</th><th>Viewability behavior</th></tr></thead><tbody>
+        <tr><td><code>home-leader-01</code></td><td>970×118 / 358×110</td><td>After hero + newsletter value</td><td>Direct/PMP first</td><td>SSR frame; request at 600px root margin; no refresh.</td></tr>
+        <tr><td><code>home-native-01</code></td><td>Fluid, min 210px / 260px</td><td>After two editorial modules</td><td>Partner studio/direct</td><td>Clear sponsored label; partner studio byline; no newsroom card styling ambiguity.</td></tr>
+        <tr><td><code>home-rail-01</code></td><td>300×440 / not served</td><td>Desktop ≥1024px</td><td>Direct/PMP/backfill</td><td>Sticky only inside rail bounds; pauses before footer.</td></tr>
+        <tr><td><code>section-local-01</code></td><td>Fluid 90px / 100px</td><td>City edition after lead</td><td>Local direct first</td><td>Reserved; contextual city targeting; no story-ranking influence.</td></tr>
+        <tr><td><code>article-inline-01</code></td><td>Fluid 135px / 125px</td><td>≥600 words and ≥35% depth</td><td>All eligible</td><td>Request near viewport; MRC event at 50% pixels for 1 continuous second.</td></tr>
+        <tr><td><code>article-inline-02</code></td><td>Fluid 100px / 100px</td><td>Revenue variant and ≥1,400 words</td><td>All eligible</td><td>Experiment only; never adjacent to another ad.</td></tr>
+        <tr><td><code>article-rail-01</code></td><td>280×440 / not served</td><td>Desktop, article rail exists</td><td>Direct/PMP first</td><td>Sticky within article bounds; viewability timer pauses when tab hidden.</td></tr>
+        <tr><td><code>mobile-anchor-01</code></td><td>n/a / 358×54</td><td>After first useful screen; session cap</td><td>Direct/backfill</td><td>Dismissible, ≤15% viewport, no refresh in v1.</td></tr>
+      </tbody></table>
+      <h3>Density rules</h3>
+      <ul>
+        <li>Under 600 words: no inline unit; only eligible anchor or page-edge sponsorship.</li>
+        <li>600–1,399 words: one inline unit plus eligible desktop rail.</li>
+        <li>1,400+ words: second inline opportunity only in the revenue experiment and only after at least 450 words since the prior ad.</li>
+        <li>Subscriber/ad-light entitlement, consent state, device, current viewability and sponsorship conflict can reduce density. They never increase it above the template ceiling.</li>
+        <li>Creative dimensions are known before request; collapse only before first paint when no demand is eligible. Never collapse a requested slot.</li>
+        <li>Do not add timed refresh in launch. A future test requires ≥30 seconds continuous viewability, a per-session cap, a new impression ID and explicit demand-partner permission.</li>
+      </ul>
+      <h3>Measurement contract</h3>
+      <p>Events share <code>publication_id</code>, <code>content_id</code>, <code>placement_id</code>, <code>opportunity_id</code>, <code>decision_id</code>, <code>creative_id</code>, <code>campaign_id</code>, anonymous <code>session_id</code>, consent state, experiment assignment, device class, route type and Core Web Vitals context.</p>
+      <table><thead><tr><th>Event</th><th>Decision it supports</th></tr></thead><tbody><tr><td><code>ad_opportunity</code></td><td>Was the placement eligible, withheld by policy, or never reached?</td></tr><tr><td><code>ad_decision</code></td><td>Which tier won, at what price, latency and reason?</td></tr><tr><td><code>ad_render</code></td><td>Did the chosen creative actually render without error?</td></tr><tr><td><code>ad_viewable</code></td><td>Did it meet the agreed MRC threshold and how long did it remain visible?</td></tr><tr><td><code>ad_click</code></td><td>Was the click attached to a valid issued token and decision?</td></tr><tr><td><code>page_engagement</code></td><td>How did density affect scroll depth, pages/session and return behavior?</td></tr></tbody></table>
+    </section>
+
+    <section id="workflow">
+      <span class="kicker">06 · Hunt’s Pointe → SignalDesk</span>
+      <h2>Make the safe boundary feel fast.</h2>
+      <p class="lede">The existing HMAC seam is the correct architecture. The redesign adds preflight, idempotency, provenance, taxonomy review, media handling and a visible receipt while preserving the server-enforced draft invariant.</p>
+      <h3>Proposed state model</h3>
+      <div class="equation">local_draft → preflight_ready → staging → staged → in_review → changes_requested → approved → scheduled → published<br><b>Only SignalDesk/Payload roles may cross approved → scheduled/published.</b></div>
+      <h3>Versioned request contract</h3>
+      <pre class="equation">POST /api/integrations/hunts-pointe/v1
+Idempotency-Key: hp:{document_id}:{source_version}
+X-Webhook-Signature: HMAC-SHA256(raw_body)
+
+{
+  "source_document_id": "uuid",
+  "source_version": 14,
+  "title": "…",
+  "dek": "…",
+  "body": { "format": "lexical|markdown", "value": {} },
+  "authors": [{ "name": "…", "external_id": "…" }],
+  "suggested_section": "business",
+  "tags": ["workforce", "shipbuilding"],
+  "media": [{ "url": "…", "alt": "…", "credit": "…", "rights": "owned|licensed|review" }],
+  "provenance": {
+    "sources": [], "model": "…", "prompt_version": "…",
+    "safety_results": [], "human_editor_id": "…"
+  }
+}
+
+201 { "draft_id":"uuid", "status":"draft", "admin_path":"/admin/collections/hr_articles/{id}", "audit_event_id":"uuid" }</pre>
+      <h3>Required corrections to the current seam</h3>
+      <ul>
+        <li>Store tags instead of merely accepting them. Preserve all authors or place unmatched names in a review field.</li>
+        <li>Do not auto-create production taxonomy silently. Map known slugs; put unknown values into “suggested taxonomy” for a managing editor.</li>
+        <li>Use an idempotency record so retries return the same draft rather than create duplicates.</li>
+        <li>Copy approved remote media into <code>hr_media</code> server-side; quarantine rights-unknown media.</li>
+        <li>Write an audit event for received, rejected, retried, reviewed and published states.</li>
+        <li>Return a safe admin path and expose read-only downstream status to Hunt’s Pointe.</li>
+        <li>Scope the service identity to create draft articles/media only. It cannot publish, change campaigns or access reader data.</li>
+      </ul>
+    </section>
+
+    <section id="governance">
+      <span class="kicker">07 · Governance launch gate</span>
+      <h2>No declaration, no launch.</h2>
+      <p>The live repositories contain policy language and useful security primitives, but the following controls must exist in code, schema and operations before high-density advertising is enabled.</p>
+      <table><thead><tr><th>Control</th><th>Production requirement</th><th>Acceptance evidence</th></tr></thead><tbody>
+        <tr><td>Consent</td><td>IAB-compatible CMP or documented first-party consent layer; contextual fallback; ad request and event policy tied to consent; withdrawal immediate.</td><td>Automated tests for no nonessential storage/request before consent; consent receipt versioned.</td></tr>
+        <tr><td>Retention</td><td>Raw reader/ad events 30 days; pseudonymous opportunity/decision logs 90 days; aggregated reporting 13 months; audit/security logs 24 months. Legal owner may revise before implementation.</td><td>Scheduled deletion jobs, dry-run counts, deletion audit and documented exceptions.</td></tr>
+        <tr><td>RBAC</td><td>Super Admin, Managing Editor, Reporter, Copy Editor, Ad Ops, Sales, Analyst and AI Service; deny by default; field/collection access where necessary.</td><td>Role matrix tests and failed privilege-escalation tests.</td></tr>
+        <tr><td>Advertiser separation</td><td>Advertiser → campaign → creative → flight → placement relationships. Sponsored editorial is a separate collection/workflow with mandatory disclosure.</td><td>An advertiser cannot edit editorial; a reporter cannot approve a creative or see another advertiser’s confidential data.</td></tr>
+        <tr><td>Creative scanning</td><td>MIME and size validation, malware scan, image decode/re-encode, destination HTTPS and redirect scan, blocked-category policy, alt text, human trust approval.</td><td>Known test malware rejected; unsafe redirect rejected; only <code>scan_passed &amp;&amp; human_approved</code> serves.</td></tr>
+        <tr><td>Audit logs</td><td>Append-only events for content status, integration receipt, role changes, campaign/creative changes, consent policy and supply-chain declarations.</td><td>Actor, action, object, before/after hash, reason, request ID and timestamp; exportable incident timeline.</td></tr>
+        <tr><td>Supply chain</td><td>Version-controlled <code>/ads.txt</code> and <code>/sellers.json</code>, validated in CI and reconciled to active partners.</td><td>Public 200 responses, valid syntax, no undeclared active reseller, named owner and quarterly review.</td></tr>
+        <tr><td>AI integrity</td><td>Prompt/model/source/safety/human-approval history. AI cannot manufacture engagement, rewrite policy, publish or select a story solely for CPM.</td><td>Server denies publish from the AI service role; provenance visible in Payload.</td></tr>
+      </tbody></table>
+      <h3>RBAC summary</h3>
+      <table><thead><tr><th>Role</th><th>Editorial</th><th>Revenue</th><th>Governance</th></tr></thead><tbody><tr><td>Super Admin</td><td>All</td><td>All</td><td>All; emergency use logged</td></tr><tr><td>Managing Editor</td><td>Create, review, publish, correct</td><td>See labels/conflicts, not pricing</td><td>Editorial audit read</td></tr><tr><td>Reporter</td><td>Own drafts/media; no publish</td><td>None</td><td>Own provenance</td></tr><tr><td>Copy Editor</td><td>Review/edit; no campaign access</td><td>None</td><td>Corrections</td></tr><tr><td>Ad Ops</td><td>Read titles/taxonomy only</td><td>Campaign, placement, creative operations</td><td>Supply-chain + ad audit</td></tr><tr><td>Sales</td><td>No draft/body access</td><td>Own advertiser proposals and reporting</td><td>No approval</td></tr><tr><td>Analyst</td><td>Aggregates only</td><td>Aggregates only</td><td>No mutation</td></tr><tr><td>AI Service</td><td>Create integration draft only</td><td>None</td><td>Write provenance; no human identity</td></tr></tbody></table>
+    </section>
+
+    <section id="implementation">
+      <span class="kicker">08 · Engineering build plan</span>
+      <h2>Six independently shippable epics.</h2>
+      <div class="phase"><span class="phase-label">Epic 0 · Gate</span><div><h3>Governance foundation</h3><p>Add Payload roles/access, advertiser/campaign/placement/audit/integration collections, creative scan states, consent enforcement, retention jobs, ads.txt and sellers.json. Do not enable the revenue-density variant before this epic passes.</p><p class="small">Primary files: <code>payload.config.ts</code>, new <code>collections/*</code>, <code>app/api/ads/*</code>, new <code>app/ads.txt/route.ts</code>, <code>app/sellers.json/route.ts</code>, Supabase migrations and RLS tests.</p></div></div>
+      <div class="phase"><span class="phase-label">Epic 1 · System</span><div><h3>Tokens and shared components</h3><p>Translate the prototype tokens into <code>app/globals.css</code>; build accessible masthead, section navigation, story cards, smart brief, trust modules and <code>AdFrame</code>. Add Storybook or an internal component route only if the team already uses one; otherwise use Playwright fixture pages.</p><p class="small">Primary files: <code>app/globals.css</code>, <code>components/GlobalNav.tsx</code>, <code>components/ArticleCard.tsx</code>, new <code>components/editorial/*</code> and <code>components/ads/*</code>.</p></div></div>
+      <div class="phase"><span class="phase-label">Epic 2 · Public</span><div><h3>Homepage, city and article templates</h3><p>Replace the flat home lead with the existing bento/Three architecture, redesign city editions, add article briefing/sources/rail/recirculation and keep all core content server-rendered.</p><p class="small">Primary files: <code>app/(frontend)/page.tsx</code>, <code>app/(frontend)/[city]/page.tsx</code>, <code>app/(frontend)/[city]/[idSlug]/page.tsx</code>, <code>HeroBentoGrid.tsx</code>, <code>three/Ocean*.tsx</code>.</p></div></div>
+      <div class="phase"><span class="phase-label">Epic 3 · Yield</span><div><h3>Placement policy and event chain</h3><p>Make placements Payload-driven; request near view; record opportunity → decision → render → viewable → click; isolate personalization from cached editorial; add experiment assignment and a safe house-ad fallback.</p><p class="small">Primary files: <code>components/AdSlot.tsx</code> replacement, <code>lib/ads.ts</code>, <code>app/api/ads/*</code>, new decision service and aggregation job.</p></div></div>
+      <div class="phase"><span class="phase-label">Epic 4 · Flow</span><div><h3>Draft-transfer hardening and branded Payload dashboard</h3><p>Add Hunt’s Pointe preflight/receipt/status, versioned idempotent ingestion, media/provenance mapping and role-aware dashboard components. Preserve Payload conventions so upgrades remain maintainable.</p><p class="small">Hunt’s Pointe: <code>DistributePanel.tsx</code>, new <code>SignalDeskPreflight.tsx</code>, <code>supabase/functions/push-signaldesk/index.ts</code>. SignalDesk: integration route, collections, admin components/import map.</p></div></div>
+      <div class="phase"><span class="phase-label">Epic 5 · Launch</span><div><h3>Build Loop, experiment and staged rollout</h3><p>Run deterministic tests, visual QA and staging verification. Launch the design to 10% without the density experiment, then 50/50 standard vs revenue placement policy after two clean days. Promote only when viewability and net revenue improve inside guardrails.</p></div></div>
+      <h3>Suggested ownership</h3>
+      <table><thead><tr><th>Workstream</th><th>DRI</th><th>Required reviewers</th></tr></thead><tbody><tr><td>Design system/public templates</td><td>Staff frontend + principal product designer</td><td>Accessibility, editorial, performance</td></tr><tr><td>Ad decision/events</td><td>Ads engineering</td><td>Data, privacy, frontend</td></tr><tr><td>Payload/schema/RBAC</td><td>Platform engineer</td><td>Security, managing editor, Ad Ops</td></tr><tr><td>Hunt’s Pointe seam</td><td>Full-stack integrations engineer</td><td>Editorial workflow, security</td></tr><tr><td>Creative operations</td><td>Ad Ops engineer</td><td>Security, legal/brand safety</td></tr><tr><td>Launch experiment</td><td>Product + data</td><td>Traffic/SEO, Yield, Editorial</td></tr></tbody></table>
+    </section>
+
+    <section id="verification">
+      <span class="kicker">09 · Mandatory Build Loop gate</span>
+      <h2>“Looks finished” is not a release state.</h2>
+      <h3>Per-epic loop</h3>
+      <ol><li><strong>Spec:</strong> name the viewability mechanism, affected routes, explicit exclusions and rollback threshold.</li><li><strong>RED:</strong> write failing tests for deterministic behavior: draft enforcement, idempotency, access, placement eligibility, consent and event signing.</li><li><strong>GREEN:</strong> implement the smallest change that passes.</li><li><strong>Visual run:</strong> render affected pages at agreed viewports, states and themes; compare screenshots.</li><li><strong>Interaction run:</strong> keyboard, touch, reduced motion, consent withdrawal, offline/error and low-demand fallbacks.</li><li><strong>Revenue run:</strong> staging ad requests, opportunity/decision/render/viewable chain, no duplicate impression, reconciliation sample.</li><li><strong>Evidence:</strong> attach command output, screenshots, trace IDs and monitoring links to the PR. No evidence means the gate is open.</li></ol>
+      <h3>Repository commands</h3>
+      <pre class="equation"># SignalDesk / Next.js + Payload
+npm ci
+npm run lint
+npm run test
+npm run build
+npm run test:e2e
+
+# Hunt's Pointe / Vite + Supabase functions
+bun install --frozen-lockfile
+bun run lint
+bun run test
+bun run functions:check
+bun run functions:test
+bun run build</pre>
+      <h3>Release thresholds</h3>
+      <table><thead><tr><th>Dimension</th><th>Pass threshold</th><th>Rollback</th></tr></thead><tbody>
+        <tr><td>Viewability</td><td>≥70% overall and no placement &lt;55% after a fair sample</td><td>Any high-volume placement drops &gt;8 pts or paid measurement disagrees materially.</td></tr>
+        <tr><td>Net revenue</td><td>Positive incremental net revenue / 1K sessions at 80%+ statistical power</td><td>Gross RPM rises while net revenue or returning sessions decline.</td></tr>
+        <tr><td>LCP</td><td>≤2.5 s p75 mobile</td><td>Regression &gt;200 ms or threshold breach.</td></tr>
+        <tr><td>INP</td><td>≤200 ms p75</td><td>Regression &gt;25 ms or threshold breach.</td></tr>
+        <tr><td>CLS</td><td>≤0.10 p75; ad-attributed CLS near zero</td><td>Any repeated slot collapse/expansion after request.</td></tr>
+        <tr><td>Retention</td><td>Pages/session and 7-day return remain inside −3% non-inferiority margin</td><td>Either guardrail crosses the margin.</td></tr>
+        <tr><td>Accessibility</td><td>WCAG 2.2 AA; keyboard path; 200% zoom; reduced motion</td><td>Critical/serious automated issue or blocked human task.</td></tr>
+        <tr><td>Security/governance</td><td>All eight launch controls pass</td><td>Any consent, role, scan, declaration or audit failure.</td></tr>
+      </tbody></table>
+      <h3>Visual and device matrix</h3>
+      <ul class="checklist"><li>390×844 iPhone-class layout: light/dark, standard/revenue, anchor open/dismissed.</li><li>412×915 Android-class layout: reduced motion, Save-Data/static poster and keyboard-equivalent switch access.</li><li>768×1024 tablet portrait and landscape.</li><li>1440×900 and 1920×1080 desktop with and without the right rail.</li><li>Chrome, Safari and Firefox current; VoiceOver and NVDA spot checks.</li><li>No WebGL, no ad fill, slow creative, rejected creative, expired campaign and consent-withdrawal states.</li><li>Draft transfer success, timeout, duplicate retry, invalid signature, rights-review and unknown-taxonomy states.</li></ul>
+      <h3>Experiment design</h3>
+      <p>Randomize by anonymous session, 50/50: standard placement policy vs revenue placement policy. Hold demand sources, floors and creative mix constant so the test isolates placement. Run at least two complete weekly cycles and until a power analysis reaches 80% power for an 8% net-revenue lift. Primary mechanism metric: viewability. Business outcome: net revenue per 1,000 sessions. Guardrails: LCP, INP, CLS, pages/session, bounce, 7-day return, correction rate and ad complaints.</p>
+    </section>
+
+    <section id="deferred">
+      <span class="kicker">10 · Deliberately deferred</span>
+      <h2>Scope removed because it does not unlock the next dollar safely.</h2>
+      <ul>
+        <li><strong>Automatic publishing from Hunt’s Pointe:</strong> violates the editorial and governance boundary.</li>
+        <li><strong>CPM-driven topic selection:</strong> AI may recommend formats from aggregated signals, never coverage solely for estimated price.</li>
+        <li><strong>Prebid Server or a full exchange:</strong> premature before private direct/PMP inventory, event integrity and viewability are working.</li>
+        <li><strong>Timed ad refresh:</strong> deferred until viewability, demand permission and advertiser trust are measurable.</li>
+        <li><strong>Infinite scroll:</strong> obscures page boundaries, consent context and session measurement; strong contextual recirculation comes first.</li>
+        <li><strong>Autoplay video and audio:</strong> harms trust, data use and performance.</li>
+        <li><strong>Full 3D article pages:</strong> atmosphere belongs at the brand entrance; evidence pages prioritize text, photography, maps and charts.</li>
+        <li><strong>Replacing Payload:</strong> the generated admin is an asset. Brand and extend it instead of creating a parallel CMS.</li>
+        <li><strong>Individualized editorial ranking:</strong> launch with explicit city/topic follows and contextual relevance; do not mix private ad state into cached editorial HTML.</li>
+      </ul>
+      <div class="callout"><strong>Final approval still required:</strong><p>The prototype retains “Hampton Roads” and treats History as a vertical. Before production design begins, approve the final publication name, legal wordmark and whether “America begins at the water” is a launch campaign line or permanent tagline.</p></div>
+    </section>
+  </main>
+  <footer class="footer"><strong>VaporNet · Hampton Roads redesign</strong><span>Production blueprint · interactive mockups in <code>index.html</code></span></footer>
+</body>
+</html>

@@ -12,10 +12,10 @@ export function NewsletterBand({
   source?: string;
 }) {
   return (
-    <section className="bg-band border border-line rounded-xl p-6 md:p-7 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-5 md:gap-8 items-center">
+    <section className="grid grid-cols-1 items-center gap-5 rounded-[2px_18px_2px_18px] bg-federal p-6 text-white shadow-[var(--shadow-sm)] md:grid-cols-[1fr_auto] md:gap-8 md:p-7">
       <div>
-        <h3 className="font-display font-extrabold text-xl tracking-[-0.01em]">{title}</h3>
-        <p className="text-ink-2 text-[14px] mt-1 max-w-[52ch]">{copy}</p>
+        <h3 className="font-display text-[19px] font-extrabold tracking-[-0.01em]">{title}</h3>
+        <p className="mt-1 max-w-[52ch] text-[14px] text-[#aebdcc]">{copy}</p>
       </div>
       <div className="w-full md:w-72">
         <NewsletterWidget source={source} />

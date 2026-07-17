@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive production mockups for the Hampton Roads publication, Hunt's Pointe, and SignalDesk Payload control plane.">
+  <title>VaporNet — Americana publication redesign prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#prototype-main">Skip to prototype</a>
+
+  <header class="prototype-toolbar" aria-label="Prototype controls">
+    <div class="prototype-brand">
+      <span class="prototype-mark" aria-hidden="true">V</span>
+      <span><strong>VaporNet</strong><small>EPD prototype · v1.0</small></span>
+    </div>
+    <nav class="view-switcher" aria-label="Mockup screens">
+      <button class="control is-active" type="button" data-view="home" aria-pressed="true">Home</button>
+      <button class="control" type="button" data-view="section" aria-pressed="false">Section</button>
+      <button class="control" type="button" data-view="article" aria-pressed="false">Article</button>
+      <button class="control" type="button" data-view="studio" aria-pressed="false">Hunt’s Pointe</button>
+      <button class="control" type="button" data-view="admin" aria-pressed="false">Payload</button>
+    </nav>
+    <div class="prototype-options">
+      <label class="select-control">Ad load
+        <select id="density-select" aria-label="Ad load">
+          <option value="standard">Standard</option>
+          <option value="revenue">Revenue</option>
+        </select>
+      </label>
+      <button class="icon-control" id="motion-toggle" type="button" aria-pressed="false" aria-label="Reduce motion">Motion</button>
+      <button class="icon-control" id="device-toggle" type="button" aria-pressed="false" aria-label="Preview mobile layout">Mobile</button>
+      <button class="icon-control" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch color theme">Night</button>
+    </div>
+  </header>
+
+  <main id="prototype-main" class="prototype-stage" tabindex="-1">
+    <div class="prototype-shell" id="prototype-shell">
+      <div class="viewport-label" aria-hidden="true"><span id="viewport-name">1440 desktop</span><i></i></div>
+
+      <!-- PUBLICATION HOME -->
+      <section class="mock-view is-active" data-screen="home" aria-label="Publication homepage mockup">
+        <div class="publication-page">
+          <header class="news-header">
+            <div class="civic-strip">
+              <span><i class="live-dot"></i> Live desk</span>
+              <span>Thursday · July 16</span>
+              <span>Hampton Roads · 84°</span>
+              <button type="button" data-open-consent>Privacy &amp; ad choices</button>
+            </div>
+            <div class="masthead-row">
+              <button class="menu-button" type="button" aria-label="Open sections menu"><span></span><span></span></button>
+              <a class="wordmark" href="#" aria-label="Hampton Roads home">
+                <span>Hampton</span><span>Roads</span>
+                <small>America begins at the water</small>
+              </a>
+              <div class="masthead-actions">
+                <button class="search-button" type="button">Find a story <kbd>⌘K</kbd></button>
+                <button class="text-button" type="button">Sign in</button>
+                <button class="primary-button small" type="button">Join free</button>
+              </div>
+            </div>
+            <nav class="section-nav" aria-label="Publication sections">
+              <a href="#">Today</a><a href="#">Business</a><a href="#">Civic</a><a href="#">Culture</a><a href="#">Defense &amp; port</a><a href="#">History</a><a href="#">Cities</a><a href="#">Watch</a>
+            </nav>
+          </header>
+
+          <div class="breaking-ribbon" role="status">
+            <strong>Developing</strong><span>Evening storms are changing Thursday’s regional event schedule.</span><a href="#">See the live brief</a>
+          </div>
+
+          <div class="home-main">
+            <section class="cinematic-hero" aria-labelledby="home-lead-title">
+              <div class="hero-art" aria-hidden="true">
+                <div class="hero-gridlines"></div><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+              </div>
+              <div class="hero-shade" aria-hidden="true"></div>
+              <div class="hero-copy">
+                <div class="eyebrow light"><span>Prototype story</span><span>Civic life</span><span>7 min</span></div>
+                <h1 id="home-lead-title">The bridge, the budget and the next ten years</h1>
+                <p>A clear guide to the decisions that will shape how Hampton Roads moves, builds and grows.</p>
+                <div class="hero-actions">
+                  <button class="primary-button inverse" type="button" data-view-jump="article">Read the briefing</button>
+                  <button class="glass-button" type="button">Listen · 6:12</button>
+                </div>
+              </div>
+              <aside class="hero-brief" aria-label="Story summary">
+                <span class="brief-number">01</span>
+                <p class="brief-label">Why it matters</p>
+                <p>Transportation touches every city, every employer and every family budget in the region.</p>
+                <div class="brief-rule"></div>
+                <p class="brief-label">What to watch</p>
+                <p>Funding votes, construction timing and the neighborhoods first in line for change.</p>
+              </aside>
+              <div class="hero-caption">Art-direction prototype · replace with commissioned, region-accurate Hampton Roads scene</div>
+            </section>
+
+            <section class="morning-line" aria-label="Morning briefing signup">
+              <div><span class="section-kicker">The Morning Tide</span><strong>Five things Hampton Roads needs to know.</strong><p>Local reporting, useful context and one delightful detour. Weekdays at 6:30.</p></div>
+              <div class="inline-form"><label class="sr-only" for="home-email">Email address</label><input id="home-email" type="email" placeholder="you@email.com"><button type="button">Join free</button></div>
+            </section>
+
+            <section class="ad-frame ad-leader" aria-label="Advertisement">
+              <div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Ad choices</button></div>
+              <div class="leader-creative"><span class="sponsor-seal">HR</span><div><small>Presented by a regional partner</small><strong>Ideas built here travel everywhere.</strong></div><a href="#">Meet the makers</a></div>
+            </section>
+
+            <section class="editorial-grid" aria-label="Latest reporting">
+              <div class="story-stack">
+                <header class="section-heading"><div><span class="section-kicker">The region now</span><h2>Reported for where you live</h2></div><a href="#">View the live desk</a></header>
+
+                <article class="story-card feature-card">
+                  <div class="card-visual harbor-visual"><span class="visual-index">02</span><span class="city-stamp">Portsmouth</span></div>
+                  <div class="card-copy"><div class="eyebrow"><span>Defense &amp; port</span><span>5 min</span></div><h3>A shipyard expansion promises jobs. The training pipeline will decide who gets them.</h3><p>Employers, colleges and unions are racing to close a skills gap before new contracts arrive.</p><div class="byline">By Lena Brooks · 18 minutes ago</div></div>
+                </article>
+
+                <div class="two-up">
+                  <article class="compact-card"><div class="eyebrow"><span>Business</span><span>Norfolk</span></div><h3>Downtown’s next office tower may look more like a neighborhood</h3><p>Housing, retail and public space move into a plan once built around cubicles.</p><div class="byline">4 min · Prototype story</div></article>
+                  <article class="compact-card civic-card"><div class="eyebrow"><span>Civic</span><span>All cities</span></div><h3>Your plain-language guide to this week’s public meetings</h3><ul><li>Transit funding</li><li>School construction</li><li>Flood resilience</li></ul><div class="byline">Updated 4:10 PM</div></article>
+                </div>
+
+                <aside class="ad-frame native-ad" aria-label="Sponsored content">
+                  <div class="ad-meta"><span>Sponsored · Partner studio</span><button type="button" data-open-consent>Why this ad?</button></div>
+                  <div class="native-layout"><div class="native-art"><span>MADE<br>LOCAL</span></div><div><small>Coastal Virginia Commerce Council</small><h3>Meet five founders building their companies on the waterfront</h3><p>Partner-produced profiles, clearly separated from newsroom coverage.</p><a href="#">Explore the series</a></div></div>
+                </aside>
+
+                <article class="story-row"><span class="row-number">03</span><div><div class="eyebrow"><span>Culture</span><span>Virginia Beach</span></div><h3>The kitchens carrying Filipino family recipes into a new generation</h3><p>Three cooks explain what changes, what never does and why the story belongs here.</p></div><span class="row-time">8 min</span></article>
+                <article class="story-row"><span class="row-number">04</span><div><div class="eyebrow"><span>History</span><span>Hampton</span></div><h3>Fort Monroe’s freedom story is still changing the national record</h3><p>New archival work sharpens our understanding of the people behind the decision.</p></div><span class="row-time">11 min</span></article>
+
+                <div class="ad-frame extra-ad" role="region" aria-label="Advertisement"><div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Ad choices</button></div><div class="minimal-creative"><strong>Build your next chapter in Hampton Roads.</strong><a href="#">Regional opportunities →</a></div></div>
+              </div>
+
+              <aside class="home-rail">
+                <section class="briefing-card"><span class="section-kicker">Catch up fast</span><h2>Five minutes. Full context.</h2><ol><li><a href="#"><span>1</span>What changed at city hall today</a></li><li><a href="#"><span>2</span>The port number worth watching</a></li><li><a href="#"><span>3</span>Tonight’s weather and traffic</a></li><li><a href="#"><span>4</span>One great thing to do</a></li></ol><button type="button">Play the audio brief</button></section>
+                <section class="ad-frame rail-ad" aria-label="Advertisement"><div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Ad choices</button></div><div class="rail-creative"><small>REGIONAL PARTNER</small><strong>Big water.<br>Bold ideas.</strong><p>A year-long series on the people building the coastal economy.</p><a href="#">Discover the series</a></div></section>
+                <section class="trust-card"><span class="section-kicker">How we report</span><p>Named authors. Visible sources. Clear corrections. Advertising never controls coverage.</p><a href="#">Read our standards</a></section>
+              </aside>
+            </section>
+
+            <section class="cities-band" aria-labelledby="cities-title"><div><span class="section-kicker">Seven cities, one region</span><h2 id="cities-title">Choose your home view</h2></div><div class="city-cloud"><button type="button">Norfolk</button><button type="button">Virginia Beach</button><button type="button">Hampton</button><button type="button">Newport News</button><button type="button">Chesapeake</button><button type="button">Portsmouth</button><button type="button">Suffolk</button></div></section>
+          </div>
+
+          <footer class="news-footer"><a class="wordmark footer-mark" href="#"><span>Hampton</span><span>Roads</span><small>America begins at the water</small></a><p>Independent regional reporting for the people who live, work and build here.</p><nav><a href="#">About</a><a href="#">Editorial standards</a><a href="#">Advertise</a><a href="#">Corrections</a><a href="#">Privacy</a><button type="button" data-open-consent>Ad choices</button></nav></footer>
+        </div>
+      </section>
+
+      <!-- SECTION / CITY -->
+      <section class="mock-view" data-screen="section" aria-label="City and section page mockup" hidden>
+        <div class="publication-page">
+          <header class="news-header compact-header">
+            <div class="masthead-row"><button class="menu-button" type="button" aria-label="Open sections menu"><span></span><span></span></button><a class="wordmark" href="#"><span>Hampton</span><span>Roads</span><small>America begins at the water</small></a><div class="masthead-actions"><button class="search-button" type="button">Find a story <kbd>⌘K</kbd></button><button class="primary-button small" type="button">Join free</button></div></div>
+            <nav class="section-nav"><a href="#">Today</a><a href="#">Business</a><a href="#">Civic</a><a href="#">Culture</a><a href="#">Defense &amp; port</a><a href="#">History</a><a class="active" href="#">Cities</a></nav>
+          </header>
+          <div class="section-page">
+            <header class="section-hero"><div><span class="section-kicker">City edition · 36.8508° N</span><h1>Norfolk</h1><p>Port, neighborhoods, public life and the decisions shaping Virginia’s coastal city.</p></div><div class="edition-tools"><span>Edition updated 8:42 PM</span><button type="button">Follow Norfolk</button></div></header>
+            <nav class="city-tabs" aria-label="City editions"><button class="active" type="button">Norfolk</button><button type="button">Virginia Beach</button><button type="button">Hampton</button><button type="button">Newport News</button><button type="button">Chesapeake</button><button type="button">Portsmouth</button><button type="button">Suffolk</button></nav>
+            <div class="section-layout">
+              <div>
+                <article class="section-lead"><div class="section-lead-art"><span class="map-lines"></span><span class="city-coordinate">36°51′N<br>76°17′W</span></div><div><div class="eyebrow"><span>Prototype story</span><span>Civic</span></div><h2>A neighborhood-first plan for downtown reaches its decisive vote</h2><p>What changes, what it costs and the four blocks at the center of the debate.</p><div class="byline">By Maya Carter · Updated 24 minutes ago</div><button class="text-link" type="button" data-view-jump="article">Read the full briefing</button></div></article>
+                <div class="ad-frame section-ad"><div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Ad choices</button></div><div class="minimal-creative"><strong>Norfolk moves business forward.</strong><a href="#">Partner message →</a></div></div>
+                <header class="section-heading"><div><span class="section-kicker">Latest from Norfolk</span><h2>The city desk</h2></div><button type="button">Newest first</button></header>
+                <article class="story-row"><span class="row-number">01</span><div><div class="eyebrow"><span>Port</span><span>4:12 PM</span></div><h3>New cargo numbers show a shift toward higher-value goods</h3><p>Three charts explain the change and what it means for the regional economy.</p></div><span class="row-time">6 min</span></article>
+                <article class="story-row"><span class="row-number">02</span><div><div class="eyebrow"><span>Culture</span><span>2:40 PM</span></div><h3>A century-old theater prepares for its most ambitious restoration</h3><p>The team found details that had been hidden above the ceiling for decades.</p></div><span class="row-time">9 min</span></article>
+                <article class="story-row"><span class="row-number">03</span><div><div class="eyebrow"><span>Service</span><span>11:05 AM</span></div><h3>Road closures, meetings and events to know before Friday</h3><p>A practical list with maps, timing and official sources.</p></div><span class="row-time">3 min</span></article>
+              </div>
+              <aside class="section-rail"><section class="data-card"><span class="section-kicker">Norfolk at a glance</span><div class="stat"><strong>245K</strong><span>residents</span></div><div class="stat"><strong>144</strong><span>neighborhoods</span></div><div class="stat"><strong>1</strong><span>regional story</span></div><small>Prototype data for layout demonstration.</small></section><section class="ad-frame rail-ad"><div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Ad choices</button></div><div class="rail-creative"><small>LOCAL PARTNER</small><strong>Made for<br>the coast.</strong><p>Support a new generation of regional businesses.</p><a href="#">Learn more</a></div></section></aside>
+            </div>
+          </div>
+          <footer class="news-footer"><a class="wordmark footer-mark" href="#"><span>Hampton</span><span>Roads</span><small>America begins at the water</small></a><p>Independent regional reporting.</p><nav><a href="#">About</a><a href="#">Standards</a><a href="#">Advertise</a><button type="button" data-open-consent>Ad choices</button></nav></footer>
+        </div>
+      </section>
+
+      <!-- ARTICLE -->
+      <section class="mock-view" data-screen="article" aria-label="Article page mockup" hidden>
+        <div class="publication-page article-page">
+          <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
+          <header class="news-header compact-header"><div class="masthead-row"><button class="menu-button" type="button" aria-label="Open sections menu"><span></span><span></span></button><a class="wordmark" href="#"><span>Hampton</span><span>Roads</span><small>America begins at the water</small></a><div class="masthead-actions"><button class="search-button" type="button">Find a story <kbd>⌘K</kbd></button><button class="text-button" type="button">Sign in</button><button class="primary-button small" type="button">Join free</button></div></div></header>
+          <div class="article-wrap">
+            <header class="article-header">
+              <div class="eyebrow"><span>Prototype article</span><span>Civic life</span><span>Norfolk</span></div>
+              <h1>The bridge, the budget and the next ten years</h1>
+              <p class="dek">A plain-language guide to the transportation decisions that could reshape how Hampton Roads moves, builds and grows.</p>
+              <div class="article-meta"><div class="author-avatar">MC</div><div><strong>Maya Carter</strong><span>Regional affairs editor · Updated July 16 at 7:48 PM · 8 min read</span></div><div class="article-actions"><button type="button">Save</button><button type="button">Share</button><button type="button">Listen</button></div></div>
+            </header>
+            <figure class="article-hero"><div class="article-hero-art"></div><figcaption><span>Art-direction prototype based on the supplied reference image.</span><span>Illustration · Prototype credit</span></figcaption></figure>
+            <div class="article-grid">
+              <article class="article-body">
+                <section class="smart-brief"><span class="section-kicker">The briefing</span><h2>What you need to know</h2><dl><div><dt>Why it matters</dt><dd>The region’s transportation network affects household costs, economic growth and access to opportunity.</dd></div><div><dt>The decision</dt><dd>Local leaders must choose which projects move first and how to divide the bill.</dd></div><div><dt>What’s next</dt><dd>Public hearings begin this fall before the final funding vote.</dd></div></dl></section>
+                <p class="dropcap">Hampton Roads has spent decades discussing how seven cities should move as one region. The next round of decisions will test whether that idea can survive contact with budgets, construction schedules and competing local priorities.</p>
+                <p>This prototype demonstrates the intended reading rhythm: short paragraphs, clear subheads, source-aware summaries and ad opportunities that appear only after the reader receives meaningful value.</p>
+                <h2>The big picture</h2>
+                <p>The design gives each section a specific job. The headline establishes the decision. The brief explains the stakes. The body supplies evidence, context and the people affected by the outcome.</p>
+                <aside class="quote-card"><span>“The region only works when the connections between cities work.”</span><small>Prototype quotation for layout only</small></aside>
+                <p>On mobile, the text remains the primary surface. Commercial modules reserve their dimensions before loading, stay below the Better Ads density ceiling and never interrupt the first screen of useful content.</p>
+                <aside class="ad-frame article-inline-ad" aria-label="Advertisement"><div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Why this ad?</button></div><div class="leader-creative"><span class="sponsor-seal">757</span><div><small>Regional partner</small><strong>Built here. Ready for what’s next.</strong></div><a href="#">Partner message</a></div></aside>
+                <h2>Follow the money</h2>
+                <p>The engineering plan connects every ad opportunity to a stable placement ID, every story to a stable content ID and every decision to consent, experiment and performance context. That makes net yield measurable without turning editorial pages into tracking products.</p>
+                <div class="data-viz" role="img" aria-label="Prototype bar chart comparing three transportation funding categories"><div class="data-title"><span>Prototype funding mix</span><small>Illustrative only</small></div><div class="bar-row"><span>State</span><i style="--bar:78%"></i><strong>48%</strong></div><div class="bar-row"><span>Federal</span><i style="--bar:52%"></i><strong>32%</strong></div><div class="bar-row"><span>Local</span><i style="--bar:33%"></i><strong>20%</strong></div></div>
+                <p>Readers can see what is known, what is estimated and where the information came from. That transparency is an editorial feature and an advertising asset: trustworthy pages retain audiences and support premium demand.</p>
+                <div class="ad-frame extra-ad article-extra"><div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Ad choices</button></div><div class="minimal-creative"><strong>A regional bank for the next regional idea.</strong><a href="#">Learn more →</a></div></div>
+                <section class="source-notes"><span class="section-kicker">Sources &amp; methodology</span><h2>How we reported this</h2><ul><li>Public meeting materials and budget documents</li><li>Interviews with regional officials and residents</li><li>Transportation and demographic data</li></ul><p><strong>Correction?</strong> Tell the standards desk. Every verified correction appears with the article.</p></section>
+                <section class="article-recirculation"><span class="section-kicker">Keep going</span><h2>Three stories that add context</h2><a href="#"><span>01</span>How the port shapes every city’s economy</a><a href="#"><span>02</span>The neighborhoods growing fastest near transit</a><a href="#"><span>03</span>A visual history of regional cooperation</a></section>
+              </article>
+              <aside class="article-rail"><div class="rail-sticky"><section class="key-people"><span class="section-kicker">Track this story</span><h3>Transportation plan</h3><p>Get an alert when votes, costs or timelines change.</p><button type="button">Follow updates</button></section><section class="ad-frame rail-ad"><div class="ad-meta"><span>Advertisement</span><button type="button" data-open-consent>Ad choices</button></div><div class="rail-creative"><small>DIRECT SPONSOR</small><strong>Move with<br>confidence.</strong><p>Regional service, clearly labeled and independently reviewed.</p><a href="#">See the message</a></div></section></div></aside>
+            </div>
+          </div>
+          <div class="mobile-anchor ad-frame" role="region" aria-label="Advertisement"><div><span>Advertisement</span><strong>Regional opportunities</strong></div><a href="#">Open</a><button type="button" aria-label="Close advertisement">×</button></div>
+          <footer class="news-footer"><a class="wordmark footer-mark" href="#"><span>Hampton</span><span>Roads</span><small>America begins at the water</small></a><p>Independent regional reporting.</p><nav><a href="#">Editorial standards</a><a href="#">Corrections</a><button type="button" data-open-consent>Ad choices</button></nav></footer>
+        </div>
+      </section>
+
+      <!-- HUNT'S POINTE -->
+      <section class="mock-view" data-screen="studio" aria-label="Hunt's Pointe distribution workflow mockup" hidden>
+        <div class="workspace-page">
+          <aside class="workspace-nav"><div class="studio-brand"><span class="studio-mark">↯</span><div><strong>Hunt’s</strong><small>Pointe</small></div></div><nav><a href="#"><span>⌁</span>PressRoom</a><a class="active" href="#"><span>✎</span>Write</a><a href="#"><span>▦</span>Newsroom</a><a href="#"><span>◇</span>Projects</a><a href="#"><span>↗</span>Integrations</a></nav><div class="workspace-user"><span>TW</span><div><strong>Editorial desk</strong><small>Publisher plan</small></div></div></aside>
+          <div class="studio-main">
+            <header class="studio-topbar"><div><span class="status-dot"></span><span>Saved 12 sec ago</span></div><div class="studio-top-actions"><button type="button">History</button><button type="button">Provenance</button><button class="studio-primary" type="button" id="open-transfer">Send to SignalDesk <span>↗</span></button></div></header>
+            <div class="editor-layout">
+              <section class="editor-paper" aria-label="Article editor"><div class="paper-toolbar"><button type="button">B</button><button type="button"><em>I</em></button><button type="button">H2</button><button type="button">“”</button><span></span><button type="button">Focus</button></div><div class="paper-page"><label>Headline<input type="text" value="The shipyard jobs boom needs a bigger training pipeline" aria-label="Headline"></label><div class="editor-meta-row"><button type="button">Business</button><button type="button">By Lena Brooks</button><button type="button">Review draft</button></div><label class="dek-field">Dek<textarea aria-label="Dek">Employers, colleges and unions are racing to close a skills gap before new contracts arrive.</textarea></label><div class="editable-copy" contenteditable="true" role="textbox" aria-label="Article body"><p>The region’s largest employers agree on the size of the opportunity. The harder question is whether enough workers can be trained in time.</p><h2>Why it matters</h2><p>Shipbuilding supports thousands of households across Hampton Roads. A shortage in skilled trades could slow expansion and leave local workers outside the next hiring wave.</p><h2>The training gap</h2><p>Prototype article copy appears here to demonstrate the production workflow, not as published reporting.</p></div></div></section>
+              <aside class="editor-rail"><section class="quality-card"><header><span class="quality-score">92</span><div><strong>Ready for review</strong><small>Editorial quality score</small></div></header><ul><li class="pass">3 named sources attached</li><li class="pass">Claims linked to evidence</li><li class="pass">Style guide passed</li><li class="warn">Hero media needs rights note</li></ul></section><section class="signal-card"><div class="signal-head"><span class="signal-logo">S</span><div><strong>SignalDesk</strong><small>Connected · production</small></div><i></i></div><dl><div><dt>Destination</dt><dd>Hampton Roads</dd></div><div><dt>Workflow</dt><dd>Review draft only</dd></div><div><dt>Last sync</dt><dd>Today, 7:42 PM</dd></div></dl><button id="rail-transfer" type="button">Run preflight</button></section><section class="ai-policy"><span>AI policy</span><p>Suggestions may improve structure and formats. They cannot publish, alter policy or choose coverage for CPM.</p></section></aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAYLOAD CONTROL PLANE -->
+      <section class="mock-view" data-screen="admin" aria-label="Branded Payload administration mockup" hidden>
+        <div class="admin-page">
+          <aside class="admin-nav"><div class="admin-brand"><span class="admin-logo">HR</span><div><strong>Hampton Roads</strong><small>Control plane</small></div></div><nav><small>Editorial</small><a class="active" href="#"><span>▦</span>Overview</a><a href="#"><span>✎</span>Articles <b>12</b></a><a href="#"><span>◉</span>Live desk <b>3</b></a><a href="#"><span>▧</span>Media</a><a href="#"><span>✓</span>Corrections</a><small>Revenue</small><a href="#"><span>◫</span>Campaigns <b>6</b></a><a href="#"><span>◇</span>Creatives <b>2</b></a><a href="#"><span>⌁</span>Placements</a><a href="#"><span>⌗</span>Yield</a><small>Governance</small><a href="#"><span>♙</span>People &amp; roles</a><a href="#"><span>◈</span>Audit log</a><a href="#"><span>⚑</span>Supply chain</a></nav><div class="admin-user"><span>TW</span><div><strong>Managing editor</strong><small>Full editorial access</small></div></div></aside>
+          <div class="admin-main">
+            <header class="admin-top"><div><span class="status-dot"></span>All systems operational</div><div><button type="button">View publication ↗</button><button class="admin-primary" type="button">New article</button></div></header>
+            <div class="admin-content"><header class="admin-title"><div><span class="admin-kicker">Thursday · July 16</span><h1>Good evening, editorial desk.</h1><p>The newsroom, revenue system and governance gate in one view.</p></div><button type="button">Customize dashboard</button></header>
+              <section class="admin-metrics" aria-label="Key performance indicators"><article><span>Live stories</span><strong>48</strong><small>+6 this week</small></article><article><span>Review queue</span><strong>12</strong><small>3 from Hunt’s Pointe</small></article><article><span>Viewability</span><strong>72.4%</strong><small class="good">Above target</small></article><article><span>Net rev / 1K sessions</span><strong>$18.42</strong><small>Prototype metric</small></article></section>
+              <div class="admin-grid">
+                <section class="admin-panel queue-panel"><header><div><span class="admin-kicker">Editorial workflow</span><h2>Needs attention</h2></div><button type="button">View all 12</button></header><div class="queue-row priority"><span class="source-badge hp">HP</span><div><strong>The shipyard jobs boom needs a bigger training pipeline</strong><small>Hunt’s Pointe · Business · Arrived 2 min ago</small></div><span class="stage-chip">AI provenance ready</span><button type="button" id="open-admin-draft">Open draft</button></div><div class="queue-row"><span class="source-badge">MC</span><div><strong>City council live brief: final vote expected tonight</strong><small>Maya Carter · Civic · Updated 8 min ago</small></div><span class="stage-chip warning">Legal check</span><button type="button">Open</button></div><div class="queue-row"><span class="source-badge">LB</span><div><strong>Weekend culture guide: seven cities edition</strong><small>Lena Brooks · Culture · Updated 21 min ago</small></div><span class="stage-chip">Copy edit</span><button type="button">Open</button></div></section>
+                <section class="admin-panel governance-panel"><header><div><span class="admin-kicker">Launch gate</span><h2>Governance status</h2></div><span class="gate-score">6 / 8</span></header><ul><li class="pass"><span>Consent enforcement</span><b>Ready</b></li><li class="pass"><span>Role-based access</span><b>Ready</b></li><li class="pass"><span>Advertiser separation</span><b>Ready</b></li><li class="pass"><span>Creative scanning</span><b>Ready</b></li><li class="pass"><span>Audit logging</span><b>Ready</b></li><li class="pass"><span>Retention rules</span><b>Ready</b></li><li class="warn"><span>ads.txt declaration</span><b>Review</b></li><li class="warn"><span>sellers.json declaration</span><b>Review</b></li></ul><button type="button">Resolve launch blockers</button></section>
+                <section class="admin-panel revenue-panel"><header><div><span class="admin-kicker">Money Path · Viewability</span><h2>Revenue health</h2></div><button type="button">Open yield lab</button></header><div class="sparkline" role="img" aria-label="Prototype viewability trend chart"><i style="--h:38%"></i><i style="--h:52%"></i><i style="--h:44%"></i><i style="--h:61%"></i><i style="--h:58%"></i><i style="--h:68%"></i><i style="--h:72%"></i><i style="--h:74%"></i><i style="--h:71%"></i><i style="--h:76%"></i><i style="--h:72%"></i><i style="--h:78%"></i></div><div class="revenue-legend"><span><i class="navy"></i>Viewability <b>72.4%</b></span><span><i class="gold"></i>Fill <b>91.7%</b></span><span><i class="red"></i>CLS <b>0.04</b></span></div></section>
+                <section class="admin-panel creative-panel"><header><div><span class="admin-kicker">Creative safety</span><h2>Pending review</h2></div><span class="scan-status"><i></i>Scanner active</span></header><div class="creative-preview"><div class="creative-thumb">AD</div><div><strong>Coastal workforce campaign</strong><small>Regional Workforce Council · 4 placements</small><div class="scan-chips"><span>Malware clean</span><span>HTTPS verified</span><span>Alt text ready</span></div></div><button type="button">Review</button></div></section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <button class="consent-chip" type="button" data-open-consent><span>✓</span> Contextual ads · choices</button>
+    </div>
+  </main>
+
+  <!-- DRAFT TRANSFER DIALOG -->
+  <div class="modal-backdrop" id="transfer-modal" hidden>
+    <section class="modal-card transfer-modal" role="dialog" aria-modal="true" aria-labelledby="transfer-title">
+      <button class="modal-close" type="button" aria-label="Close transfer dialog" data-close-modal>×</button>
+      <div class="modal-eyebrow"><span class="signal-logo">S</span> Hunt’s Pointe → SignalDesk</div>
+      <h2 id="transfer-title">Stage this article for editorial review</h2>
+      <p class="modal-lede">Nothing publishes from this action. SignalDesk will create a new Payload draft with provenance and an audit event.</p>
+      <div class="transfer-map"><div><span>01</span><strong>Content</strong><small>Headline, dek, body, tags</small></div><i>→</i><div><span>02</span><strong>Governance</strong><small>Sources, rights, AI metadata</small></div><i>→</i><div><span>03</span><strong>Payload</strong><small>Unpublished review draft</small></div></div>
+      <ul class="preflight-list"><li class="pass"><span>Article fields</span><b>Complete</b></li><li class="pass"><span>Source provenance</span><b>3 sources</b></li><li class="pass"><span>Editorial policy</span><b>Passed</b></li><li class="warn"><span>Hero media rights note</span><b>Editor review</b></li><li class="pass"><span>Destination</span><b>Hampton Roads / Business</b></li></ul>
+      <label class="confirm-row"><input type="checkbox" id="draft-confirm"><span>I understand this creates a draft and requires a human editor to publish.</span></label>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close-modal>Cancel</button><button class="studio-primary" id="confirm-transfer" type="button" disabled>Stage review draft <span>↗</span></button></div>
+      <div class="transfer-success" id="transfer-success" hidden><span class="success-mark">✓</span><div><strong>Draft created in SignalDesk</strong><p>ID HR-2026-0716 · Audit event recorded · Status: Review draft</p></div><button type="button" id="jump-admin">Open in Payload</button></div>
+    </section>
+  </div>
+
+  <!-- CONSENT CENTER -->
+  <div class="modal-backdrop" id="consent-modal" hidden>
+    <section class="modal-card consent-modal" role="dialog" aria-modal="true" aria-labelledby="consent-title">
+      <button class="modal-close" type="button" aria-label="Close privacy choices" data-close-modal>×</button>
+      <span class="modal-eyebrow">Privacy &amp; advertising</span><h2 id="consent-title">Your experience, your choice.</h2><p class="modal-lede">Essential storage keeps the site secure. Contextual advertising uses the page you are reading, not a cross-site profile.</p>
+      <div class="choice-row"><div><strong>Essential</strong><p>Security, preferences and consent record.</p></div><span class="always-on">Always on</span></div>
+      <div class="choice-row"><div><strong>Audience measurement</strong><p>Aggregated page and performance events with limited retention.</p></div><label class="switch"><input type="checkbox" checked><span></span></label></div>
+      <div class="choice-row"><div><strong>Personalized advertising</strong><p>Use consented signals for frequency and relevance.</p></div><label class="switch"><input type="checkbox"><span></span></label></div>
+      <p class="retention-note">Prototype rule: raw reader events 30 days; aggregated reporting 13 months; withdrawal honored immediately.</p>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close-modal>Use essential only</button><button class="primary-button" type="button" data-close-modal>Save choices</button></div>
+    </section>
+  </div>
+
+  <div class="toast" id="prototype-toast" role="status" aria-live="polite" hidden></div>
+  <script src="prototype.js"></script>
+</body>
+</html>

@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import { getCategories, getFeedArticles } from "@/lib/data";
-import { SectionPills } from "@/components/SectionPills";
-import { ArticleCard } from "@/components/ArticleCard";
+import { CityEdition } from "@/components/editorial/CityEdition";
+import { StoryCard } from "@/components/editorial/StoryCard";
 import { NewsletterBand } from "@/components/NewsletterBand";
+import { AdFrame } from "@/components/ads/AdFrame";
+import { AdSlot } from "@/components/AdSlot";
+import { RailPlacement } from "@/components/ads/RailPlacement";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import type { Metadata } from "next";
 
@@ -41,28 +44,73 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   if (!current) notFound();
 
   const articles = await getFeedArticles(city, 20);
+  const [lead, ...rest] = articles;
 
   return (
     <main className="shell py-8">
       <PageViewTracker citySlug={city} />
-      <div className="mb-6">
-        <SectionPills cities={cities} active={city} />
-      </div>
-      <h1 className="font-display font-black text-3xl tracking-[-0.02em] mb-1">{current.name}</h1>
-      <p className="text-ink-2 mb-8">Stories from {current.name}, Virginia.</p>
+      <CityEdition city={current} cities={cities} />
 
       {articles.length === 0 ? (
         <p className="text-ink-3">No stories here yet — check back soon.</p>
       ) : (
-        <div className="flex flex-col gap-7">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-          <NewsletterBand
-            title={`${current.name}, in your inbox`}
-            copy="Follow the Morning Dispatch — pick the cities you care about at signup."
-            source={`city-band-${city}`}
-          />
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_290px]">
+          <div className="flex flex-col">
+            {lead && (
+              <div className="border-b border-line pb-7">
+                <StoryCard article={lead} variant="feature" />
+              </div>
+            )}
+
+            <div className="my-7">
+              <AdFrame label="Advertisement" minHeight={90}>
+                <AdSlot slotId="section-local-01" variant="minimal" />
+              </AdFrame>
+            </div>
+
+            {rest.length > 0 && (
+              <>
+                <header className="mb-1 flex items-end justify-between gap-5 border-b-2 border-federal pb-3">
+                  <div>
+                    <span className="mb-1 block font-mono text-[8px] uppercase tracking-[.14em] text-accent-soft">
+                      Latest from {current.name}
+                    </span>
+                    <h2 className="font-display text-[26px] font-black tracking-[-0.02em] text-ink">
+                      The city desk
+                    </h2>
+                  </div>
+                </header>
+                {rest.map((a, i) => (
+                  <StoryCard key={a.id} article={a} variant="row" index={i + 1} />
+                ))}
+              </>
+            )}
+
+            <div className="mt-8">
+              <NewsletterBand
+                title={`${current.name}, in your inbox`}
+                copy="Follow the Morning Dispatch — pick the cities you care about at signup."
+                source={`city-band-${city}`}
+              />
+            </div>
+          </div>
+
+          <aside className="flex flex-col gap-6">
+            <section className="rounded-[2px_16px_2px_16px] bg-surface-2 p-6">
+              <span className="mb-1 block font-mono text-[8px] uppercase tracking-[.14em] text-accent-soft">
+                {current.name} at a glance
+              </span>
+              <div className="flex items-baseline justify-between border-b border-line py-3">
+                <strong className="font-display text-[31px] font-black text-ink">
+                  {articles.length}
+                </strong>
+                <span className="text-[9px] text-ink-3">
+                  {articles.length === 1 ? "story published" : "stories published"}
+                </span>
+              </div>
+            </section>
+            <RailPlacement slotId="section-rail-01" />
+          </aside>
         </div>
       )}
     </main>
