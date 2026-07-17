@@ -49,6 +49,9 @@ jobs:
       - name: Unit + integration tests
         run: npm test
 
+      - name: Validate ads.txt / sellers.json supply-chain declarations
+        run: npm run validate:supply-chain
+
       - name: Build
         run: npm run build
 

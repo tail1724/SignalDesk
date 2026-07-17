@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "contact_email": "ads@hamptonroadshistory.com",
+  "identifiers": [],
+  "sellers": [
+    {
+      "seller_id": "pub-0000000000000000",
+      "seller_type": "PUBLISHER",
+      "name": "Hampton Roads History",
+      "domain": "hamptonroadshistory.com"
+    }
+  ]
+}
