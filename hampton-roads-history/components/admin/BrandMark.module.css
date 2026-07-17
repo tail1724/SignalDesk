@@ -1,0 +1,54 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+}
+
+.seal {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(145deg, #17618b, #0a1d35 62%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px 13px 4px 13px;
+  box-shadow: 0 8px 22px rgba(4, 15, 29, 0.2);
+  font: 850 12px/1 ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.06em;
+}
+
+.seal em {
+  color: #e9bd63;
+  font-style: normal;
+}
+
+.name {
+  display: grid;
+  line-height: 0.93;
+}
+
+.name strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  letter-spacing: -0.055em;
+}
+
+.name small {
+  margin-top: 5px;
+  color: #748797;
+  font-size: 7px;
+  font-weight: 750;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.iconOnly .seal {
+  width: 34px;
+  height: 34px;
+}
+
+.iconOnly .name {
+  display: none;
+}

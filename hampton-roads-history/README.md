@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hampton Roads / SignalDesk
+
+SignalDesk is a Next.js publication with an embedded Payload newsroom control
+plane. Editors manage reporting, review, media, corrections, publication,
+governance, and advertising operations from `/admin`.
+
+- [Newsroom control-plane architecture and rollout](docs/payload-newsroom-control-plane.md)
+- [Seed Refiner draft-staging contract](docs/hunts-pointe-integration.md)
+- [RLS audit](docs/rls-audit.md)
 
 ## Getting Started
 

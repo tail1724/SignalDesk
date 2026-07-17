@@ -1,0 +1,35 @@
+.status {
+  margin: 2px 14px 15px;
+  padding: 12px;
+  color: #ccdae5;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px 13px 4px 13px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.label::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: #55c28d;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(85, 194, 141, 0.12);
+}
+
+.status p {
+  margin: 7px 0 0;
+  color: #9eb0bf;
+  font-size: 9px;
+  line-height: 1.45;
+}

@@ -1,0 +1,97 @@
+:root {
+  --hr-federal: #0a1d35;
+  --hr-civic: #17618b;
+  --hr-signal: #c93d37;
+  --hr-brass: #c99a42;
+  --hr-paper: #fcfaf5;
+  --style-radius-s: 5px;
+  --style-radius-m: 10px;
+  --style-radius-l: 17px;
+}
+
+html[data-theme="light"] {
+  --theme-bg: #f6f3eb;
+  --theme-input-bg: #fffefb;
+}
+
+body {
+  letter-spacing: -0.006em;
+}
+
+.nav {
+  color: #d8e2e9;
+  background:
+    radial-gradient(circle at 60% 0%, rgba(23, 97, 139, 0.35), transparent 30%),
+    #071524;
+  border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav a,
+.nav button {
+  color: inherit;
+}
+
+.nav .nav-group__label {
+  color: #738b9e;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav .nav__link:hover,
+.nav .nav__link:focus-visible,
+.nav .nav__link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.nav .nav__link-indicator {
+  background: var(--hr-brass);
+}
+
+.template-default__wrap,
+.dashboard {
+  max-width: 1540px;
+}
+
+.collection-list__wrap h1,
+.document-fields__edit h1,
+.dashboard h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.04em;
+}
+
+.btn--style-primary {
+  --bg-color: var(--hr-federal);
+  --hover-bg: var(--hr-civic);
+  --color: #fff;
+}
+
+.pill {
+  border-radius: 999px;
+}
+
+.table {
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 5px 16px 5px 16px;
+}
+
+.table thead {
+  background: var(--theme-elevation-50);
+}
+
+.render-fields > .field-type {
+  scroll-margin-top: 90px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
