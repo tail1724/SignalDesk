@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { getOrCreateSessionId } from "@/lib/hooks/useSessionId";
+import { isMeasurementAllowed, useConsent } from "@/lib/consent";
 
 const SCROLL_THRESHOLDS = [25, 50, 75, 100] as const;
 
@@ -12,12 +13,19 @@ interface Props {
 }
 
 function sendEvent(eventType: string, extra: Props) {
+  // Audience-measurement consent gates this specifically (separate from the
+  // "resolved" gate that unlocks ad requests) — declining it means no page
+  // event beacons at all, not just a delay.
+  if (!isMeasurementAllowed()) return;
+  const sessionId = getOrCreateSessionId();
+  if (!sessionId) return;
+
   fetch("/api/events", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       event_type: eventType,
-      session_id: getOrCreateSessionId(),
+      session_id: sessionId,
       article_id: extra.articleId,
       article_short_id: extra.articleShortId,
       city_slug: extra.citySlug,
@@ -36,9 +44,12 @@ function sendEvent(eventType: string, extra: Props) {
 export function PageViewTracker(props: Props) {
   const firedThresholds = useRef<Set<number>>(new Set());
   const pageviewFired = useRef(false);
+  // Re-runs the effect once consent resolves, so a pageview that didn't
+  // fire pre-consent (sendEvent silently no-ops) fires as soon as it can.
+  const consent = useConsent();
 
   useEffect(() => {
-    if (!pageviewFired.current) {
+    if (!pageviewFired.current && isMeasurementAllowed()) {
       pageviewFired.current = true;
       sendEvent("pageview", props);
     }
@@ -62,7 +73,7 @@ export function PageViewTracker(props: Props) {
     handleScroll(); // catch pages shorter than the viewport (already "100%")
     return () => window.removeEventListener("scroll", handleScroll);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [consent]);
 
   return null;
 }

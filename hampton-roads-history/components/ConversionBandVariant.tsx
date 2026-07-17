@@ -4,15 +4,21 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { NewsletterWidget } from "@/components/rail/NewsletterWidget";
 import { getOrCreateSessionId } from "@/lib/hooks/useSessionId";
+import { isMeasurementAllowed, useConsent } from "@/lib/consent";
 
 // Exposure + click-through are tracked via hr_page_events (event_type
 // encodes the variant, since the events table has no generic metadata
-// column for arbitrary experiment data).
+// column for arbitrary experiment data). Audience-measurement consent gates
+// this — no beacon before the reader resolves that choice.
 function track(eventType: string) {
+  if (!isMeasurementAllowed()) return;
+  const sessionId = getOrCreateSessionId();
+  if (!sessionId) return;
+
   fetch("/api/events", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ event_type: eventType, session_id: getOrCreateSessionId() }),
+    body: JSON.stringify({ event_type: eventType, session_id: sessionId }),
     keepalive: true,
   }).catch(() => {
     // Best-effort — analytics failures should never affect the page
@@ -21,12 +27,13 @@ function track(eventType: string) {
 
 export function ConversionBandVariant({ variant }: { variant: "a" | "b" }) {
   const exposureFired = useRef(false);
+  const consent = useConsent();
 
   useEffect(() => {
-    if (exposureFired.current) return;
+    if (exposureFired.current || !isMeasurementAllowed()) return;
     exposureFired.current = true;
     track(`ab_exposure_${variant}`);
-  }, [variant]);
+  }, [variant, consent]);
 
   if (variant === "b") {
     return (

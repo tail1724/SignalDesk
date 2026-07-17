@@ -1,0 +1,11 @@
+# Hampton Roads History — ads.txt fixture
+#
+# This is a PLACEHOLDER declaration for CI validation and local development
+# — it is not the production ads.txt. Production content is served from the
+# ADS_TXT_CONTENT env var (app/ads.txt/route.ts); scripts/validate-supply-chain.mts
+# validates whichever of the two is available (env var in a real deploy,
+# this fixture in CI where the env var is unset).
+#
+# Format: domain, publisher_account_id, relationship[, certification_id]
+example-exchange.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+example-header-bidder.com, pub-0000000000000000, RESELLER

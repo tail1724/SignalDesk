@@ -3,6 +3,9 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import { signWebhookPayload } from "@/lib/webhook";
+import { HrAdvertisers } from "@/collections/hr-advertisers";
+import { HrCampaigns } from "@/collections/hr-campaigns";
+import { HrPlacements } from "@/collections/hr-placements";
 import {
   canEditNewsroom,
   canManagePeople,
@@ -85,6 +88,7 @@ export default buildConfig({
             { label: "Copy editor", value: "copy_editor" },
             { label: "Reporter", value: "reporter" },
             { label: "Ad operations", value: "ad_ops" },
+            { label: "Sales", value: "sales" },
             { label: "Analyst", value: "analyst" },
             { label: "AI service", value: "ai_service" },
           ],
@@ -283,6 +287,21 @@ export default buildConfig({
                     { name: "hero_image_url", type: "text" },
                     { name: "hero_image_alt", type: "text" },
                     { name: "media_provenance", type: "json", admin: { description: "Rights, source, credit, and transfer metadata from connected systems." } },
+                    {
+                      name: "rights_status",
+                      type: "select",
+                      defaultValue: "none",
+                      index: true,
+                      admin: {
+                        readOnly: true,
+                        description: "\"Pending review\" means at least one submitted media item is quarantined (rights: review) and was not copied into hr_media.",
+                      },
+                      options: [
+                        { label: "No media submitted", value: "none" },
+                        { label: "Clear", value: "clear" },
+                        { label: "Pending rights review", value: "pending_review" },
+                      ],
+                    },
                   ],
                 },
               ],
@@ -491,6 +510,9 @@ export default buildConfig({
         ],
       },
     },
+    HrAdvertisers,
+    HrCampaigns,
+    HrPlacements,
     {
       slug: "hr_ad_creatives",
       admin: {
@@ -509,6 +531,7 @@ export default buildConfig({
       },
       fields: [
         { name: "advertiser", type: "text", required: true },
+        { name: "campaign", type: "relationship", relationTo: "hr_campaigns", index: true },
         {
           name: "slot_targets",
           type: "select",
@@ -665,7 +688,7 @@ export default buildConfig({
           type: "select",
           required: true,
           index: true,
-          options: ["system", "super_admin", "managing_editor", "copy_editor", "reporter", "ad_ops", "analyst", "ai_service"],
+          options: ["system", "super_admin", "managing_editor", "copy_editor", "reporter", "ad_ops", "sales", "analyst", "ai_service"],
         },
         { name: "object_type", type: "text", required: true, index: true },
         { name: "object_id", type: "text", index: true },
