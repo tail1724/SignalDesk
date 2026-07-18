@@ -1,0 +1,93 @@
+name: Visual regression (VaporNet)
+
+# Two flows for the pixel-perfect VaporNet surfaces
+# (see hampton-roads-history/docs/vapornet-pixel-perfect-plan.md §6):
+#
+#  1. workflow_dispatch → GENERATE/REFRESH baselines on Linux and commit
+#     them back to the branch. Run this once after the design lands and
+#     any time the intended design changes on purpose.
+#  2. pull_request (opt in with repo variable RUN_VISUAL=true) → COMPARE
+#     the PR against the committed baselines; uploads an HTML diff report
+#     on failure.
+#
+# Baselines are platform-specific (…-linux.png); generating them here means
+# they match this runner's font rasterization, which is what the PR check
+# also uses.
+
+on:
+  workflow_dispatch:
+    inputs:
+      update:
+        description: "Regenerate and commit baselines"
+        type: boolean
+        default: true
+  pull_request:
+    paths:
+      - "hampton-roads-history/**"
+      - ".github/workflows/visual.yml"
+
+defaults:
+  run:
+    working-directory: hampton-roads-history
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.RUN_VISUAL == 'true' }}
+    permissions:
+      contents: write
+    env:
+      # NEXT_PUBLIC_* are inlined at build time; the layout falls back to the
+      # canonical cities if the DB is unreachable, so the fixtures render even
+      # without a live database. Placeholders are fine for the visual suite.
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://fixture.supabase.co' }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'fixture-anon-key' }}
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || 'ci-placeholder-secret' }}
+      AD_HMAC_SECRET: ci-placeholder-ad-secret
+      WEBHOOK_SECRET: ci-placeholder-webhook-secret
+      # Unlocks the /design/fixtures/* routes at build and runtime.
+      ALLOW_DESIGN_FIXTURES: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: hampton-roads-history/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate baselines
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.update }}
+        run: npm run test:visual -- --update-snapshots
+
+      - name: Commit baselines
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.update }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tests/visual
+          if git diff --cached --quiet; then
+            echo "No baseline changes."
+          else
+            git commit -m "test(visual): refresh VaporNet baselines"
+            git push
+          fi
+
+      - name: Compare against baselines
+        if: ${{ github.event_name == 'pull_request' }}
+        run: npm run test:visual
+
+      - name: Upload diff report
+        if: ${{ failure() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diff-report
+          path: hampton-roads-history/playwright-report/
+          retention-days: 14

@@ -40,3 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+# NOTE: visual baselines under tests/visual/*-snapshots/ ARE committed —
+# they are the source of truth the regression suite compares against.
+# Generate/refresh them on Linux only (CI runner or the Playwright Linux
+# Docker image) so they match CI's font rasterization. See
+# docs/vapornet-pixel-perfect-plan.md §6 and .github/workflows/visual.yml.

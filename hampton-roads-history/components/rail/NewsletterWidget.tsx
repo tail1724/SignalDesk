@@ -2,11 +2,16 @@
 
 import { useState } from "react";
 
+// Email capture. `variant="inline"` renders the prototype's .inline-form
+// (input + Join free button on one row — the .morning-line band); the
+// default stacked rendering serves the rail/newsletter surfaces.
 export function NewsletterWidget({
   source = "rail-widget",
+  variant = "stacked",
   onSuccess,
 }: {
   source?: string;
+  variant?: "stacked" | "inline";
   onSuccess?: () => void;
 }) {
   const [email, setEmail] = useState("");
@@ -30,10 +35,31 @@ export function NewsletterWidget({
 
   if (state === "done") {
     return (
-      <p className="text-[13px] text-ink-2">
-        Almost there — check your inbox and click the confirmation link to
-        start receiving the dispatch.
+      <p className={variant === "inline" ? "text-[13px] text-white/85" : "text-[13px] text-ink-2"}>
+        Almost there — check your inbox and click the confirmation link.
       </p>
+    );
+  }
+
+  if (variant === "inline") {
+    const id = `nl-${source}`;
+    return (
+      <form onSubmit={submit} className="inline-form">
+        <label className="sr-only" htmlFor={id}>
+          Email address
+        </label>
+        <input
+          id={id}
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@email.com"
+        />
+        <button type="submit" disabled={state === "sending"}>
+          {state === "sending" ? "Sending…" : "Join free"}
+        </button>
+      </form>
     );
   }
 

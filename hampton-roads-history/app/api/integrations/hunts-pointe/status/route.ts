@@ -54,6 +54,7 @@ export async function GET(req: NextRequest) {
   if (receipt.status !== "completed" || !articleId) {
     return NextResponse.json({
       status: receipt.status,
+      error_code: receipt.error_code ?? null,
       draft_id: articleId ?? null,
       admin_path: articleId ? `/admin/collections/hr_articles/${articleId}` : null,
       updatedAt: receipt.last_seen_at,
@@ -71,6 +72,10 @@ export async function GET(req: NextRequest) {
     status: article?._status === "published" ? "published" : "draft",
     draft_id: articleId,
     admin_path: `/admin/collections/hr_articles/${articleId}`,
+    // Reconcile the revision + editorial stage back to Hunt's Pointe
+    // (integration PRD §4 step 11) so the writer sees the live state.
+    revision: typeof article?.source_version === "number" ? article.source_version : null,
+    workflow_stage: article?.workflow_stage ?? null,
     updatedAt: article?.updatedAt ?? receipt.last_seen_at,
   });
 }
