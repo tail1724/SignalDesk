@@ -45,6 +45,8 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 /blob-report/
-# Visual baselines are generated in CI (real build env + commissioned art),
-# never in the sandbox — see docs/vapornet-pixel-perfect-plan.md §6.
-/tests/visual/*-snapshots/
+# NOTE: visual baselines under tests/visual/*-snapshots/ ARE committed —
+# they are the source of truth the regression suite compares against.
+# Generate/refresh them on Linux only (CI runner or the Playwright Linux
+# Docker image) so they match CI's font rasterization. See
+# docs/vapornet-pixel-perfect-plan.md §6 and .github/workflows/visual.yml.
