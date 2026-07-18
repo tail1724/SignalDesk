@@ -11,16 +11,16 @@
   display: grid;
   place-items: center;
   color: #fff;
-  background: linear-gradient(145deg, #17618b, #0a1d35 62%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(145deg, #006e73, #071b1c 62%);
+  border: 1px solid rgba(242, 251, 249, 0.2);
   border-radius: 4px 13px 4px 13px;
-  box-shadow: 0 8px 22px rgba(4, 15, 29, 0.2);
+  box-shadow: 0 8px 22px rgba(7, 27, 28, 0.24);
   font: 850 12px/1 ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.06em;
 }
 
 .seal em {
-  color: #e9bd63;
+  color: #40d6c9;
   font-style: normal;
 }
 
@@ -37,7 +37,7 @@
 
 .name small {
   margin-top: 5px;
-  color: #748797;
+  color: #6f9a96;
   font-size: 7px;
   font-weight: 750;
   letter-spacing: 0.13em;
