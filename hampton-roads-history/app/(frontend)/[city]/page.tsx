@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getCategories, getFeedArticles } from "@/lib/data";
 import { CityEdition } from "@/components/editorial/CityEdition";
 import { StoryCard } from "@/components/editorial/StoryCard";
@@ -7,6 +8,8 @@ import { AdFrame } from "@/components/ads/AdFrame";
 import { AdSlot } from "@/components/AdSlot";
 import { RailPlacement } from "@/components/ads/RailPlacement";
 import { PageViewTracker } from "@/components/PageViewTracker";
+import { timeAgo } from "@/lib/format";
+import { articleHref } from "@/components/ArticleCard";
 import type { Metadata } from "next";
 
 // Rendered dynamically per-request rather than pre-built with
@@ -46,39 +49,56 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const articles = await getFeedArticles(city, 20);
   const [lead, ...rest] = articles;
 
+  // DOM mirrors redesign/vapornet/index.html's section screen:
+  // .section-page > section-hero + city-tabs + .section-layout
+  // (lead + section-ad + city desk rows | .section-rail).
   return (
-    <main className="shell py-8">
+    <div className="section-page">
       <PageViewTracker citySlug={city} />
-      <CityEdition city={current} cities={cities} />
+      <CityEdition city={current} cities={cities} updatedAt={lead?.published_at ?? null} />
 
       {articles.length === 0 ? (
-        <p className="text-ink-3">No stories here yet — check back soon.</p>
+        <p style={{ color: "var(--ink-3)" }}>No stories here yet — check back soon.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_290px]">
-          <div className="flex flex-col">
+        <div className="section-layout">
+          <div>
             {lead && (
-              <div className="border-b border-line pb-7">
-                <StoryCard article={lead} variant="feature" />
-              </div>
+              <article className="section-lead">
+                <Link href={articleHref(lead)} className="section-lead-art" aria-label={lead.title}>
+                  <span className="map-lines" aria-hidden />
+                  <span className="city-coordinate">{current.name}</span>
+                </Link>
+                <div>
+                  <div className="eyebrow">
+                    <span>{lead.kicker ?? "Lead story"}</span>
+                    <span>{current.name}</span>
+                  </div>
+                  <h2 style={{ margin: "0 0 10px", font: "900 clamp(26px,3vw,36px)/1.02 var(--display)", letterSpacing: "-.03em" }}>
+                    <Link href={articleHref(lead)}>{lead.title}</Link>
+                  </h2>
+                  {lead.dek && <p style={{ margin: 0, color: "var(--ink-2)", fontSize: 14, lineHeight: 1.55 }}>{lead.dek}</p>}
+                  <div className="byline" style={{ marginTop: 12 }}>
+                    By {lead.hr_authors?.name ?? "Staff"} · Updated {timeAgo(lead.published_at)}
+                  </div>
+                  <Link href={articleHref(lead)} className="text-link">
+                    Read the full briefing
+                  </Link>
+                </div>
+              </article>
             )}
 
-            <div className="my-7">
-              <AdFrame label="Advertisement" minHeight={90}>
-                <AdSlot slotId="section-local-01" variant="minimal" />
-              </AdFrame>
-            </div>
+            <AdFrame label="Advertisement" variant="section-ad" minHeight={90}>
+              <AdSlot slotId="section-local-01" variant="minimal" />
+            </AdFrame>
 
             {rest.length > 0 && (
               <>
-                <header className="mb-1 flex items-end justify-between gap-5 border-b-2 border-federal pb-3">
+                <header className="section-heading">
                   <div>
-                    <span className="mb-1 block font-mono text-[8px] uppercase tracking-[.14em] text-accent-soft">
-                      Latest from {current.name}
-                    </span>
-                    <h2 className="font-display text-[26px] font-black tracking-[-0.02em] text-ink">
-                      The city desk
-                    </h2>
+                    <span className="section-kicker">Latest from {current.name}</span>
+                    <h2>The city desk</h2>
                   </div>
+                  <span>Newest first</span>
                 </header>
                 {rest.map((a, i) => (
                   <StoryCard key={a.id} article={a} variant="row" index={i + 1} />
@@ -86,33 +106,30 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               </>
             )}
 
-            <div className="mt-8">
-              <NewsletterBand
-                title={`${current.name}, in your inbox`}
-                copy="Follow the Morning Dispatch — pick the cities you care about at signup."
-                source={`city-band-${city}`}
-              />
-            </div>
+            <NewsletterBand
+              title={`${current.name}, in your inbox`}
+              copy="Follow the Morning Tide — pick the cities you care about at signup."
+              source={`city-band-${city}`}
+            />
           </div>
 
-          <aside className="flex flex-col gap-6">
-            <section className="rounded-[2px_16px_2px_16px] bg-surface-2 p-6">
-              <span className="mb-1 block font-mono text-[8px] uppercase tracking-[.14em] text-accent-soft">
-                {current.name} at a glance
-              </span>
-              <div className="flex items-baseline justify-between border-b border-line py-3">
-                <strong className="font-display text-[31px] font-black text-ink">
-                  {articles.length}
-                </strong>
-                <span className="text-[9px] text-ink-3">
-                  {articles.length === 1 ? "story published" : "stories published"}
-                </span>
+          <aside className="section-rail">
+            <section className="data-card">
+              <span className="section-kicker">{current.name} at a glance</span>
+              <div className="stat">
+                <strong>{articles.length}</strong>
+                <span>{articles.length === 1 ? "story published" : "stories published"}</span>
               </div>
+              <div className="stat">
+                <strong>{rest.length}</strong>
+                <span>on the city desk</span>
+              </div>
+              <small>Counts reflect currently published stories.</small>
             </section>
             <RailPlacement slotId="section-rail-01" />
           </aside>
         </div>
       )}
-    </main>
+    </div>
   );
 }

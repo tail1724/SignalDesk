@@ -1,5 +1,18 @@
 # VaporNet pixel-perfect frontend plan
 
+> **STATUS (2026-07-18): implemented.** Newsreader pinned; `vapornet.css`
+> generated verbatim from the prototype and imported unlayered; Home,
+> Article, and City surfaces rebuilt on the prototype DOM; deterministic
+> design fixtures + a Playwright `visual` project (39 shots: 24 full-page ×
+> width × theme, plus 15 module shots) in place. Local Chromium renders of
+> all three fixtures match the reference screenshots (single lead dropcap,
+> exact grids, ad frames, briefing/funding cards, rails, cities band).
+> Baselines are generated in CI with the real build env + commissioned hero
+> art (they are gitignored, never committed from the sandbox). The one known
+> deviation is the font itself — Iowan Old Style (macOS-only) in the raw
+> screenshots vs. self-hosted Newsreader in production, per §2.
+
+
 **Scope:** the public Hampton Roads surfaces in `hampton-roads-history` — Home, Article, City edition, plus global chrome (top strip, masthead, section nav, breaking ribbon, footer, ad frames).
 **Reference:** the six approved design screenshots (masthead/hero, home ×2, article ×2, city edition) and the interactive prototype they were rendered from: `redesign/vapornet/index.html` + `redesign/vapornet/styles.css`. The prototype is the machine-readable source of truth; the screenshots are the acceptance record.
 **Non-scope:** Payload Admin (Quantum Newsroom, already shipped), Hunt's Pointe, ad-decision logic, content model.
@@ -30,6 +43,8 @@ The tokens are already correct — `app/globals.css` carries the verbatim VaporN
 ## 3. Phase 1 — Deterministic typography (the foundation)
 
 1. **Pick the display face** from the specimen page (`/design/type-specimen`, dev-only): render the hero headline, section heads, article display, and briefing labels in Newsreader 900 and Source Serif 4 900 side by side with the screenshot crops. One reviewer decision, recorded in this doc.
+> **DECISION (recorded 2026-07-18): Newsreader** is the display face. It is already integrated via `next/font`, ships a variable weight axis to 800 (the prototype's `font: 900` clamps there), and was the blueprint's first recommendation. The reference build is patched to Newsreader so baselines and production render identical glyphs.
+
 2. **Pin the full set via `next/font`** (already partially done): serif display (chosen face, weights 400–900 + italic), Inter for interface sans, JetBrains Mono for micro labels. `display: "swap"` in production but **`display: "block"` under the visual-test env flag** so screenshots never capture fallback glyphs.
 3. **Patch the reference build:** a small script copies `redesign/vapornet/` into `tests/visual/reference/` and rewrites its `--serif/--sans/--mono` stacks to `@font-face` rules pointing at the same font files production serves. This patched copy — never the raw prototype — is the baseline generator.
 4. **Normalize rendering:** identical `-webkit-font-smoothing`, `text-rendering`, and `font-synthesis: none` on both sides so Linux/Chromium rasterizes identically.

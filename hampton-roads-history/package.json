@@ -17,7 +17,9 @@
     "validate:supply-chain": "node --import tsx scripts/validate-supply-chain.mts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test --project=chromium",
+    "test:visual": "playwright test --project=visual",
+    "vapornet:css": "node --import tsx scripts/generate-vapornet-css.mts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.86.0",

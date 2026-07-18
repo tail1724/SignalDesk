@@ -1,26 +1,34 @@
 import { ReportCorrection } from "@/components/ReportCorrection";
 
-// "Sources & methodology" — the reporting-transparency block called for in
-// design-blueprint.html §04 (article template) and §01 diagnosis ("minimal
-// sourcing UI"). Per-article structured source citation isn't modeled in the
-// CMS yet (a content-model change outside this pass), so this renders the
-// standing editorial-standards statement plus the live correction-report
+// "Sources & methodology" — DOM mirrors redesign/vapornet/index.html's
+// .source-notes block. Per-article structured source citation isn't modeled
+// in the CMS yet (a content-model change outside this pass), so this renders
+// the standing editorial-standards statement plus the live correction-report
 // affordance for this specific article.
-export function SourceNotes({ articleId }: { articleId: string }) {
+export function SourceNotes({
+  articleId,
+  bullets,
+}: {
+  articleId: string;
+  bullets?: string[];
+}) {
+  const items = bullets ?? [
+    "Public records, official statements and named on-the-record sources",
+    "Independent verification of claims before publication",
+    "Every correction is logged and appears with the article",
+  ];
   return (
-    <section aria-label="Sources & methodology" className="mt-11 border border-line bg-surface-2 p-7">
-      <span className="mb-2 block font-mono text-[8px] uppercase tracking-[.14em] text-accent-soft">
-        Sources &amp; methodology
-      </span>
-      <h2 className="font-display text-[25px] font-black text-ink">How we reported this</h2>
-      <ul className="mt-3 list-disc pl-[18px] text-[11px] leading-[1.8] text-ink-2">
-        <li>Public records, official statements and named on-the-record sources</li>
-        <li>Independent verification of claims before publication</li>
-        <li>Every correction is logged and appears with the article</li>
+    <section className="source-notes" aria-label="Sources & methodology">
+      <span className="section-kicker">Sources &amp; methodology</span>
+      <h2>How we reported this</h2>
+      <ul>
+        {items.map((b) => (
+          <li key={b}>{b}</li>
+        ))}
       </ul>
-      <div className="mt-3 text-[10px] leading-[1.5] text-ink-3">
-        <ReportCorrection articleId={articleId} />
-      </div>
+      <p>
+        <strong>Correction?</strong> <ReportCorrection articleId={articleId} />
+      </p>
     </section>
   );
 }

@@ -50,12 +50,8 @@ export function OmniSearch() {
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        aria-label="Search the site"
-        className="font-mono text-xs text-ink-2 bg-surface-2 border border-line rounded-full px-4 py-2 hover:border-line-strong transition-colors"
-      >
-        Find a story ⌘K
+      <button onClick={() => setOpen(true)} aria-label="Search the site" className="search-button">
+        Find a story <kbd>⌘K</kbd>
       </button>
     );
   }

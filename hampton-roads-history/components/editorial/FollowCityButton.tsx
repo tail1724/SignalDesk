@@ -48,7 +48,8 @@ export function FollowCityButton({ citySlug, cityName }: { citySlug: string; cit
       type="button"
       onClick={toggle}
       aria-pressed={following}
-      className="min-h-[38px] rounded-full bg-white px-4 text-[11px] font-black text-federal"
+      // Styled by the surrounding context (.edition-tools button in vapornet.css)
+      className={undefined}
     >
       {following ? `Following ${cityName}` : `Follow ${cityName}`}
     </button>

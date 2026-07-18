@@ -4,7 +4,17 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
-export function WatchlistToggle({ articleId }: { articleId: string }) {
+export function WatchlistToggle({
+  articleId,
+  bare = false,
+  labels = { save: "Save", saved: "Saved" },
+}: {
+  articleId: string;
+  /** bare: no utility styling — the parent context (e.g. the prototype's
+      .article-actions / .key-people) styles the button. */
+  bare?: boolean;
+  labels?: { save: string; saved: string };
+}) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [saved, setSaved] = useState(false);
@@ -64,11 +74,15 @@ export function WatchlistToggle({ articleId }: { articleId: string }) {
       disabled={loading || toggling}
       aria-pressed={displaySaved}
       data-article-id={articleId}
-      className={`font-mono text-[11px] uppercase tracking-wide rounded-full px-3 py-1.5 border transition-colors disabled:opacity-50 ${
-        displaySaved ? "bg-accent border-accent text-white" : "border-line-strong text-ink-2 hover:text-ink"
-      }`}
+      className={
+        bare
+          ? undefined
+          : `font-mono text-[11px] uppercase tracking-wide rounded-full px-3 py-1.5 border transition-colors disabled:opacity-50 ${
+              displaySaved ? "bg-accent border-accent text-white" : "border-line-strong text-ink-2 hover:text-ink"
+            }`
+      }
     >
-      {toggling ? "..." : displaySaved ? "Saved" : "Save"}
+      {toggling ? "..." : displaySaved ? labels.saved : labels.save}
     </button>
   );
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getArticleByShortId, getRelatedArticles } from "@/lib/data";
 import { articleHref } from "@/components/ArticleCard";
-import { timeAgo, thumbGradient, parseShortId } from "@/lib/format";
+import { parseShortId } from "@/lib/format";
 import { lexicalWordCount } from "@/lib/lexical";
 import { WatchlistToggle } from "@/components/WatchlistToggle";
 import { ShareBar } from "@/components/ShareBar";
@@ -72,6 +72,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function formatUpdated(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-US", { month: "long", day: "numeric" }) +
+    " at " +
+    d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
 export default async function ArticlePage({ params }: Props) {
   const { city, idSlug } = await params;
   const article = await resolveArticle(idSlug);
@@ -93,6 +111,8 @@ export default async function ArticlePage({ params }: Props) {
     : `${siteUrl}/api/og/${idSlug}`;
   const wordCount = lexicalWordCount(article.body_lexical);
   const briefItems = article.dek ? [{ term: "Why it matters", description: article.dek }] : [];
+  const authorName = article.hr_authors?.name ?? "Staff";
+  const heroSrc = articleHeroSrc(article);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -113,107 +133,102 @@ export default async function ArticlePage({ params }: Props) {
     mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
   };
 
+  // DOM mirrors redesign/vapornet/index.html's article screen:
+  // .article-wrap > .article-header + figure.article-hero + .article-grid
+  // (.article-body + .article-rail > .rail-sticky). Styling: vapornet.css.
   return (
     <>
       <ReadingProgress targetId="article-wrap" />
-      <main id="article-wrap" className="reading py-10">
+      <main id="article-wrap" className="article-wrap">
         <PageViewTracker articleId={article.id} articleShortId={article.short_id} citySlug={city} />
         <script
           type="application/ld+json"
           nonce={nonce}
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <div className="mb-3 font-mono text-[12px] font-semibold uppercase tracking-wider text-accent">
-          <Link href={`/${city}`} className="hover:underline">
-            {article.hr_categories?.name}
-          </Link>
-          {article.kicker ? <span className="text-ink-3"> · {article.kicker}</span> : ""}
-        </div>
-        <h1 className="mb-4 font-display text-[clamp(30px,4.5vw,54px)] font-black leading-[0.98] tracking-[-0.03em] text-ink">
-          {article.title}
-        </h1>
-        {article.dek && (
-          <p className="mb-5 font-display text-[19px] font-medium leading-relaxed text-ink-2">
-            {article.dek}
-          </p>
-        )}
 
-        <div className="mb-8 flex items-center justify-between gap-4 border-y border-line py-3">
-          <div className="text-[13px] text-ink-3">
-            By <span className="font-medium text-ink-2">{article.hr_authors?.name ?? "Staff"}</span> ·{" "}
-            {timeAgo(article.published_at)}
-            {article.read_time_min ? ` · ${article.read_time_min} min read` : ""}
-          </div>
-          <div className="flex items-center gap-3">
-            <WatchlistToggle articleId={article.id} />
-            <ShareBar title={article.title} />
-          </div>
-        </div>
-
-        {articleHeroSrc(article) ? (
-          <figure className="mb-8">
-            <div className="aspect-[16/9] overflow-hidden rounded-[var(--r-card)]">
-              <Image
-                src={articleHeroSrc(article)!}
-                alt={articleHeroAlt(article)}
-                width={1200}
-                height={630}
-                priority
-                className="h-full w-full object-cover"
-              />
-            </div>
-            {articleHeroAlt(article) && (
-              <figcaption className="mt-2 font-mono text-[10px] text-ink-3">
-                {articleHeroAlt(article)}
-              </figcaption>
+        <header className="article-header">
+          <div className="eyebrow">
+            {article.kicker && <span>{article.kicker}</span>}
+            {article.hr_categories?.name && (
+              <span>
+                <Link href={`/${city}`}>{article.hr_categories.name}</Link>
+              </span>
             )}
-          </figure>
-        ) : (
-          <div
-            className={`aspect-[16/9] rounded-[var(--r-card)] bg-gradient-to-br ${thumbGradient(article.id)} mb-8`}
-            aria-hidden
-          />
-        )}
-
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <article className="min-w-0">
-            {briefItems.length > 0 && <SmartBrief items={briefItems} />}
-
-            <div className="max-w-none text-ink-2 leading-relaxed">
-              <ArticleBody body={article.body_lexical} title={article.title} />
+          </div>
+          <h1>{article.title}</h1>
+          {article.dek && <p className="dek">{article.dek}</p>}
+          <div className="article-meta">
+            <div className="author-avatar">{initials(authorName)}</div>
+            <div>
+              <strong>{authorName}</strong>
+              <span>
+                Updated {formatUpdated(article.published_at)}
+                {article.read_time_min ? ` · ${article.read_time_min} min read` : ""}
+              </span>
             </div>
+            <div className="article-actions">
+              <WatchlistToggle articleId={article.id} bare />
+              <ShareBar title={article.title} bare />
+              <button type="button" disabled title="Audio versions are coming soon">
+                Listen
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <figure className="article-hero">
+          <div className="article-hero-art">
+            {heroSrc && (
+              <Image
+                src={heroSrc}
+                alt={articleHeroAlt(article)}
+                fill
+                priority
+                sizes="(min-width: 1120px) 1064px, 100vw"
+                className="object-cover"
+              />
+            )}
+          </div>
+          <figcaption>
+            <span>{articleHeroAlt(article) || article.title}</span>
+            <span>{article.hero_image_url ? "Photograph" : "Illustration"} · Hampton Roads</span>
+          </figcaption>
+        </figure>
+
+        <div className="article-grid">
+          <article className="article-body">
+            {briefItems.length > 0 && <SmartBrief heading="What you need to know" items={briefItems} />}
+
+            <ArticleBody body={article.body_lexical} title={article.title} />
 
             {wordCount >= INLINE_AD_MIN_WORDS && (
-              <div className="my-9">
-                <DirectSponsor slotId="article-inline-01" articleId={article.id} />
-              </div>
+              <DirectSponsor slotId="article-inline-01" articleId={article.id} variant="article-inline-ad" />
             )}
 
             <SourceNotes articleId={article.id} />
             <ContextRail articles={related} />
 
-            <div className="mt-10">
-              <NewsletterBand
-                title="Get the next story before everyone else"
-                copy="The Morning Dispatch — one flagship story, weekday mornings."
-                source="article-footer"
-              />
-            </div>
+            <NewsletterBand
+              title="Get the next story before everyone else"
+              copy="The Morning Tide — one flagship story, weekday mornings."
+              source="article-footer"
+            />
 
             <CorrectionsLog articleId={article.id} />
           </article>
 
-          <aside className="hidden lg:block">
-            <div className="sticky top-[92px] flex flex-col gap-6">
-              <section className="rounded-[2px_16px_2px_16px] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
-                <span className="mb-1 block font-mono text-[8px] uppercase tracking-[.14em] text-accent-soft">
-                  Track this story
-                </span>
-                <h3 className="mb-2 font-display text-[20px] font-black text-ink">{article.title}</h3>
-                <p className="mb-3 text-[11px] leading-[1.45] text-ink-2">
-                  Save it to your reading list to find it again or come back for updates.
-                </p>
-                <WatchlistToggle articleId={article.id} />
+          <aside className="article-rail">
+            <div className="rail-sticky">
+              <section className="key-people">
+                <span className="section-kicker">Track this story</span>
+                <h3>{article.kicker ?? article.title}</h3>
+                <p>Save it to your reading list to find it again or come back for updates.</p>
+                <WatchlistToggle
+                  articleId={article.id}
+                  bare
+                  labels={{ save: "Follow updates", saved: "Following" }}
+                />
               </section>
               <RailPlacement slotId="article-rail-01" />
             </div>

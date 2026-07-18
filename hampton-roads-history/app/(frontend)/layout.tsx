@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import "../globals.css";
+// Verbatim VaporNet prototype CSS (generated — see scripts/generate-vapornet-css.mts).
+// Unlayered on purpose: it must beat Tailwind v4's layered preflight/utilities.
+import "./vapornet.css";
 import { GlobalNav } from "@/components/GlobalNav";
 import { LiveRibbon } from "@/components/editorial/LiveRibbon";
 import { Footer } from "@/components/Footer";
@@ -44,6 +47,17 @@ const THEME_INIT = `(function(){try{var p=localStorage.getItem('hrh-theme')||'sy
 // this sandbox's Supabase egress restriction).
 export const dynamic = "force-dynamic";
 
+// Static fallback for the section nav when the categories query fails.
+const FALLBACK_CITIES = [
+  "Norfolk", "Virginia Beach", "Hampton", "Newport News", "Chesapeake", "Portsmouth", "Suffolk",
+].map((name, i) => ({
+  id: name.toLowerCase().replace(/\s+/g, "-"),
+  name,
+  slug: name.toLowerCase().replace(/\s+/g, "-"),
+  order: i,
+  accent_hex: null,
+}));
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hamptonroadshistory.com";
 const title = "Hampton Roads History — Seven Cities, Four Centuries";
 const description =
@@ -73,7 +87,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cities = await getCategories();
+  // The section nav must not take the whole shell down if the DB is briefly
+  // unreachable. Fall back to the seven canonical Hampton Roads cities — a
+  // fixed brand fact — so the header/footer always render. (This also lets
+  // the design fixtures render without a live database.)
+  const cities = await getCategories().catch(() => FALLBACK_CITIES);
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
@@ -91,11 +109,14 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: THEME_INIT }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-base text-ink">
-        <LiveRibbon />
+      {/* .publication-page is the prototype's page surface (newsprint bg,
+          ink, night-mode variable swap); the ribbon sits below the header
+          exactly as in redesign/vapornet/index.html. */}
+      <body className="publication-page relative flex min-h-full flex-col">
         <GlobalNav cities={cities} />
+        <LiveRibbon />
         <div className="flex-1">{children}</div>
-        <Footer cities={cities} />
+        <Footer />
         <ConsentChip />
         <ConsentCenter />
       </body>

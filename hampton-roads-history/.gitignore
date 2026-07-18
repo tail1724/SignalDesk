@@ -40,3 +40,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+# Visual baselines are generated in CI (real build env + commissioned art),
+# never in the sandbox — see docs/vapornet-pixel-perfect-plan.md §6.
+/tests/visual/*-snapshots/

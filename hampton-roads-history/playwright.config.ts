@@ -21,18 +21,36 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testDir: "./tests/e2e",
       use: {
         ...devices["Desktop Chrome"],
         launchOptions,
       },
     },
+    {
+      // Pixel-perfect visual regression for the VaporNet surfaces.
+      // Run: ALLOW_DESIGN_FIXTURES=1 npm run test:visual
+      // (Chromium only, deterministic font rendering — plan §6.)
+      name: "visual",
+      testDir: "./tests/visual",
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions,
+        deviceScaleFactor: 1,
+      },
+    },
   ],
+  // The visual project needs the design fixtures reachable; when its build
+  // command sets ALLOW_DESIGN_FIXTURES the fixtures render, otherwise they
+  // 404 (production-safe). NEXT_PUBLIC_SUPABASE_* must be present at build
+  // time for the client bundle; the layout falls back to the canonical
+  // cities if the DB is unreachable.
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
         command: "npm run build && npm run start",
         url: "http://localhost:3000",
         reuseExistingServer: !process.env.CI,
-        timeout: 180_000,
+        timeout: 240_000,
       },
 });
