@@ -12,12 +12,12 @@
   align-items: end;
   min-height: 250px;
   padding: clamp(28px, 5vw, 54px);
-  color: #fff;
+  color: #f2fbf9;
   background:
-    radial-gradient(circle at 82% 12%, rgba(233, 189, 99, 0.28), transparent 24%),
-    linear-gradient(128deg, #071524, #123b5b 72%, #17618b);
+    radial-gradient(circle at 82% 12%, rgba(64, 214, 201, 0.22), transparent 26%),
+    linear-gradient(128deg, #071b1c, #0e3a3c 72%, #006e73);
   border-radius: 5px 28px 5px 28px;
-  box-shadow: 0 24px 70px rgba(4, 15, 29, 0.18);
+  box-shadow: 0 24px 70px rgba(7, 27, 28, 0.22);
 }
 
 .hero::after {
@@ -41,7 +41,7 @@
 .eyebrow {
   display: block;
   margin-bottom: 13px;
-  color: #e9bd63;
+  color: #40d6c9;
   font: 700 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -61,7 +61,7 @@
 .hero p {
   max-width: 650px;
   margin: 18px 0 0;
-  color: #c3d1dc;
+  color: #b9d6d2;
   font-size: 14px;
   line-height: 1.55;
 }
@@ -88,7 +88,7 @@
 }
 
 .heroActions a:first-child {
-  color: #0a1d35;
+  color: #071b1c;
   background: #fff;
   border-color: #fff;
 }
@@ -198,7 +198,7 @@
   height: 31px;
   display: grid;
   place-items: center;
-  color: #c93d37;
+  color: var(--qn-accent-energy, #f05a3b);
   border: 1px solid var(--theme-elevation-200);
   border-radius: 50%;
   font: 700 8px ui-monospace, SFMono-Regular, Menlo, monospace;

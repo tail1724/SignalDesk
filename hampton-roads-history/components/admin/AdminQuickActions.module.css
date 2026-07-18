@@ -25,17 +25,17 @@
 }
 
 .actions a:last-child {
-  color: #fff;
-  background: #0a1d35;
-  border-color: #0a1d35;
+  color: var(--qn-action-contrast, #fff);
+  background: var(--qn-action, #006e73);
+  border-color: var(--qn-action, #006e73);
 }
 
 .dot {
   width: 7px;
   height: 7px;
-  background: #2f936a;
+  background: var(--qn-accent-signal, #b7e84b);
   border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(47, 147, 106, 0.13);
+  box-shadow: 0 0 0 3px rgba(183, 232, 75, 0.16);
 }
 
 @media (max-width: 720px) {

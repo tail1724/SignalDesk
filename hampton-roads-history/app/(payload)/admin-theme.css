@@ -1,4 +1,54 @@
+/* ============================================================
+   Quantum Newsroom — Payload Admin theme (v1.0)
+   ------------------------------------------------------------
+   The Payload half of the shared color system. Foundation values
+   are identical to Hunt's Pointe's src/styles/quantum-tokens.css;
+   the two files must stay value-identical (Quantum Newsroom PRD
+   §6.3: both products consume the same published token values,
+   and no app may override a shared semantic color).
+
+   The public Hampton Roads site keeps its own publication brand
+   (app/globals.css) — reproducing it inside internal tools is an
+   explicit PRD non-goal. Legacy --hr-* aliases stay defined for
+   compatibility.
+   ============================================================ */
+
 :root {
+  /* Quantum foundations */
+  --qn-canvas-light: #eff6f5;
+  --qn-surface-light: #fbfffe;
+  --qn-surface-strong-light: #ddece9;
+  --qn-text-primary-light: #102423;
+  --qn-action-primary-light: #006e73;
+  --qn-canvas-dark: #071b1c;
+  --qn-surface-dark: #0e292a;
+  --qn-surface-strong-dark: #183b3c;
+  --qn-text-primary-dark: #f2fbf9;
+  --qn-action-primary-dark: #40d6c9;
+  --qn-accent-energy: #f05a3b;
+  --qn-accent-signal: #b7e84b;
+  --qn-accent-intelligence: #5b3fd1;
+
+  /* Semantic workflow palette (PRD §5) — light/dark pairs */
+  --qn-status-draft-light: #5d6679;
+  --qn-status-draft-dark: #aeb8c8;
+  --qn-status-review-light: #8a5a00;
+  --qn-status-review-dark: #ffc857;
+  --qn-status-approved-light: #00766c;
+  --qn-status-approved-dark: #58d9cc;
+  --qn-status-scheduled-light: #1d5fc9;
+  --qn-status-scheduled-dark: #82b2ff;
+  --qn-status-published-light: #17763a;
+  --qn-status-published-dark: #5ddd86;
+  --qn-status-ai-light: #5b3fd1;
+  --qn-status-ai-dark: #afa1ff;
+  --qn-status-human-light: #007f9b;
+  --qn-status-human-dark: #68d9ea;
+  --qn-status-warning-light: #bc2830;
+  --qn-status-warning-dark: #ff7a80;
+
+  /* Legacy Hampton Roads aliases — retained so nothing referencing
+     them breaks; new admin work should consume --qn-* tokens. */
   --hr-federal: #0a1d35;
   --hr-civic: #17618b;
   --hr-signal: #c93d37;
@@ -9,21 +59,123 @@
   --style-radius-l: 17px;
 }
 
+/* ---- Light theme: petrol-tinted canvas, never pure white ---- */
 html[data-theme="light"] {
-  --theme-bg: #f6f3eb;
-  --theme-input-bg: #fffefb;
+  --theme-bg: var(--qn-canvas-light);
+  --theme-input-bg: var(--qn-surface-light);
+  --theme-text: var(--qn-text-primary-light);
+
+  /* Petrol-tinted elevation ramp (surface → ink), monotonic for AA. */
+  --theme-elevation-0: #fbfffe;
+  --theme-elevation-25: #f3faf8;
+  --theme-elevation-50: #eaf4f2;
+  --theme-elevation-100: #ddece9;
+  --theme-elevation-150: #cfe2de;
+  --theme-elevation-200: #c2d8d3;
+  --theme-elevation-250: #b4cec8;
+  --theme-elevation-300: #a6c3bd;
+  --theme-elevation-350: #98b8b2;
+  --theme-elevation-400: #8aaea7;
+  --theme-elevation-450: #7ca39c;
+  --theme-elevation-500: #6f9992;
+  --theme-elevation-550: #628e87;
+  --theme-elevation-600: #55837c;
+  --theme-elevation-650: #487870;
+  --theme-elevation-700: #3b6d66;
+  --theme-elevation-750: #2f615a;
+  --theme-elevation-800: #23554f;
+  --theme-elevation-850: #1a4742;
+  --theme-elevation-900: #123a36;
+  --theme-elevation-950: #0b2f2b;
+  --theme-elevation-1000: #0a1e1d;
+
+  --theme-success-400: #1f9e8f;
+  --theme-success-500: var(--qn-status-approved-light);
+  --theme-success-600: #005e56;
+  --theme-error-400: #d4444d;
+  --theme-error-500: var(--qn-status-warning-light);
+  --theme-error-600: #9c1f27;
+  --theme-warning-400: #a87a1f;
+  --theme-warning-500: var(--qn-status-review-light);
+  --theme-warning-600: #6e4800;
+
+  --qn-status-draft: var(--qn-status-draft-light);
+  --qn-status-review: var(--qn-status-review-light);
+  --qn-status-approved: var(--qn-status-approved-light);
+  --qn-status-scheduled: var(--qn-status-scheduled-light);
+  --qn-status-published: var(--qn-status-published-light);
+  --qn-status-ai: var(--qn-status-ai-light);
+  --qn-status-human: var(--qn-status-human-light);
+  --qn-status-warning: var(--qn-status-warning-light);
+  --qn-action: var(--qn-action-primary-light);
+  --qn-action-hover: #005a5e;
+  --qn-action-contrast: #ffffff;
+}
+
+/* ---- Dark theme: deep petrol, designed rather than inverted ---- */
+html[data-theme="dark"] {
+  --theme-bg: var(--qn-canvas-dark);
+  --theme-input-bg: var(--qn-surface-dark);
+  --theme-text: var(--qn-text-primary-dark);
+
+  --theme-elevation-0: #071b1c;
+  --theme-elevation-25: #0b2224;
+  --theme-elevation-50: #0e292a;
+  --theme-elevation-100: #183b3c;
+  --theme-elevation-150: #1e4547;
+  --theme-elevation-200: #255052;
+  --theme-elevation-250: #2c5b5d;
+  --theme-elevation-300: #336668;
+  --theme-elevation-350: #3a7173;
+  --theme-elevation-400: #427d7e;
+  --theme-elevation-450: #4b8889;
+  --theme-elevation-500: #559493;
+  --theme-elevation-550: #62a09e;
+  --theme-elevation-600: #6faca9;
+  --theme-elevation-650: #7fb8b4;
+  --theme-elevation-700: #90c4bf;
+  --theme-elevation-750: #a2cfca;
+  --theme-elevation-800: #b6dbd6;
+  --theme-elevation-850: #cbe6e2;
+  --theme-elevation-900: #dff1ee;
+  --theme-elevation-950: #e9f6f4;
+  --theme-elevation-1000: #f2fbf9;
+
+  --theme-success-400: #7ce4d8;
+  --theme-success-500: var(--qn-status-approved-dark);
+  --theme-success-600: #3db3a7;
+  --theme-error-400: #ff9ba0;
+  --theme-error-500: var(--qn-status-warning-dark);
+  --theme-error-600: #e0545c;
+  --theme-warning-400: #ffd784;
+  --theme-warning-500: var(--qn-status-review-dark);
+  --theme-warning-600: #d99f2b;
+
+  --qn-status-draft: var(--qn-status-draft-dark);
+  --qn-status-review: var(--qn-status-review-dark);
+  --qn-status-approved: var(--qn-status-approved-dark);
+  --qn-status-scheduled: var(--qn-status-scheduled-dark);
+  --qn-status-published: var(--qn-status-published-dark);
+  --qn-status-ai: var(--qn-status-ai-dark);
+  --qn-status-human: var(--qn-status-human-dark);
+  --qn-status-warning: var(--qn-status-warning-dark);
+  --qn-action: var(--qn-action-primary-dark);
+  --qn-action-hover: #6ce0d6;
+  --qn-action-contrast: var(--qn-canvas-dark);
 }
 
 body {
   letter-spacing: -0.006em;
 }
 
+/* Persistent navigation stays deep petrol in both themes for
+   cross-product continuity (PRD §7.1). */
 .nav {
-  color: #d8e2e9;
+  color: #cfe4e2;
   background:
-    radial-gradient(circle at 60% 0%, rgba(23, 97, 139, 0.35), transparent 30%),
-    #071524;
-  border-right-color: rgba(255, 255, 255, 0.08);
+    radial-gradient(circle at 60% 0%, rgba(64, 214, 201, 0.14), transparent 32%),
+    var(--qn-canvas-dark);
+  border-right-color: rgba(242, 251, 249, 0.08);
 }
 
 .nav a,
@@ -32,7 +184,7 @@ body {
 }
 
 .nav .nav-group__label {
-  color: #738b9e;
+  color: #6f9a96;
   font-size: 9px;
   font-weight: 750;
   letter-spacing: 0.12em;
@@ -43,11 +195,11 @@ body {
 .nav .nav__link:focus-visible,
 .nav .nav__link.active {
   color: #fff;
-  background: rgba(255, 255, 255, 0.075);
+  background: rgba(242, 251, 249, 0.075);
 }
 
 .nav .nav__link-indicator {
-  background: var(--hr-brass);
+  background: var(--qn-action-primary-dark);
 }
 
 .template-default__wrap,
@@ -62,10 +214,11 @@ body {
   letter-spacing: -0.04em;
 }
 
+/* Primary action = the teal interaction anchor, per theme. */
 .btn--style-primary {
-  --bg-color: var(--hr-federal);
-  --hover-bg: var(--hr-civic);
-  --color: #fff;
+  --bg-color: var(--qn-action);
+  --hover-bg: var(--qn-action-hover);
+  --color: var(--qn-action-contrast);
 }
 
 .pill {
@@ -83,6 +236,11 @@ body {
 
 .render-fields > .field-type {
   scroll-margin-top: 90px;
+}
+
+/* Keyboard focus rides the theme's action color (PRD §7.3). */
+:focus-visible {
+  outline-color: var(--qn-action);
 }
 
 @media (prefers-reduced-motion: reduce) {
