@@ -12,6 +12,7 @@ import { AdFrame } from "@/components/ads/AdFrame";
 import { AdSlot } from "@/components/AdSlot";
 import { PageEngagement } from "@/components/ads/PageEngagement";
 import { PageViewTracker } from "@/components/PageViewTracker";
+import { CityBento } from "@/components/reactbits/CityBento";
 
 // Homepage — DOM mirrors redesign/vapornet/index.html's home screen:
 // .home-main > cinematic hero, morning-line, leader ad, editorial grid
@@ -106,13 +107,7 @@ export default async function HomePage() {
           <span className="section-kicker">Seven cities, one region</span>
           <h2 id="cities-title">Choose your home view</h2>
         </div>
-        <div className="city-cloud">
-          {cities.map((c) => (
-            <Link key={c.id} href={`/${c.slug}`}>
-              {c.name}
-            </Link>
-          ))}
-        </div>
+        <CityBento cities={cities} />
       </section>
       <PageEngagement routeType="home" />
     </main>

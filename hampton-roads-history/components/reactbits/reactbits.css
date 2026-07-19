@@ -1,0 +1,310 @@
+/* ============================================================
+   react-bits surface styles (LaserFlow + MagicBento)
+   ------------------------------------------------------------
+   Hand-authored (NOT generated from the vapornet prototype).
+   Themed entirely from the VaporNet Americana tokens in
+   app/globals.css so both effects read as part of the same
+   system in light and dark. Imported from the (frontend) layout.
+   ============================================================ */
+
+/* --- LaserFlow -------------------------------------------- */
+.laser-flow-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  pointer-events: none;
+}
+
+/* Decorative laser layer. The canvas is opaque black with a bright beam;
+   `screen` composites only the beam/fog light over the dark surface behind
+   it. Non-interactive and excluded from the a11y tree. */
+.rb-laser-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  overflow: hidden;
+}
+
+/* Hero: beam falls from the upper right, near the orbit rings. Content is
+   lifted above the beam so the copy is never dimmed by the blend. */
+.cinematic-hero .rb-laser-layer {
+  z-index: 1;
+}
+.cinematic-hero .hero-copy,
+.cinematic-hero .hero-brief,
+.cinematic-hero .hero-caption {
+  position: relative;
+  z-index: 4;
+}
+
+/* Newsletter band: beam pours down into the signup pill. */
+.morning-line {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.morning-line > div,
+.morning-line .inline-form,
+.morning-line form {
+  position: relative;
+  z-index: 2;
+}
+.morning-line .rb-laser-layer {
+  z-index: 0;
+}
+
+/* --- MagicBento: shared card primitives ------------------- */
+.rb-bento-section {
+  position: relative;
+  user-select: none;
+}
+
+.rb-bento-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.25s ease, background 0.25s ease;
+
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 320px;
+  --glow-color: 201, 61, 55;
+}
+
+.rb-bento-card__link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+}
+
+/* Masked radial border-glow that tracks the cursor via the spotlight. */
+.rb-bento-card--border-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 5px;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.4)) 30%,
+    transparent 60%
+  );
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.rb-particle::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: rgba(var(--glow-color), 0.2);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.rb-global-spotlight {
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* --- Surface 3: "Choose your home view" city bento -------- */
+.city-bento {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+.city-bento-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 104px;
+  padding: 15px 16px;
+  border-radius: 2px 16px 2px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+}
+.city-bento-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.14);
+}
+.city-bento-card .city-index {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.72);
+}
+.city-bento-card .city-name {
+  margin-top: auto;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.city-bento-card .city-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+/* --- Surface 4: /watch live-desk command board ------------ */
+.watch-board {
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+.watch-board-head {
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--federal);
+}
+[data-theme="dark"] .watch-board-head {
+  border-bottom-color: var(--line-strong);
+}
+.watch-board-head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(34px, 4.4vw, 52px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.watch-board-head p {
+  margin: 12px 0 0;
+  max-width: 54ch;
+  color: var(--ink-2);
+  font-size: 16px;
+}
+.watch-bento {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 680px) {
+  .watch-bento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1000px) {
+  .watch-bento {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.watch-cell {
+  border-radius: var(--r-card);
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  padding: 20px;
+}
+.watch-cell h4 {
+  margin: 0 0 12px;
+}
+/* Cells whose child widget carries its own card chrome sit in a bare frame
+   (radius only) so the glow ring aligns to the widget, no double border. */
+.watch-cell--bare {
+  border-radius: var(--r-card);
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.watch-cell--bare > * {
+  height: 100%;
+}
+.watch-cell--wide {
+  grid-column: span 1;
+}
+@media (min-width: 680px) {
+  .watch-cell--wide {
+    grid-column: span 2;
+  }
+}
+.watch-cell-title {
+  margin: 0 0 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* --- Surface 5: quiet cross-link bento -------------------- */
+.crosslink-bento {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin: 8px 0 4px;
+}
+.crosslink-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 128px;
+  padding: 22px;
+  border-radius: 2px 16px 2px 16px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+.crosslink-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+}
+.crosslink-card .crosslink-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+}
+.crosslink-card .crosslink-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.crosslink-card .crosslink-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.crosslink-card .crosslink-arrow {
+  margin-top: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-bento-card {
+    transition: none;
+  }
+}

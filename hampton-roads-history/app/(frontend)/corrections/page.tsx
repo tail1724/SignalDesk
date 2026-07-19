@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StaticPage } from "@/components/StaticPage";
+import { CrossLinkBento } from "@/components/reactbits/CrossLinkBento";
 
 export const metadata: Metadata = {
   title: "Corrections — Hampton Roads History",
@@ -42,6 +43,26 @@ export default function CorrectionsPage() {
           This policy is part of our{" "}
           <Link href="/editorial-standards">editorial standards</Link>.
         </p>
+      </section>
+
+      <section>
+        <h2>Related</h2>
+        <CrossLinkBento
+          links={[
+            {
+              href: "/editorial-standards",
+              label: "How we report",
+              title: "Editorial standards",
+              description: "Sourcing, fact-checking, and independence from advertisers.",
+            },
+            {
+              href: "/about",
+              label: "The publication",
+              title: "About us",
+              description: "Who runs Hampton Roads History and how to reach us.",
+            },
+          ]}
+        />
       </section>
     </StaticPage>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StaticPage } from "@/components/StaticPage";
+import { CrossLinkBento } from "@/components/reactbits/CrossLinkBento";
 
 export const metadata: Metadata = {
   title: "Editorial Standards — Hampton Roads History",
@@ -63,6 +64,32 @@ export default function EditorialStandardsPage() {
           Questions about these standards? Email{" "}
           <a href="mailto:hello@hamptonroadshistory.com">hello@hamptonroadshistory.com</a>.
         </p>
+      </section>
+
+      <section>
+        <h2>Related</h2>
+        <CrossLinkBento
+          links={[
+            {
+              href: "/corrections",
+              label: "Accountability",
+              title: "Corrections",
+              description: "Report an error and see how we handle it publicly.",
+            },
+            {
+              href: "/ad-choices",
+              label: "Advertising",
+              title: "Ad Choices",
+              description: "How ads are selected, labeled, and kept separate from coverage.",
+            },
+            {
+              href: "/about",
+              label: "The publication",
+              title: "About us",
+              description: "Who runs Hampton Roads History and how we're funded.",
+            },
+          ]}
+        />
       </section>
     </StaticPage>
   );
