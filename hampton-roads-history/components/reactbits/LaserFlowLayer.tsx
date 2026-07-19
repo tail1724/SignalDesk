@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import type { LaserFlowProps } from "./LaserFlow";
+import { DecorationBoundary } from "./DecorationBoundary";
 
 // ssr:false keeps the `three` bundle off the server render and out of the
 // initial payload — it loads after the surrounding surface has painted,
@@ -64,9 +65,11 @@ export function LaserFlowLayer({
   if (suppressed) return null;
 
   return (
-    <div className={`rb-laser-layer ${className}`} aria-hidden>
-      <LaserFlow color={color} {...laserProps} />
-    </div>
+    <DecorationBoundary>
+      <div className={`rb-laser-layer ${className}`} aria-hidden>
+        <LaserFlow color={color} {...laserProps} />
+      </div>
+    </DecorationBoundary>
   );
 }
 
