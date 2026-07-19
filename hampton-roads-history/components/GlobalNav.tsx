@@ -99,53 +99,63 @@ export function GlobalNav({ cities }: { cities: City[] }) {
         ))}
       </nav>
 
-      {/* Sections drawer — behavior only; not part of the reference shots. */}
+      {/* Sections drawer — VaporNet-styled panel (see .sections-drawer in globals.css). */}
       <dialog
         ref={drawerRef}
         onClose={() => setDrawerOpen(false)}
         onClick={(e) => {
           if (e.target === drawerRef.current) setDrawerOpen(false);
         }}
-        className="m-0 h-full max-h-full w-72 max-w-[85vw] border-r border-line bg-surface-1 p-6 backdrop:bg-black/40"
+        className="sections-drawer"
         aria-label="Sections menu"
       >
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[9px] uppercase tracking-[.14em] text-ink-3">Sections</span>
-          <ThemeToggle />
-        </div>
-        <nav className="mt-4 flex flex-col gap-1" aria-label="All sections">
-          {sections.map((s) => (
-            <Link
-              key={s.href}
-              href={s.href}
-              onClick={() => setDrawerOpen(false)}
-              className="rounded px-2 py-2 font-display text-[17px] font-bold text-ink hover:bg-surface-2"
-            >
-              {s.label}
+        <div className="drawer-inner">
+          <div className="drawer-top">
+            <span className="drawer-kicker">Sections</span>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <button
+                type="button"
+                className="drawer-close"
+                onClick={() => setDrawerOpen(false)}
+                aria-label="Close sections menu"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <nav className="drawer-nav" aria-label="All sections">
+            {sections.map((s, i) => (
+              <Link
+                key={s.href}
+                href={s.href}
+                onClick={() => setDrawerOpen(false)}
+                aria-current={pathname === s.href ? "page" : undefined}
+              >
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                {s.label}
+              </Link>
+            ))}
+          </nav>
+          <nav className="drawer-utility" aria-label="More from Hampton Roads">
+            <Link href="/search" onClick={() => setDrawerOpen(false)}>
+              Search the archive
             </Link>
-          ))}
-          <Link
-            href="/search"
-            onClick={() => setDrawerOpen(false)}
-            className="rounded px-2 py-2 text-[13px] text-ink-2 hover:bg-surface-2"
-          >
-            Search the archive
-          </Link>
-          <Link
-            href="/newsletter"
-            onClick={() => setDrawerOpen(false)}
-            className="rounded px-2 py-2 text-[13px] text-ink-2 hover:bg-surface-2"
-          >
-            Newsletter
-          </Link>
-        </nav>
-        <button
-          type="button"
-          onClick={() => setDrawerOpen(false)}
-          className="mt-6 w-full rounded-full border border-line py-2 text-[12px] font-semibold text-ink-2"
-        >
-          Close
-        </button>
+            <Link href="/newsletter" onClick={() => setDrawerOpen(false)}>
+              The Morning Tide newsletter
+            </Link>
+            <Link href="/about" onClick={() => setDrawerOpen(false)}>
+              About the publication
+            </Link>
+            <Link href="/editorial-standards" onClick={() => setDrawerOpen(false)}>
+              Editorial standards
+            </Link>
+          </nav>
+          <div className="drawer-foot">
+            <span>Hampton Roads</span>
+            <span>America begins at the water</span>
+          </div>
+        </div>
       </dialog>
     </header>
   );

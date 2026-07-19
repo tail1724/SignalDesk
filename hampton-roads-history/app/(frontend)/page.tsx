@@ -96,7 +96,7 @@ export default async function HomePage() {
           <section className="trust-card">
             <span className="section-kicker">How we report</span>
             <p>Named authors. Visible sources. Clear corrections. Advertising never controls coverage.</p>
-            <Link href="/about#standards">Read our standards</Link>
+            <Link href="/editorial-standards">Read our standards</Link>
           </section>
         </aside>
       </section>
