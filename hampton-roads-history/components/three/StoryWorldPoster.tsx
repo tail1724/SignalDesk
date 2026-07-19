@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
+import { DecorationBoundary } from "@/components/reactbits/DecorationBoundary";
 
 // ssr:false is only valid inside a Client Component — mirrors the
 // OceanBackground.tsx pattern so the `three` bundle loads after the poster
@@ -83,7 +84,11 @@ export function StoryWorldPoster({ posterSrc }: { posterSrc?: string }) {
         <div className="hero-gridlines" />
         <div className="hero-orbit orbit-one" />
         <div className="hero-orbit orbit-two" />
-        {!prefersReducedMotion && <StoryWorldCanvas />}
+        {!prefersReducedMotion && (
+          <DecorationBoundary>
+            <StoryWorldCanvas />
+          </DecorationBoundary>
+        )}
       </div>
       <div className="hero-shade" aria-hidden />
     </>
