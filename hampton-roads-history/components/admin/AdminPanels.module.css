@@ -1,0 +1,169 @@
+/* Epic A (VaporNet Americana plan §08): shared chrome for the newsroom-control
+   dashboard panels (WorkflowQueue, CreativeScanStatus, YieldHealth,
+   GovernanceGate, SupplyChainStatus, AuditTimeline).
+
+   Styled with Payload's own theme tokens (--theme-elevation-*, --theme-text,
+   --theme-success/warning/error-*) so the panels track the admin theme in both
+   light and dark without redefining colors. The admin theme itself stays
+   Quantum Newsroom (app/(payload)/admin-theme.css) — reproducing the public
+   VaporNet brand inside internal tools is a documented PRD non-goal. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.panel {
+  padding: 22px;
+  background: var(--theme-elevation-0);
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 5px 18px 5px 18px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kicker {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--theme-elevation-500);
+}
+
+.panel h2 {
+  margin: 3px 0 0;
+  font-size: 17px;
+}
+
+.panelHeader a {
+  font-size: 12px;
+  color: var(--theme-text);
+  opacity: 0.75;
+}
+
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.stat {
+  padding: 12px 14px;
+  background: var(--theme-elevation-50);
+  border: 1px solid var(--theme-elevation-100);
+  border-radius: 6px;
+}
+
+.stat span {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--theme-elevation-500);
+}
+
+.stat strong {
+  display: block;
+  font-size: 23px;
+  line-height: 1.1;
+  margin-top: 5px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 0;
+  border-top: 1px solid var(--theme-elevation-100);
+}
+
+.row:first-of-type {
+  border-top: none;
+}
+
+.row strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.row small {
+  display: block;
+  font-size: 11px;
+  color: var(--theme-elevation-500);
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ok {
+  background: color-mix(in srgb, var(--theme-success-500) 18%, transparent);
+  color: var(--theme-success-550, var(--theme-success-500));
+}
+
+.warn {
+  background: color-mix(in srgb, var(--theme-warning-500) 22%, transparent);
+  color: var(--theme-warning-550, var(--theme-warning-500));
+}
+
+.bad {
+  background: color-mix(in srgb, var(--theme-error-500) 18%, transparent);
+  color: var(--theme-error-550, var(--theme-error-500));
+}
+
+.muted {
+  background: var(--theme-elevation-100);
+  color: var(--theme-elevation-500);
+}
+
+.chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+  background: color-mix(in srgb, var(--theme-warning-500) 20%, transparent);
+  color: var(--theme-warning-550, var(--theme-warning-500));
+}
+
+.bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--theme-elevation-150);
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--theme-success-500);
+}
+
+.barFill[data-low="true"] {
+  background: var(--theme-error-500);
+}
+
+.empty {
+  color: var(--theme-elevation-500);
+  font-size: 13px;
+  padding: 10px 0;
+}

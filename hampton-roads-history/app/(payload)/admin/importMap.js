@@ -25,6 +25,12 @@ import { default as default_d9087a380941d12f95aff168665b00b4 } from '@/component
 import { default as default_fd0a9bbb35693e340bbbfa9596236d37 } from '@/components/admin/BrandLogo'
 import { default as default_f1547360394b329cd8db577585cdae01 } from '@/components/admin/AdminQuickActions'
 import { default as default_a34a43814eed3796dd6af7b1e6b62f3d } from '@/components/admin/NewsroomDashboard'
+import { default as default_ce80a835bc02341dce844b4fed407167 } from '@/components/admin/WorkflowQueue'
+import { default as default_dda3ec6c116344184dc42631f3611610 } from '@/components/admin/CreativeScanStatus'
+import { default as default_ba6afcb97940cd5d062fcd7330089ff3 } from '@/components/admin/YieldHealth'
+import { default as default_150a42b4abb39b6fa948de0813fc4406 } from '@/components/admin/GovernanceGate'
+import { default as default_4085bf29ff82eb4caf4a65bb4d656c27 } from '@/components/admin/SupplyChainStatus'
+import { default as default_ac8b53c6d659ad0671237c1448e2a73a } from '@/components/admin/AuditTimeline'
 import { default as default_74727117fae824e09357b3090da79253 } from '@/components/admin/NavStatus'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -58,6 +64,12 @@ export const importMap = {
   "@/components/admin/BrandLogo#default": default_fd0a9bbb35693e340bbbfa9596236d37,
   "@/components/admin/AdminQuickActions#default": default_f1547360394b329cd8db577585cdae01,
   "@/components/admin/NewsroomDashboard#default": default_a34a43814eed3796dd6af7b1e6b62f3d,
+  "@/components/admin/WorkflowQueue#default": default_ce80a835bc02341dce844b4fed407167,
+  "@/components/admin/CreativeScanStatus#default": default_dda3ec6c116344184dc42631f3611610,
+  "@/components/admin/YieldHealth#default": default_ba6afcb97940cd5d062fcd7330089ff3,
+  "@/components/admin/GovernanceGate#default": default_150a42b4abb39b6fa948de0813fc4406,
+  "@/components/admin/SupplyChainStatus#default": default_4085bf29ff82eb4caf4a65bb4d656c27,
+  "@/components/admin/AuditTimeline#default": default_ac8b53c6d659ad0671237c1448e2a73a,
   "@/components/admin/NavStatus#default": default_74727117fae824e09357b3090da79253,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
