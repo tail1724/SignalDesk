@@ -5,6 +5,9 @@ import "../globals.css";
 // Verbatim VaporNet prototype CSS (generated — see scripts/generate-vapornet-css.mts).
 // Unlayered on purpose: it must beat Tailwind v4's layered preflight/utilities.
 import "./vapornet.css";
+// react-bits surface styles (LaserFlow + MagicBento) — hand-authored, themed
+// from the VaporNet tokens; kept separate from the generated vapornet.css.
+import "@/components/reactbits/reactbits.css";
 import { GlobalNav } from "@/components/GlobalNav";
 import { LiveRibbon } from "@/components/editorial/LiveRibbon";
 import { Footer } from "@/components/Footer";
