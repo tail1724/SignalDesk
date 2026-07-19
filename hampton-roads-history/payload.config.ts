@@ -48,7 +48,19 @@ export default buildConfig({
     },
     components: {
       actions: ["@/components/admin/AdminQuickActions"],
-      beforeDashboard: ["@/components/admin/NewsroomDashboard"],
+      beforeDashboard: [
+        "@/components/admin/NewsroomDashboard",
+        // Epic A newsroom-control panels. Each is role-gated internally and
+        // renders nothing for roles that shouldn't see it, so the dashboard is
+        // role-aware (editors see workflow; ad_ops/analyst see yield, creative
+        // scan, supply chain; governance roles see the gate + audit).
+        "@/components/admin/WorkflowQueue",
+        "@/components/admin/CreativeScanStatus",
+        "@/components/admin/YieldHealth",
+        "@/components/admin/GovernanceGate",
+        "@/components/admin/SupplyChainStatus",
+        "@/components/admin/AuditTimeline",
+      ],
       beforeNavLinks: ["@/components/admin/NavStatus"],
       graphics: {
         Icon: "@/components/admin/BrandIcon",

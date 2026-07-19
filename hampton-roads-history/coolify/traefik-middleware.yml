@@ -24,6 +24,25 @@ http:
         period: 1m
         burst: 20
 
+    # Hunt's Pointe → SignalDesk draft ingestion (Epic F). Server-to-server,
+    # HMAC-signed and idempotent; low steady volume but can burst on a batch
+    # push, so a modest sustained rate with a small burst.
+    hr-integrations-ratelimit:
+      rateLimit:
+        average: 30
+        period: 1m
+        burst: 10
+
+    # Ad decision + event chain (Epic Y). A single pageview issues many calls
+    # (opportunity/decision/render/viewable per slot + page_engagement), so the
+    # ceiling is high enough not to throttle a genuine reader browsing quickly;
+    # it exists to cap abuse, not normal traffic.
+    hr-ads-ratelimit:
+      rateLimit:
+        average: 300
+        period: 1m
+        burst: 100
+
   routers:
     hr-revalidate:
       rule: "PathPrefix(`/api/revalidate`)"
@@ -35,6 +54,18 @@ http:
       rule: "PathPrefix(`/api/events`)"
       middlewares:
         - hr-events-ratelimit
+      service: hampton-roads-history
+
+    hr-integrations:
+      rule: "PathPrefix(`/api/integrations/hunts-pointe`)"
+      middlewares:
+        - hr-integrations-ratelimit
+      service: hampton-roads-history
+
+    hr-ads:
+      rule: "PathPrefix(`/api/ads`)"
+      middlewares:
+        - hr-ads-ratelimit
       service: hampton-roads-history
 
 # Note: `service: hampton-roads-history` must match the Coolify-generated

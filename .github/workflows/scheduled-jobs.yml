@@ -1,0 +1,72 @@
+# Epic D / Epic G / Epic Y scheduled operations (plan §10.4).
+#
+# DigitalOcean App Platform has no first-class cron for arbitrary commands, so
+# the two recurring data jobs run here on a schedule instead. If the app is
+# instead run on Coolify (plan §10), configure these as Coolify "Scheduled
+# Tasks" with the same commands and crons and disable this workflow.
+#
+# Both jobs are idempotent and safe to re-run. Requires these repository
+# secrets (Settings → Secrets → Actions), pointed at PRODUCTION:
+#   DATABASE_URI, PAYLOAD_SECRET, NEXT_PUBLIC_SUPABASE_URL,
+#   SUPABASE_SERVICE_ROLE_KEY
+name: Scheduled jobs
+
+on:
+  schedule:
+    # Retention purge — daily 09:00 UTC. Deletes expired event/rollup rows
+    # (raw 30d, opportunity/decision 90d, rollup 13mo, audit 24mo) and writes
+    # an audit event for the run.
+    - cron: "0 9 * * *"
+    # Ad aggregation — daily 07:00 UTC. Rolls the *previous* UTC day of
+    # hr_ad_events into hr_ad_daily (run after midnight so the day is complete).
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Which job to run manually"
+        required: true
+        default: "aggregate"
+        type: choice
+        options: [aggregate, retention]
+      execute:
+        description: "Actually write/delete (false = dry run)"
+        required: true
+        default: false
+        type: boolean
+
+defaults:
+  run:
+    working-directory: hampton-roads-history
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      DATABASE_URI: ${{ secrets.DATABASE_URI }}
+      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: hampton-roads-history/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+
+      # Aggregation runs on the 07:00 cron and on manual "aggregate" dispatch.
+      - name: Ad aggregation (previous day → hr_ad_daily)
+        if: >-
+          github.event.schedule == '0 7 * * *' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'aggregate')
+        run: npm run aggregate:ads -- ${{ (github.event_name == 'schedule' || github.event.inputs.execute == 'true') && '--execute' || '' }}
+
+      # Retention runs on the 09:00 cron and on manual "retention" dispatch.
+      - name: Retention purge
+        if: >-
+          github.event.schedule == '0 9 * * *' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'retention')
+        run: npm run retention -- ${{ (github.event_name == 'schedule' || github.event.inputs.execute == 'true') && '--execute' || '' }}

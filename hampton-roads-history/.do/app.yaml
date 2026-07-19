@@ -57,6 +57,11 @@ services:
       - key: NEXT_PUBLIC_SITE_URL
         scope: RUN_AND_BUILD_TIME
         value: ${APP_URL}
+      # Epic Y ad experiment — revenue arm is off by default (baked at build
+      # time). Flip to "1" only for the Epic L launch experiment.
+      - key: NEXT_PUBLIC_ADS_REVENUE_EXPERIMENT
+        scope: RUN_AND_BUILD_TIME
+        value: "0"
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
         scope: RUN_AND_BUILD_TIME
         type: SECRET
