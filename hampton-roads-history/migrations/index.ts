@@ -2,6 +2,7 @@ import * as migration_20260716_010821_initial_baseline from './20260716_010821_i
 import * as migration_20260716_013020_add_media from './20260716_013020_add_media';
 import * as migration_20260717_023356_newsroom_control_plane from './20260717_023356_newsroom_control_plane';
 import * as migration_20260717_102728_epic_g_governance_collections from './20260717_102728_epic_g_governance_collections';
+import * as migration_20260719_000000_media_feature_slots from './20260719_000000_media_feature_slots';
 
 export const migrations = [
   {
@@ -23,5 +24,10 @@ export const migrations = [
     up: migration_20260717_102728_epic_g_governance_collections.up,
     down: migration_20260717_102728_epic_g_governance_collections.down,
     name: '20260717_102728_epic_g_governance_collections'
+  },
+  {
+    up: migration_20260719_000000_media_feature_slots.up,
+    down: migration_20260719_000000_media_feature_slots.down,
+    name: '20260719_000000_media_feature_slots',
   },
 ];
