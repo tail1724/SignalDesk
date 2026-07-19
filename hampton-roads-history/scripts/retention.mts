@@ -44,12 +44,35 @@ type SupabaseTarget = {
   timestampColumn: string;
   retentionDays: number;
   label: string;
+  // When set, only rows whose event_type is in this list are purged — lets one
+  // table hold two retention classes (Epic Y: hr_ad_events keeps raw
+  // render/viewable/engagement for 30d but opportunity/decision logs for 90d).
+  eventTypeFilter?: string[];
 };
 
 const SUPABASE_TARGETS: SupabaseTarget[] = [
   { kind: "supabase", table: "hr_page_events", timestampColumn: "created_at", retentionDays: 30, label: "Raw reader events" },
   { kind: "supabase", table: "hr_ad_impressions", timestampColumn: "created_at", retentionDays: 30, label: "Raw ad events" },
   { kind: "supabase", table: "hr_silver_article_sessions", timestampColumn: "created_at", retentionDays: 90, label: "Pseudonymous session rollups" },
+  // Epic Y event chain (plan §06.3): raw serving/engagement events at 30 days,
+  // the opportunity/decision decision-logs at 90, the daily rollup at 13 months.
+  {
+    kind: "supabase",
+    table: "hr_ad_events",
+    timestampColumn: "created_at",
+    retentionDays: 30,
+    label: "Raw ad chain events",
+    eventTypeFilter: ["ad_render", "ad_viewable", "page_engagement"],
+  },
+  {
+    kind: "supabase",
+    table: "hr_ad_events",
+    timestampColumn: "created_at",
+    retentionDays: 90,
+    label: "Opportunity/decision logs",
+    eventTypeFilter: ["ad_opportunity", "ad_decision"],
+  },
+  { kind: "supabase", table: "hr_ad_daily", timestampColumn: "updated_at", retentionDays: 13 * 30, label: "Ad reporting rollup" },
 ];
 
 const AUDIT_RETENTION_DAYS = 24 * 30; // 24 months, treated as 30-day months like the plan's other month-denominated windows
@@ -60,10 +83,12 @@ async function runSupabaseTarget(target: SupabaseTarget) {
   try {
     const supabase = createServiceSupabase();
 
-    const { count, error: countError } = await supabase
+    let countQuery = supabase
       .from(target.table)
       .select("*", { count: "exact", head: true })
       .lt(target.timestampColumn, cutoff);
+    if (target.eventTypeFilter) countQuery = countQuery.in("event_type", target.eventTypeFilter);
+    const { count, error: countError } = await countQuery;
 
     if (countError) {
       return { ...target, cutoff, matched: null, deleted: false, error: countError.message };
@@ -73,7 +98,9 @@ async function runSupabaseTarget(target: SupabaseTarget) {
       return { ...target, cutoff, matched: count ?? 0, deleted: false, error: null };
     }
 
-    const { error: deleteError } = await supabase.from(target.table).delete().lt(target.timestampColumn, cutoff);
+    let deleteQuery = supabase.from(target.table).delete().lt(target.timestampColumn, cutoff);
+    if (target.eventTypeFilter) deleteQuery = deleteQuery.in("event_type", target.eventTypeFilter);
+    const { error: deleteError } = await deleteQuery;
     return { ...target, cutoff, matched: count ?? 0, deleted: !deleteError, error: deleteError?.message ?? null };
   } catch (error) {
     return { ...target, cutoff, matched: null, deleted: false, error: error instanceof Error ? error.message : String(error) };

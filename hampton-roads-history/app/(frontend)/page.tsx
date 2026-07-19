@@ -10,6 +10,7 @@ import { PartnerStudioCard } from "@/components/ads/PartnerStudioCard";
 import { RailPlacement } from "@/components/ads/RailPlacement";
 import { AdFrame } from "@/components/ads/AdFrame";
 import { AdSlot } from "@/components/AdSlot";
+import { PageEngagement } from "@/components/ads/PageEngagement";
 import { PageViewTracker } from "@/components/PageViewTracker";
 
 // Homepage — DOM mirrors redesign/vapornet/index.html's home screen:
@@ -113,6 +114,7 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+      <PageEngagement routeType="home" />
     </main>
   );
 }

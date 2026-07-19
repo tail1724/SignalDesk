@@ -7,6 +7,7 @@ import { NewsletterBand } from "@/components/NewsletterBand";
 import { AdFrame } from "@/components/ads/AdFrame";
 import { AdSlot } from "@/components/AdSlot";
 import { RailPlacement } from "@/components/ads/RailPlacement";
+import { PageEngagement } from "@/components/ads/PageEngagement";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { timeAgo } from "@/lib/format";
 import { articleHref } from "@/components/ArticleCard";
@@ -130,6 +131,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           </aside>
         </div>
       )}
+      <PageEngagement routeType="section" />
     </div>
   );
 }

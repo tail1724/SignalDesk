@@ -15,6 +15,7 @@
     "generate:types": "node --import tsx scripts/generate-types.mts",
     "seed:placements": "node --import tsx scripts/seed-placements.mts",
     "retention": "node --import tsx scripts/retention.mts",
+    "aggregate:ads": "node --import tsx scripts/aggregate-ads.mts",
     "validate:supply-chain": "node --import tsx scripts/validate-supply-chain.mts",
     "test": "vitest run",
     "test:watch": "vitest",
