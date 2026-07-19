@@ -292,3 +292,13 @@ img {
   border-radius: 50%;
   box-shadow: 0 0 18px var(--gold);
 }
+
+/* Epic Y: a placement whose demand tiers all fail to fill (and that has no
+   house tier) collapses. The AdSlot marks itself data-ad-status="collapsed";
+   this hides the surrounding .ad-frame label chrome so no empty "Advertisement"
+   box is left behind. The decision resolves near-viewable (off-screen), so the
+   collapse happens before the slot reaches the viewport — no layout shift the
+   reader can see. A filled slot keeps its reserved geometry (never collapses). */
+.ad-frame:has(.ad-slot[data-ad-status="collapsed"]) {
+  display: none;
+}

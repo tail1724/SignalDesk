@@ -8,7 +8,21 @@ export interface AdCreative {
   creative_url: string;
   dest_url: string;
   weight: number;
+  campaign_id: string | null;
 }
+
+// Shared house fallback (Epic Y). Served when a placement's demand tiers all
+// fail to fill AND the placement's demand_tier_order includes "house". A house
+// creative has a null creative_id, so it is never token-bound and never counts
+// a paid impression/click.
+export const HOUSE_CREATIVE = {
+  advertiser: "Hampton Roads Heritage Foundation",
+  creative_headline: "Hampton Roads Heritage Foundation",
+  creative_body:
+    "Support the preservation of regional archives, oral histories, and at-risk historic structures across all seven cities.",
+  dest_url: "/advertise",
+  layout_variant: "native-inline",
+} as const;
 
 function getAdSecret(): string {
   const secret = process.env.AD_HMAC_SECRET;
@@ -24,7 +38,7 @@ export async function pickCreativeForSlot(slotId: string): Promise<AdCreative | 
 
   const { data, error } = await supabase
     .from("hr_ad_creatives")
-    .select("id, advertiser, slot_targets, creative_url, dest_url, weight")
+    .select("id, advertiser, slot_targets, creative_url, dest_url, weight, campaign_id")
     .eq("is_trusted", true)
     .contains("slot_targets", [slotId]);
 

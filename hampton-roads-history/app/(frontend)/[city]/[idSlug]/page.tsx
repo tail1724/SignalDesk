@@ -19,6 +19,9 @@ import { ReadingProgress } from "@/components/editorial/ReadingProgress";
 import { DirectSponsor } from "@/components/ads/DirectSponsor";
 import { RailPlacement } from "@/components/ads/RailPlacement";
 import { MobileAnchor } from "@/components/ads/MobileAnchor";
+import { RevenueInlineAd } from "@/components/ads/RevenueInlineAd";
+import { PageEngagement } from "@/components/ads/PageEngagement";
+import { canShowFirstInline, INLINE_AD_MIN_WORDS } from "@/lib/ads/density";
 import { getHeroImageUrl, articleHeroSrc, articleHeroAlt } from "@/lib/images";
 import type { Metadata } from "next";
 
@@ -27,8 +30,9 @@ type Props = { params: Promise<{ city: string; idSlug: string }> };
 // Required for CSP nonce support (the nonce is minted per-request in proxy.ts)
 export const dynamic = "force-dynamic";
 
-// Density rule (design-blueprint.html §05): no inline unit under 600 words.
-const INLINE_AD_MIN_WORDS = 600;
+// Density rules (design-blueprint.html §05) live in lib/ads/density.ts as pure,
+// unit-tested functions — imported above so there is one source of truth for
+// the 600 / 1400 / 450-word boundaries.
 
 async function resolveArticle(idSlug: string) {
   const shortId = parseShortId(idSlug);
@@ -202,11 +206,16 @@ export default async function ArticlePage({ params }: Props) {
 
             <ArticleBody body={article.body_lexical} title={article.title} />
 
-            {wordCount >= INLINE_AD_MIN_WORDS && (
+            {canShowFirstInline(wordCount) && (
               <DirectSponsor slotId="article-inline-01" articleId={article.id} variant="article-inline-ad" />
             )}
 
             <SourceNotes articleId={article.id} />
+
+            {/* Revenue-arm-only second inline unit (client-gated for cache
+                isolation). Renders nothing for standard-arm readers. */}
+            <RevenueInlineAd placementId="article-inline-02" articleId={article.id} wordCount={wordCount} />
+
             <ContextRail articles={related} />
 
             <NewsletterBand
@@ -237,6 +246,7 @@ export default async function ArticlePage({ params }: Props) {
       </main>
 
       <MobileAnchor slotId="mobile-anchor-01" />
+      <PageEngagement routeType="article" contentId={article.id} />
     </>
   );
 }
