@@ -11,6 +11,7 @@ import { ShareBar } from "@/components/ShareBar";
 import { ArticleBody } from "@/components/ArticleBody";
 import { NewsletterBand } from "@/components/NewsletterBand";
 import { PageViewTracker } from "@/components/PageViewTracker";
+import { NonCriticalBoundary } from "@/components/NonCriticalBoundary";
 import { CorrectionsLog } from "@/components/editorial/CorrectionsLog";
 import { SourceNotes } from "@/components/editorial/SourceNotes";
 import { ContextRail } from "@/components/editorial/ContextRail";
@@ -144,7 +145,9 @@ export default async function ArticlePage({ params }: Props) {
     <>
       <ReadingProgress targetId="article-wrap" />
       <main id="article-wrap" className="article-wrap">
-        <PageViewTracker articleId={article.id} articleShortId={article.short_id} citySlug={city} />
+        <NonCriticalBoundary label="PageViewTracker">
+          <PageViewTracker articleId={article.id} articleShortId={article.short_id} citySlug={city} />
+        </NonCriticalBoundary>
         <script
           type="application/ld+json"
           nonce={nonce}
@@ -207,7 +210,9 @@ export default async function ArticlePage({ params }: Props) {
             <ArticleBody body={article.body_lexical} title={article.title} />
 
             {canShowFirstInline(wordCount) && (
-              <DirectSponsor slotId="article-inline-01" articleId={article.id} variant="article-inline-ad" />
+              <NonCriticalBoundary label="Article inline ad">
+                <DirectSponsor slotId="article-inline-01" articleId={article.id} variant="article-inline-ad" />
+              </NonCriticalBoundary>
             )}
 
             <SourceNotes articleId={article.id} />
@@ -239,14 +244,20 @@ export default async function ArticlePage({ params }: Props) {
                   labels={{ save: "Follow updates", saved: "Following" }}
                 />
               </section>
-              <RailPlacement slotId="article-rail-01" />
+              <NonCriticalBoundary label="Article rail ad">
+                <RailPlacement slotId="article-rail-01" />
+              </NonCriticalBoundary>
             </div>
           </aside>
         </div>
       </main>
 
-      <MobileAnchor slotId="mobile-anchor-01" />
-      <PageEngagement routeType="article" contentId={article.id} />
+      <NonCriticalBoundary label="Mobile anchor ad">
+        <MobileAnchor slotId="mobile-anchor-01" />
+      </NonCriticalBoundary>
+      <NonCriticalBoundary label="PageEngagement">
+        <PageEngagement routeType="article" contentId={article.id} />
+      </NonCriticalBoundary>
     </>
   );
 }

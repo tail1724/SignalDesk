@@ -8,8 +8,14 @@ export const THEME_KEY = "hrh-theme";
 
 export function getStoredPref(): ThemePref {
   if (typeof window === "undefined") return "system";
-  const v = localStorage.getItem(THEME_KEY);
-  return v === "light" || v === "dark" ? v : "system";
+  // localStorage access throws in Safari Private Browsing / when storage is
+  // blocked — never let a theme lookup take down the page.
+  try {
+    const v = localStorage.getItem(THEME_KEY);
+    return v === "light" || v === "dark" ? v : "system";
+  } catch {
+    return "system";
+  }
 }
 
 function systemIsDark(): boolean {

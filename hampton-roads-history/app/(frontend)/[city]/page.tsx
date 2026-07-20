@@ -10,6 +10,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { RailPlacement } from "@/components/ads/RailPlacement";
 import { PageEngagement } from "@/components/ads/PageEngagement";
 import { PageViewTracker } from "@/components/PageViewTracker";
+import { NonCriticalBoundary } from "@/components/NonCriticalBoundary";
 import { timeAgo } from "@/lib/format";
 import { articleHref } from "@/components/ArticleCard";
 import type { Metadata } from "next";
@@ -59,7 +60,9 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   // (lead + section-ad + city desk rows | .section-rail).
   return (
     <div className="section-page">
-      <PageViewTracker citySlug={city} />
+      <NonCriticalBoundary label="PageViewTracker">
+        <PageViewTracker citySlug={city} />
+      </NonCriticalBoundary>
       <CityEdition
         city={current}
         cities={cities}
@@ -97,9 +100,11 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               </article>
             )}
 
-            <AdFrame label="Advertisement" variant="section-ad" minHeight={90}>
-              <AdSlot slotId="section-local-01" variant="minimal" />
-            </AdFrame>
+            <NonCriticalBoundary label="Section ad">
+              <AdFrame label="Advertisement" variant="section-ad" minHeight={90}>
+                <AdSlot slotId="section-local-01" variant="minimal" />
+              </AdFrame>
+            </NonCriticalBoundary>
 
             {rest.length > 0 && (
               <>
@@ -136,11 +141,15 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               </div>
               <small>Counts reflect currently published stories.</small>
             </section>
-            <RailPlacement slotId="section-rail-01" />
+            <NonCriticalBoundary label="Section rail ad">
+              <RailPlacement slotId="section-rail-01" />
+            </NonCriticalBoundary>
           </aside>
         </div>
       )}
-      <PageEngagement routeType="section" />
+      <NonCriticalBoundary label="PageEngagement">
+        <PageEngagement routeType="section" />
+      </NonCriticalBoundary>
     </div>
   );
 }
