@@ -28,9 +28,10 @@ export function CivicHero({
 
   return (
     <section className="cinematic-hero" aria-labelledby="home-lead-title">
-    <section className="cinematic-hero" aria-labelledby="home-lead-title">
       <StoryWorldPoster posterSrc={heroImageUrl} />
-      {/* Surface 1 — gold LaserFlow beam … */}
+      {/* Surface 1 — gold LaserFlow beam falling past the orbit rings, leaning
+          toward the cursor. Composited over the navy with `screen`; renders
+          nothing under prefers-reduced-motion. */}
       <LaserFlowLayer
         color="#c99a42"
         laserProps={{
@@ -44,8 +45,6 @@ export function CivicHero({
           verticalSizing: 2.1,
         }}
       />
-      <div className="hero-copy">
-      …
       <div className="hero-copy">
         <div className="eyebrow light">
           {article.kicker && <span>{article.kicker}</span>}
