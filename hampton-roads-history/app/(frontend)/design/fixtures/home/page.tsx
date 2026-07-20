@@ -4,11 +4,10 @@ import { CivicHero } from "@/components/editorial/CivicHero";
 import { StoryCard } from "@/components/editorial/StoryCard";
 import { NewsletterBand } from "@/components/NewsletterBand";
 import { CatchUpCard } from "@/components/CatchUpCard";
-import { CityBento } from "@/components/reactbits/CityBento";
 import { AdFixture } from "../AdFixture";
 import { assertFixturesEnabled } from "../guard";
 import {
-  AD_EXTRA, AD_LEADER, AD_NATIVE, AD_RAIL, CATCH_UP, CITIES,
+  AD_EXTRA, AD_LEADER, AD_NATIVE, AD_RAIL, CATCH_UP,
   HOME_FEATURE, HOME_HERO, HOME_ROWS, HOME_TWO_UP,
 } from "@/lib/fixtures/prototype";
 
@@ -100,14 +99,6 @@ export default function HomeFixture() {
             <Link href="#">Read our standards</Link>
           </section>
         </aside>
-      </section>
-
-      <section className="cities-band" aria-labelledby="cities-title">
-        <div>
-          <span className="section-kicker">Seven cities, one region</span>
-          <h2 id="cities-title">Choose your home view</h2>
-        </div>
-        <CityBento cities={CITIES} />
       </section>
     </main>
   );

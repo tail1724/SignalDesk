@@ -10,6 +10,7 @@ import "./vapornet.css";
 import "@/components/reactbits/reactbits.css";
 import { GlobalNav } from "@/components/GlobalNav";
 import { LiveRibbon } from "@/components/editorial/LiveRibbon";
+import { CityBento } from "@/components/reactbits/CityBento";
 import { Footer } from "@/components/Footer";
 import { ConsentCenter } from "@/components/ConsentCenter";
 import { ConsentChip } from "@/components/ConsentChip";
@@ -119,6 +120,16 @@ export default async function RootLayout({
         <GlobalNav cities={cities} />
         <LiveRibbon />
         <div className="flex-1">{children}</div>
+        {/* Global "Choose your home view" band — rendered site-wide (above the
+            footer) so every page carries the seven-cities navigation, not just
+            the homepage. */}
+        <section className="cities-band" aria-labelledby="cities-title">
+          <div>
+            <span className="section-kicker">Seven cities, one region</span>
+            <h2 id="cities-title">Choose your home view</h2>
+          </div>
+          <CityBento cities={cities} />
+        </section>
         <Footer />
         <ConsentChip />
         <ConsentCenter />
