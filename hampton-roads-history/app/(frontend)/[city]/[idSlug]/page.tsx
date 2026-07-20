@@ -219,7 +219,9 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Revenue-arm-only second inline unit (client-gated for cache
                 isolation). Renders nothing for standard-arm readers. */}
-            <RevenueInlineAd placementId="article-inline-02" articleId={article.id} wordCount={wordCount} />
+            <NonCriticalBoundary label="Revenue inline ad">
+              <RevenueInlineAd placementId="article-inline-02" articleId={article.id} wordCount={wordCount} />
+            </NonCriticalBoundary>
 
             <ContextRail articles={related} />
 

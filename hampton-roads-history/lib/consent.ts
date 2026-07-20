@@ -43,16 +43,30 @@ function clearCookie(name: string) {
   document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax`;
 }
 
+// Snapshot cache keyed by the raw cookie string. useConsent() feeds this to
+// useSyncExternalStore, which compares snapshots with Object.is — so returning
+// a freshly-parsed object on every call (as this did) made every render look
+// like a store change, an infinite re-render loop (React error #185) that hit
+// once a consent cookie existed. Returning the SAME object reference while the
+// cookie is unchanged makes the snapshot stable.
+let cachedRaw: string | null = null;
+let cachedChoice: ConsentChoice | null = null;
+
 export function readConsentChoice(): ConsentChoice | null {
   const raw = readCookie(COOKIE_NAME);
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as ConsentChoice;
-    if (parsed.version !== CONSENT_VERSION) return null;
-    return parsed;
-  } catch {
+  if (raw === cachedRaw) return cachedChoice;
+  cachedRaw = raw;
+  if (!raw) {
+    cachedChoice = null;
     return null;
   }
+  try {
+    const parsed = JSON.parse(raw) as ConsentChoice;
+    cachedChoice = parsed.version !== CONSENT_VERSION ? null : parsed;
+  } catch {
+    cachedChoice = null;
+  }
+  return cachedChoice;
 }
 
 export function hasResolvedConsent(): boolean {
