@@ -31,6 +31,20 @@ export default function Error({
       >
         Try again
       </button>
+
+      {/* TEMPORARY diagnostic: surfaces the actual client error so it can be
+          captured on a real device without remote debugging. Remove once the
+          mobile-loading issue is confirmed fixed. */}
+      <div className="mt-8 text-left">
+        <div className="font-mono text-[10px] uppercase tracking-wide text-ink-3 mb-2">
+          Diagnostic details
+        </div>
+        <pre className="whitespace-pre-wrap break-words rounded-lg border border-line bg-surface-2 p-3 font-mono text-[11px] text-ink-2">
+          {error?.name ? `${error.name}: ` : ""}
+          {error?.message || "(no message)"}
+          {error?.digest ? `\n\ndigest: ${error.digest}` : ""}
+        </pre>
+      </div>
     </main>
   );
 }
