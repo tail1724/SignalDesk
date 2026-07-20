@@ -3,6 +3,7 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { DecorationBoundary } from "@/components/reactbits/DecorationBoundary";
+import { useDesktopGfxEnabled } from "@/lib/hooks/useDesktopGfxEnabled";
 
 // ssr:false is only valid inside a Client Component — mirrors the
 // OceanBackground.tsx pattern so the `three` bundle loads after the poster
@@ -39,6 +40,11 @@ export function StoryWorldPoster({ posterSrc }: { posterSrc?: string }) {
     getMotionSnapshot,
     getMotionServerSnapshot
   );
+  // The animated three.js scene is a desktop-only flourish. On phones it's the
+  // one remaining WebGL context that could still throw during hydration and
+  // trip the page error boundary ("We hit a snag"), so mobile gets the static
+  // CSS art (gridlines + orbit + gradient) only.
+  const gfxEnabled = useDesktopGfxEnabled();
   const artRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef(0);
 
@@ -84,7 +90,7 @@ export function StoryWorldPoster({ posterSrc }: { posterSrc?: string }) {
         <div className="hero-gridlines" />
         <div className="hero-orbit orbit-one" />
         <div className="hero-orbit orbit-two" />
-        {!prefersReducedMotion && (
+        {gfxEnabled && (
           <DecorationBoundary>
             <StoryWorldCanvas />
           </DecorationBoundary>
