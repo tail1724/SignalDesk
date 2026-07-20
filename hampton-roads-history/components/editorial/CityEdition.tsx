@@ -11,10 +11,14 @@ export function CityEdition({
   city,
   cities,
   updatedAt,
+  heroImageUrl,
 }: {
   city: City;
   cities: City[];
   updatedAt?: string | null;
+  /** Editor-selected section hero image (media library). Optional — the
+   *  identity header renders plainly when unset. */
+  heroImageUrl?: string;
 }) {
   const coord = cityCoordinate(city.slug);
   const updated = updatedAt
@@ -23,7 +27,18 @@ export function CityEdition({
 
   return (
     <>
-      <header className="section-hero">
+      <header
+        className={heroImageUrl ? "section-hero has-hero-image" : "section-hero"}
+        style={
+          heroImageUrl
+            ? {
+                backgroundImage: `linear-gradient(180deg, rgba(10,29,53,0.35), rgba(10,29,53,0.74)), url(${heroImageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : undefined
+        }
+      >
         <div>
           <span className="section-kicker">
             City edition{coord ? ` · ${coord.lat}` : ""}

@@ -168,7 +168,9 @@ export default buildConfig({
       admin: {
         useAsTitle: "filename",
         group: "Editorial",
-        defaultColumns: ["filename", "alt", "credit", "updatedAt"],
+        description:
+          "Image library. Upload here (drag a file onto the Create form), then choose how each image is used: tick “Homepage hero”, enter a section/city slug to feature it there, or open an article and pick it in that article’s Hero image field.",
+        defaultColumns: ["filename", "alt", "homepage_hero", "section_hero_slug", "updatedAt"],
         enableListViewSelectAPI: true,
         pagination: { defaultLimit: 50, limits: [25, 50, 100] },
       },
@@ -191,6 +193,31 @@ export default buildConfig({
         { name: "caption", type: "text" },
         { name: "photographer", type: "text" },
         { name: "credit", type: "text" },
+        {
+          type: "collapsible",
+          label: "Feature placement",
+          admin: {
+            initCollapsed: true,
+            description: "Where this image is featured. Leave blank for a plain library image (still selectable as an article hero from the article).",
+          },
+          fields: [
+            {
+              name: "homepage_hero",
+              type: "checkbox",
+              defaultValue: false,
+              index: true,
+              admin: { description: "Use as the homepage hero image. If several are ticked, the most recently updated wins." },
+            },
+            {
+              name: "section_hero_slug",
+              type: "text",
+              index: true,
+              admin: {
+                description: "Feature as the hero for a section/city — enter its slug exactly (e.g. norfolk, business). Leave blank if not a section hero.",
+              },
+            },
+          ],
+        },
       ],
     },
     {

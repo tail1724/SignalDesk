@@ -12,11 +12,15 @@ export function CivicHero({
   article,
   brief,
   caption,
+  heroImageUrl,
 }: {
   article: Article;
   /** Hero brief rows; defaults to a single "Why it matters" from the dek. */
   brief?: BriefItem[];
   caption?: string;
+  /** Editor-selected homepage hero image (media library). Falls back to the
+   *  default cinematic poster art when unset. */
+  heroImageUrl?: string;
 }) {
   const href = articleHref(article);
   const briefItems: BriefItem[] =
@@ -24,7 +28,7 @@ export function CivicHero({
 
   return (
     <section className="cinematic-hero" aria-labelledby="home-lead-title">
-      <StoryWorldPoster />
+      <StoryWorldPoster posterSrc={heroImageUrl} />
       {/* Surface 1 — gold LaserFlow beam falling past the orbit rings, leaning
           toward the cursor. Composited over the navy with `screen`; renders
           nothing under prefers-reduced-motion. */}

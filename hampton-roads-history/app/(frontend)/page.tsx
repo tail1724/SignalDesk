@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { getFeedArticles, getCategories } from "@/lib/data";
+import { getHomepageHeroMedia } from "@/lib/featured";
 import { CivicHero } from "@/components/editorial/CivicHero";
 import { StoryCard } from "@/components/editorial/StoryCard";
 import { NewsletterBand } from "@/components/NewsletterBand";
@@ -28,7 +29,11 @@ const EXTRA_AD_EVERY = 5;
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [articles, cities] = await Promise.all([getFeedArticles(undefined, 24), getCategories()]);
+  const [articles, cities, heroMedia] = await Promise.all([
+    getFeedArticles(undefined, 24),
+    getCategories(),
+    getHomepageHeroMedia(),
+  ]);
 
   const hero = articles[0];
   const feature = articles[1];
@@ -47,7 +52,7 @@ export default async function HomePage() {
   return (
     <main className="home-main">
       <PageViewTracker />
-      <CivicHero article={hero} />
+      <CivicHero article={hero} heroImageUrl={heroMedia?.url} />
 
       <NewsletterBand
         title="Five things Hampton Roads needs to know."

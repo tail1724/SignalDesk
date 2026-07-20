@@ -506,3 +506,20 @@ img {
 .ad-frame:has(.ad-slot[data-ad-status="collapsed"]) {
   display: none;
 }
+
+/* Media feature placement: a section/city whose editor assigned a hero image
+   (hr_media.section_hero_slug) renders it as the .section-hero background. Text
+   flips to light over the darkened image. Opt-in only — sections with no
+   assigned image keep the default parchment header untouched. */
+.section-hero.has-hero-image {
+  color: var(--newsprint);
+  border-radius: var(--radius);
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 54px);
+}
+.section-hero.has-hero-image .section-kicker,
+.section-hero.has-hero-image h1,
+.section-hero.has-hero-image p,
+.section-hero.has-hero-image .edition-tools span {
+  color: inherit;
+}

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCategories, getFeedArticles } from "@/lib/data";
+import { getSectionHeroMedia } from "@/lib/featured";
 import { CityEdition } from "@/components/editorial/CityEdition";
 import { StoryCard } from "@/components/editorial/StoryCard";
 import { NewsletterBand } from "@/components/NewsletterBand";
@@ -47,7 +48,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const current = cities.find((c) => c.slug === city);
   if (!current) notFound();
 
-  const articles = await getFeedArticles(city, 20);
+  const [articles, heroMedia] = await Promise.all([
+    getFeedArticles(city, 20),
+    getSectionHeroMedia(city),
+  ]);
   const [lead, ...rest] = articles;
 
   // DOM mirrors redesign/vapornet/index.html's section screen:
@@ -56,7 +60,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   return (
     <div className="section-page">
       <PageViewTracker citySlug={city} />
-      <CityEdition city={current} cities={cities} updatedAt={lead?.published_at ?? null} />
+      <CityEdition
+        city={current}
+        cities={cities}
+        updatedAt={lead?.published_at ?? null}
+        heroImageUrl={heroMedia?.url}
+      />
 
       {articles.length === 0 ? (
         <p style={{ color: "var(--ink-3)" }}>No stories here yet — check back soon.</p>
