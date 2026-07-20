@@ -13,6 +13,7 @@ import { AdFrame } from "@/components/ads/AdFrame";
 import { AdSlot } from "@/components/AdSlot";
 import { PageEngagement } from "@/components/ads/PageEngagement";
 import { PageViewTracker } from "@/components/PageViewTracker";
+import { NonCriticalBoundary } from "@/components/NonCriticalBoundary";
 
 // Homepage — DOM mirrors redesign/vapornet/index.html's home screen:
 // .home-main > cinematic hero, morning-line, leader ad, editorial grid
@@ -28,10 +29,20 @@ const EXTRA_AD_EVERY = 5;
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [articles, heroMedia] = await Promise.all([
+  const [articlesResult, heroMediaResult] = await Promise.allSettled([
     getFeedArticles(undefined, 24),
     getHomepageHeroMedia(),
   ]);
+
+  if (articlesResult.status === "rejected") {
+    console.error("HomePage: failed to load feed articles", articlesResult.reason);
+  }
+  if (heroMediaResult.status === "rejected") {
+    console.error("HomePage: failed to load homepage hero media", heroMediaResult.reason);
+  }
+
+  const articles = articlesResult.status === "fulfilled" ? articlesResult.value : [];
+  const heroMedia = heroMediaResult.status === "fulfilled" ? heroMediaResult.value : null;
 
   const hero = articles[0];
   const feature = articles[1];
@@ -49,7 +60,9 @@ export default async function HomePage() {
 
   return (
     <main className="home-main">
-      <PageViewTracker />
+      <NonCriticalBoundary label="PageViewTracker">
+        <PageViewTracker />
+      </NonCriticalBoundary>
       <CivicHero article={hero} heroImageUrl={heroMedia?.url} />
 
       <NewsletterBand
@@ -58,7 +71,9 @@ export default async function HomePage() {
         source="home-band-top"
       />
 
-      <DirectSponsor slotId="home-leader-01" />
+      <NonCriticalBoundary label="Home leader ad">
+        <DirectSponsor slotId="home-leader-01" />
+      </NonCriticalBoundary>
 
       <section className="editorial-grid" aria-label="Latest reporting">
         <div className="story-stack">
@@ -80,15 +95,19 @@ export default async function HomePage() {
             </div>
           )}
 
-          <PartnerStudioCard slotId="home-native-01" />
+          <NonCriticalBoundary label="Home native ad">
+            <PartnerStudioCard slotId="home-native-01" />
+          </NonCriticalBoundary>
 
           {rows.map((a, i) => (
             <Fragment key={a.id}>
               <StoryCard article={a} variant="row" index={i + 3} />
               {(i + 1) % EXTRA_AD_EVERY === 0 && (
-                <AdFrame variant="extra-ad" minHeight={97}>
-                  <AdSlot slotId="home-feed" variant="minimal" />
-                </AdFrame>
+                <NonCriticalBoundary label="Home feed ad">
+                  <AdFrame variant="extra-ad" minHeight={97}>
+                    <AdSlot slotId="home-feed" variant="minimal" />
+                  </AdFrame>
+                </NonCriticalBoundary>
               )}
             </Fragment>
           ))}
@@ -96,7 +115,9 @@ export default async function HomePage() {
 
         <aside className="home-rail">
           <CatchUpCard articles={catchUp} />
-          <RailPlacement slotId="home-rail-01" />
+          <NonCriticalBoundary label="Home rail ad">
+            <RailPlacement slotId="home-rail-01" />
+          </NonCriticalBoundary>
           <section className="trust-card">
             <span className="section-kicker">How we report</span>
             <p>Named authors. Visible sources. Clear corrections. Advertising never controls coverage.</p>
@@ -105,7 +126,9 @@ export default async function HomePage() {
         </aside>
       </section>
 
-      <PageEngagement routeType="home" />
+      <NonCriticalBoundary label="PageEngagement">
+        <PageEngagement routeType="home" />
+      </NonCriticalBoundary>
     </main>
   );
 }

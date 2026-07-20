@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { getOrCreateSessionId } from "@/lib/hooks/useSessionId";
+import { createBrowserId } from "@/lib/browserSafe";
 import { useConsent, readConsentChoice, isMeasurementAllowed } from "@/lib/consent";
 import { getPlacementPolicy } from "@/lib/ads/experiment";
 import { AdCreative } from "@/components/ads/AdCreative";
@@ -99,7 +100,7 @@ export function AdSlot({
       if (requestedRef.current) return;
       requestedRef.current = true;
 
-      opportunityIdRef.current = crypto.randomUUID();
+      opportunityIdRef.current = createBrowserId();
       const consentState = consentStateFrom(readConsentChoice());
       const experiment = getPlacementPolicy();
       const deviceClass = classifyDevice(window.innerWidth);
@@ -153,6 +154,11 @@ export function AdSlot({
 
     // Request when near-viewable. Wide root margin means the decision resolves
     // (and any no-demand collapse happens) before the slot reaches the screen.
+    if (!("IntersectionObserver" in window)) {
+      request();
+      return;
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((en) => en.isIntersecting)) {

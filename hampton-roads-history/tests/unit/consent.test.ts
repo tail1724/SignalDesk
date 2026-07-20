@@ -52,6 +52,13 @@ describe("consent gate", () => {
     expect(hasResolvedConsent()).toBe(false);
   });
 
+
+  it("treats an undecodable consent cookie as unresolved instead of throwing", () => {
+    document.cookie = "hrh_consent=%; Path=/";
+    expect(() => readConsentChoice()).not.toThrow();
+    expect(hasResolvedConsent()).toBe(false);
+  });
+
   it("withdrawal is immediate and returns to the unresolved state", () => {
     saveChoices({ measurement: true, personalizedAds: true });
     expect(hasResolvedConsent()).toBe(true);

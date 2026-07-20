@@ -1,4 +1,5 @@
 import { hasResolvedConsent } from "@/lib/consent";
+import { createBrowserId, safeSessionGet, safeSessionSet } from "@/lib/browserSafe";
 
 const SESSION_KEY = "hr_session_id";
 
@@ -14,10 +15,10 @@ const SESSION_KEY = "hr_session_id";
 export function getOrCreateSessionId(): string | null {
   if (typeof window === "undefined") return null;
   if (!hasResolvedConsent()) return null;
-  let id = sessionStorage.getItem(SESSION_KEY);
+  let id = safeSessionGet(SESSION_KEY);
   if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem(SESSION_KEY, id);
+    id = createBrowserId();
+    safeSessionSet(SESSION_KEY, id);
   }
   return id;
 }

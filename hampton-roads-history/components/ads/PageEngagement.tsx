@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { getOrCreateSessionId } from "@/lib/hooks/useSessionId";
+import { createBrowserId } from "@/lib/browserSafe";
 import { readConsentChoice, isMeasurementAllowed } from "@/lib/consent";
 import { getPlacementPolicy } from "@/lib/ads/experiment";
 import {
@@ -47,7 +48,7 @@ export function PageEngagement({
         content_id: contentId ?? null,
         // Page-level signal has no ad placement — a synthetic, queryable id.
         placement_id: `page:${routeType}`,
-        opportunity_id: crypto.randomUUID(),
+        opportunity_id: createBrowserId(),
         session_id: sessionId,
         consent_state: consentStateFrom(readConsentChoice()),
         experiment: getPlacementPolicy(),
