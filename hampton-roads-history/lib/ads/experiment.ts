@@ -13,6 +13,7 @@
 // built now; flipping it on is a launch decision, not a code change.
 
 import { hasResolvedConsent } from "@/lib/consent";
+import { createBrowserId, safeSessionGet, safeSessionSet } from "@/lib/browserSafe";
 import type { ExperimentArm } from "@/lib/ads/envelope";
 
 const STORAGE_KEY = "hr_ad_experiment";
@@ -41,16 +42,16 @@ export function getPlacementPolicy(): ExperimentArm {
   if (!hasResolvedConsent()) return "standard";
   if (!isRevenueExperimentEnabled()) return "standard";
 
-  const stored = sessionStorage.getItem(STORAGE_KEY);
+  const stored = safeSessionGet(STORAGE_KEY);
   if (stored === "standard" || stored === "revenue") return stored;
 
-  let sessionId = sessionStorage.getItem("hr_session_id");
+  let sessionId = safeSessionGet("hr_session_id");
   if (!sessionId) {
     // Fall back to a throwaway id purely for the split; getOrCreateSessionId
     // owns the real one and will have set it before any ad request.
-    sessionId = crypto.randomUUID();
+    sessionId = createBrowserId();
   }
   const arm = assignArm(sessionId, true);
-  sessionStorage.setItem(STORAGE_KEY, arm);
+  safeSessionSet(STORAGE_KEY, arm);
   return arm;
 }
