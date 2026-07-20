@@ -335,3 +335,19 @@
     transition: none;
   }
 }
+
+/* ============================================================
+   Mobile scroll fix. The prototype port emits
+   `.publication-page { overflow: hidden }` at <=640px — correct for the
+   prototype's emulator frame (which had its own scroll container), but in
+   production .publication-page IS the <body>, so `overflow: hidden`
+   propagates to the viewport and blocks ALL page scrolling on phones.
+   Clip only the horizontal axis so vertical page scroll is never trapped.
+   (Loaded after vapornet.css, so this override wins.)
+   ============================================================ */
+@media (max-width: 640px) {
+  .publication-page {
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+}
