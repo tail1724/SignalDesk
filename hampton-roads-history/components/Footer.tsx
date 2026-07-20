@@ -16,9 +16,9 @@ export function Footer() {
       <p>Independent regional reporting for the people who live, work and build here.</p>
       <nav>
         <Link href="/about">About</Link>
-        <Link href="/about#standards">Editorial standards</Link>
+        <Link href="/editorial-standards">Editorial standards</Link>
         <Link href="/advertise">Advertise</Link>
-        <Link href="/about#corrections">Corrections</Link>
+        <Link href="/corrections">Corrections</Link>
         <Link href="/privacy">Privacy</Link>
         <AdChoices label="Ad choices" />
       </nav>

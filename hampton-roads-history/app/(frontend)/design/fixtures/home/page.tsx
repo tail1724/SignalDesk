@@ -4,6 +4,7 @@ import { CivicHero } from "@/components/editorial/CivicHero";
 import { StoryCard } from "@/components/editorial/StoryCard";
 import { NewsletterBand } from "@/components/NewsletterBand";
 import { CatchUpCard } from "@/components/CatchUpCard";
+import { CityBento } from "@/components/reactbits/CityBento";
 import { AdFixture } from "../AdFixture";
 import { assertFixturesEnabled } from "../guard";
 import {
@@ -106,13 +107,7 @@ export default function HomeFixture() {
           <span className="section-kicker">Seven cities, one region</span>
           <h2 id="cities-title">Choose your home view</h2>
         </div>
-        <div className="city-cloud">
-          {CITIES.map((c) => (
-            <Link key={c.id} href="#">
-              {c.name}
-            </Link>
-          ))}
-        </div>
+        <CityBento cities={CITIES} />
       </section>
     </main>
   );

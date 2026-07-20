@@ -3,6 +3,7 @@ import type { Article } from "@/lib/supabase/types";
 import { articleHref } from "@/components/ArticleCard";
 import { StoryWorldPoster } from "@/components/three/StoryWorldPoster";
 import { SmartBrief, type BriefItem } from "@/components/editorial/SmartBrief";
+import { LaserFlowLayer } from "@/components/reactbits/LaserFlowLayer";
 
 // Cinematic homepage lead — DOM mirrors redesign/vapornet/index.html
 // (.cinematic-hero > .hero-art/.hero-shade + .hero-copy + .hero-brief +
@@ -27,7 +28,24 @@ export function CivicHero({
 
   return (
     <section className="cinematic-hero" aria-labelledby="home-lead-title">
+    <section className="cinematic-hero" aria-labelledby="home-lead-title">
       <StoryWorldPoster posterSrc={heroImageUrl} />
+      {/* Surface 1 — gold LaserFlow beam … */}
+      <LaserFlowLayer
+        color="#c99a42"
+        laserProps={{
+          horizontalBeamOffset: 0.34,
+          verticalBeamOffset: -0.08,
+          flowSpeed: 0.4,
+          fogIntensity: 0.4,
+          wispDensity: 1,
+          wispIntensity: 4,
+          mouseTiltStrength: 1,
+          verticalSizing: 2.1,
+        }}
+      />
+      <div className="hero-copy">
+      …
       <div className="hero-copy">
         <div className="eyebrow light">
           {article.kicker && <span>{article.kicker}</span>}
