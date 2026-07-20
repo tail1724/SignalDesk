@@ -39,20 +39,47 @@
   z-index: 4;
 }
 
-/* Newsletter band: beam pours down into the signup pill. */
+/* Newsletter band — two boxes side by side: the LaserFlow beam visual (left)
+   and the copy stacked directly above the signup form (right). The beam is
+   desktop-only, so the visual box only appears at >=1024px; below that the
+   content spans the whole band as a single column. Overrides the base
+   .morning-line grid from vapornet.css (kept: navy bg, padding, radius). */
 .morning-line {
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  gap: 22px;
 }
-.morning-line > div,
-.morning-line .inline-form,
-.morning-line form {
+.morning-visual {
+  display: none;
+}
+.morning-content {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
 }
 .morning-line .rb-laser-layer {
   z-index: 0;
+}
+@media (min-width: 1024px) {
+  .morning-line {
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 44px;
+  }
+  .morning-visual {
+    display: block;
+    position: relative;
+    align-self: stretch;
+    min-height: 240px;
+    border-radius: 2px 16px 2px 16px;
+    overflow: hidden;
+  }
 }
 
 /* --- MagicBento: shared card primitives ------------------- */

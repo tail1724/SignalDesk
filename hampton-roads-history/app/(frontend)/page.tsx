@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import Link from "next/link";
-import { getFeedArticles, getCategories } from "@/lib/data";
+import { getFeedArticles } from "@/lib/data";
 import { getHomepageHeroMedia } from "@/lib/featured";
 import { CivicHero } from "@/components/editorial/CivicHero";
 import { StoryCard } from "@/components/editorial/StoryCard";
@@ -13,7 +13,6 @@ import { AdFrame } from "@/components/ads/AdFrame";
 import { AdSlot } from "@/components/AdSlot";
 import { PageEngagement } from "@/components/ads/PageEngagement";
 import { PageViewTracker } from "@/components/PageViewTracker";
-import { CityBento } from "@/components/reactbits/CityBento";
 
 // Homepage — DOM mirrors redesign/vapornet/index.html's home screen:
 // .home-main > cinematic hero, morning-line, leader ad, editorial grid
@@ -29,9 +28,8 @@ const EXTRA_AD_EVERY = 5;
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [articles, cities, heroMedia] = await Promise.all([
+  const [articles, heroMedia] = await Promise.all([
     getFeedArticles(undefined, 24),
-    getCategories(),
     getHomepageHeroMedia(),
   ]);
 
@@ -107,13 +105,6 @@ export default async function HomePage() {
         </aside>
       </section>
 
-      <section className="cities-band" aria-labelledby="cities-title">
-        <div>
-          <span className="section-kicker">Seven cities, one region</span>
-          <h2 id="cities-title">Choose your home view</h2>
-        </div>
-        <CityBento cities={cities} />
-      </section>
       <PageEngagement routeType="home" />
     </main>
   );

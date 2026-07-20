@@ -1,10 +1,10 @@
 import { NewsletterWidget } from "@/components/rail/NewsletterWidget";
 import { LaserFlowLayer } from "@/components/reactbits/LaserFlowLayer";
 
-// Inline newsletter capture band — DOM mirrors redesign/vapornet/index.html
-// (.morning-line: kicker + headline + copy on the left, .inline-form right).
-// Surface 2 — a signal-red LaserFlow beam pours down into the signup pill
-// (composited over the federal-navy band with `screen`; motion-gated).
+// Inline newsletter capture band. Two side-by-side boxes: the LaserFlow beam
+// visual on the left, and on the right the copy stacked directly above the
+// signup form. The beam is desktop-only, so on mobile the left box collapses
+// and the content spans the band (see `.morning-line` in reactbits.css).
 export function NewsletterBand({
   kicker = "The Morning Tide",
   title,
@@ -18,25 +18,29 @@ export function NewsletterBand({
 }) {
   return (
     <section className="morning-line" aria-label="Morning briefing signup">
-      <LaserFlowLayer
-        color="#c93d37"
-        laserProps={{
-          horizontalBeamOffset: 0.32,
-          verticalBeamOffset: -0.05,
-          flowSpeed: 0.45,
-          fogIntensity: 0.3,
-          wispDensity: 1,
-          wispIntensity: 3.5,
-          mouseTiltStrength: 0.8,
-          verticalSizing: 1.8,
-        }}
-      />
-      <div>
-        <span className="section-kicker">{kicker}</span>
-        <strong>{title}</strong>
-        <p>{copy}</p>
+      <div className="morning-visual" aria-hidden>
+        <LaserFlowLayer
+          color="#c93d37"
+          laserProps={{
+            horizontalBeamOffset: 0,
+            verticalBeamOffset: -0.05,
+            flowSpeed: 0.45,
+            fogIntensity: 0.3,
+            wispDensity: 1,
+            wispIntensity: 3.5,
+            mouseTiltStrength: 0.8,
+            verticalSizing: 1.8,
+          }}
+        />
       </div>
-      <NewsletterWidget source={source} variant="inline" />
+      <div className="morning-content">
+        <div className="morning-copy">
+          <span className="section-kicker">{kicker}</span>
+          <strong>{title}</strong>
+          <p>{copy}</p>
+        </div>
+        <NewsletterWidget source={source} variant="inline" />
+      </div>
     </section>
   );
 }
