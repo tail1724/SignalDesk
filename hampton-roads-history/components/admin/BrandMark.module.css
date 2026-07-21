@@ -15,8 +15,7 @@
   border: 1px solid rgba(242, 251, 249, 0.2);
   border-radius: 4px 13px 4px 13px;
   box-shadow: 0 8px 22px rgba(7, 27, 28, 0.24);
-  font: 850 12px/1 ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: -0.06em;
+  font: 700 13px/1 ui-sans-serif, system-ui, sans-serif;
 }
 
 .seal em {
@@ -30,17 +29,16 @@
 }
 
 .name strong {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 19px;
-  letter-spacing: -0.055em;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .name small {
   margin-top: 5px;
-  color: #6f9a96;
-  font-size: 7px;
-  font-weight: 750;
-  letter-spacing: 0.13em;
+  color: #9fc4c0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 

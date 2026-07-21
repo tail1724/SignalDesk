@@ -164,9 +164,7 @@ html[data-theme="dark"] {
   --qn-action-contrast: var(--qn-canvas-dark);
 }
 
-body {
-  letter-spacing: -0.006em;
-}
+/* Legibility: no letterspacing squeeze on running text. */
 
 /* Persistent navigation stays deep petrol in both themes for
    cross-product continuity (PRD §7.1). */
@@ -184,10 +182,10 @@ body {
 }
 
 .nav .nav-group__label {
-  color: #6f9a96;
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 0.12em;
+  color: #9fc4c0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -207,12 +205,8 @@ body {
   max-width: 1540px;
 }
 
-.collection-list__wrap h1,
-.document-fields__edit h1,
-.dashboard h1 {
-  font-family: Georgia, "Times New Roman", serif;
-  letter-spacing: -0.04em;
-}
+/* Headings use the admin UI's normal system sans — no decorative serif,
+   no letter-spacing squeeze. Clear beats cute. */
 
 /* Primary action = the teal interaction anchor, per theme. */
 .btn--style-primary {
