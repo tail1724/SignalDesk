@@ -40,6 +40,46 @@ export async function getFeedArticles(citySlug?: string, limit = 20): Promise<Ar
   return (data ?? []) as unknown as Article[];
 }
 
+export async function getFeedArticlesPage({
+  citySlug,
+  limit = 6,
+  cursor,
+}: {
+  citySlug?: string;
+  limit?: number;
+  cursor?: { published_at: string | null; id: string };
+}): Promise<Article[]> {
+  const supabase = await createServerSupabase();
+  let query = supabase
+    .from("hr_articles")
+    .select(ARTICLE_SELECT)
+    .eq("status", "published")
+    .order("published_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(limit);
+
+  if (citySlug) {
+    const { data: cat } = await supabase
+      .from("hr_categories")
+      .select("id")
+      .eq("slug", citySlug)
+      .single();
+    if (cat) query = query.eq("section_id", cat.id);
+  }
+
+  if (cursor?.published_at) {
+    query = query.or(
+      `published_at.lt.${cursor.published_at},and(published_at.eq.${cursor.published_at},id.lt.${cursor.id})`
+    );
+  } else if (cursor?.id) {
+    query = query.lt("id", cursor.id);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data ?? []) as unknown as Article[];
+}
+
 export async function getCorrectionsForArticle(articleId: string): Promise<Correction[]> {
   const supabase = await createServerSupabase();
   const { data, error } = await supabase

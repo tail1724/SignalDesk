@@ -143,14 +143,14 @@ function SearchDialog({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/40"
+      className="search-dialog-backdrop fixed inset-0 flex items-start justify-center pt-[15vh] bg-black/40"
       onClick={onClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Search"
-        className="w-full max-w-lg bg-surface-1 border border-line-strong rounded-2xl shadow-2xl overflow-hidden"
+        className="search-dialog-panel w-full max-w-lg bg-surface-1 border border-line-strong rounded-2xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center border-b border-line px-4">
