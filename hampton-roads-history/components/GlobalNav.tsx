@@ -24,6 +24,8 @@ export function GlobalNav({ cities }: { cities: City[] }) {
   const isHome = pathname === "/";
   const [wx, setWx] = useState<Weather | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const drawerRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -41,6 +43,30 @@ export function GlobalNav({ cities }: { cities: City[] }) {
     if (!drawerOpen && el.open) el.close();
   }, [drawerOpen]);
 
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    const syncHeader = () => {
+      const height = Math.ceil(header.getBoundingClientRect().height);
+      document.documentElement.style.setProperty("--sticky-header-height", `${height}px`);
+      setScrolled(window.scrollY > 24);
+    };
+
+    syncHeader();
+    const resizeObserver = new ResizeObserver(syncHeader);
+    resizeObserver.observe(header);
+    window.addEventListener("scroll", syncHeader, { passive: true });
+    window.addEventListener("resize", syncHeader);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("scroll", syncHeader);
+      window.removeEventListener("resize", syncHeader);
+      document.documentElement.style.removeProperty("--sticky-header-height");
+    };
+  }, []);
+
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -54,7 +80,10 @@ export function GlobalNav({ cities }: { cities: City[] }) {
   ];
 
   return (
-    <header className={isHome ? "news-header" : "news-header compact-header"}>
+    <header
+      ref={headerRef}
+      className={`${isHome ? "news-header" : "news-header compact-header"}${scrolled ? " is-stuck" : ""}`}
+    >
       {isHome && (
         <div className="civic-strip">
           <span>

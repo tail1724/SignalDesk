@@ -1,0 +1,172 @@
+:root {
+  --sticky-header-height: 154px;
+  --sticky-rail-gap: 20px;
+}
+
+html,
+body,
+.publication-page {
+  max-width: 100%;
+  overflow-x: clip;
+  overflow-y: auto;
+}
+
+.news-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  transition: box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.news-header.is-stuck {
+  box-shadow: 0 10px 30px rgba(8, 24, 43, 0.12);
+}
+
+.news-header.is-stuck .civic-strip,
+.news-header.is-stuck .section-nav {
+  display: none;
+}
+
+.news-header.is-stuck .masthead-row {
+  min-height: 64px;
+}
+
+.news-header.is-stuck .wordmark {
+  font-size: 30px;
+}
+
+.news-header.is-stuck .wordmark small {
+  display: none;
+}
+
+.search-dialog-backdrop {
+  z-index: 100;
+  padding: max(16px, env(safe-area-inset-top)) 12px 16px;
+}
+
+.editorial-grid,
+.story-stack,
+.home-rail,
+.story-card,
+.compact-card,
+.story-row,
+.card-copy,
+.briefing-card,
+.trust-card,
+.inline-form,
+.search-dialog-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.home-rail-sticky {
+  align-self: start;
+}
+
+@media (min-width: 1024px) and (min-height: 720px) {
+  .home-rail-sticky {
+    position: sticky;
+    top: calc(var(--sticky-header-height, 64px) + var(--sticky-rail-gap));
+  }
+}
+
+.lazy-feed-batch {
+  content-visibility: auto;
+  contain-intrinsic-size: 220px;
+}
+
+.home-feed-sentinel {
+  block-size: 1px;
+}
+
+.feed-load-more {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 20px;
+  color: #fff;
+  border: 0;
+  background: var(--federal);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.feed-load-more:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.feed-load-status {
+  color: var(--signal-red-dark);
+  font: 12px/1.4 var(--mono);
+}
+
+@media (max-width: 1023px) {
+  .editorial-grid {
+    display: block;
+    padding-inline: clamp(13px, 4vw, 28px);
+  }
+
+  .home-rail {
+    margin-top: 28px;
+  }
+
+  .home-rail-sticky {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .publication-page {
+    overflow-x: clip;
+    overflow-y: auto;
+  }
+
+  .masthead-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .masthead-actions > * {
+    display: none;
+  }
+
+  .masthead-actions .search-button {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    overflow: hidden;
+    color: transparent;
+    border-radius: 999px;
+  }
+
+  .masthead-actions .search-button::after {
+    content: "⌕";
+    color: var(--ink);
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .masthead-actions .search-button kbd {
+    display: none;
+  }
+
+  .masthead-actions .primary-button {
+    display: none;
+  }
+
+  .search-dialog-backdrop {
+    align-items: start;
+    justify-content: stretch;
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+
+  .search-dialog-panel {
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top));
+    border-radius: 14px;
+  }
+}

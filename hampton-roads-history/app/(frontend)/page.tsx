@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import Link from "next/link";
 import { getFeedArticles } from "@/lib/data";
 import { getHomepageHeroMedia } from "@/lib/featured";
@@ -9,18 +8,16 @@ import { CatchUpCard } from "@/components/CatchUpCard";
 import { DirectSponsor } from "@/components/ads/DirectSponsor";
 import { PartnerStudioCard } from "@/components/ads/PartnerStudioCard";
 import { RailPlacement } from "@/components/ads/RailPlacement";
-import { AdFrame } from "@/components/ads/AdFrame";
-import { AdSlot } from "@/components/AdSlot";
 import { PageEngagement } from "@/components/ads/PageEngagement";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { NonCriticalBoundary } from "@/components/NonCriticalBoundary";
+import { ProgressiveHomeFeed } from "@/components/home/ProgressiveHomeFeed";
 
 // Homepage — DOM mirrors redesign/vapornet/index.html's home screen:
 // .home-main > cinematic hero, morning-line, leader ad, editorial grid
-// (story stack + home rail), cities band. Continuation stories render as
-// additional numbered .story-row items inside the story stack, with the
-// prototype's .extra-ad frame injected periodically.
-const EXTRA_AD_EVERY = 5;
+// (story stack + home rail), cities band. Continuation stories hydrate into
+// the story stack through stable cursor pagination after the initial SEO set.
+const INITIAL_HOME_STORY_COUNT = 10;
 
 // force-dynamic keeps the build from needing Supabase access at build time
 // (this sandbox's egress policy blocks the project host); Coolify's build
@@ -30,7 +27,7 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [articlesResult, heroMediaResult] = await Promise.allSettled([
-    getFeedArticles(undefined, 24),
+    getFeedArticles(undefined, INITIAL_HOME_STORY_COUNT),
     getHomepageHeroMedia(),
   ]);
 
@@ -99,25 +96,16 @@ export default async function HomePage() {
             <PartnerStudioCard slotId="home-native-01" />
           </NonCriticalBoundary>
 
-          {rows.map((a, i) => (
-            <Fragment key={a.id}>
-              <StoryCard article={a} variant="row" index={i + 3} />
-              {(i + 1) % EXTRA_AD_EVERY === 0 && (
-                <NonCriticalBoundary label="Home feed ad">
-                  <AdFrame variant="extra-ad" minHeight={97}>
-                    <AdSlot slotId="home-feed" variant="minimal" />
-                  </AdFrame>
-                </NonCriticalBoundary>
-              )}
-            </Fragment>
-          ))}
+          <ProgressiveHomeFeed initialRows={rows} />
         </div>
 
         <aside className="home-rail">
           <CatchUpCard articles={catchUp} />
-          <NonCriticalBoundary label="Home rail ad">
-            <RailPlacement slotId="home-rail-01" />
-          </NonCriticalBoundary>
+          <div className="home-rail-sticky">
+            <NonCriticalBoundary label="Home rail ad">
+              <RailPlacement slotId="home-rail-01" />
+            </NonCriticalBoundary>
+          </div>
           <section className="trust-card">
             <span className="section-kicker">How we report</span>
             <p>Named authors. Visible sources. Clear corrections. Advertising never controls coverage.</p>
