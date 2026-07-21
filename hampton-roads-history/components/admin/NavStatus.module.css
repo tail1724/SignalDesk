@@ -12,9 +12,9 @@
   align-items: center;
   gap: 7px;
   color: #fff;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -29,7 +29,7 @@
 
 .status p {
   margin: 7px 0 0;
-  color: #8fb0ac;
-  font-size: 9px;
-  line-height: 1.45;
+  color: #b7d0cc;
+  font-size: 12px;
+  line-height: 1.5;
 }
