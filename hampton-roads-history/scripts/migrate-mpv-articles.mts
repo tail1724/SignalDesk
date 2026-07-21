@@ -93,8 +93,8 @@ function paragraphNode(text: string) {
   return {
     type: "paragraph",
     children: [textNode(text)],
-    direction: "ltr",
-    format: "",
+    direction: "ltr" as const,
+    format: "" as const,
     indent: 0,
     version: 1,
   };
@@ -106,8 +106,8 @@ function headingNode(level: number, text: string) {
     type: "heading",
     tag,
     children: [textNode(text)],
-    direction: "ltr",
-    format: "",
+    direction: "ltr" as const,
+    format: "" as const,
     indent: 0,
     version: 1,
   };
@@ -126,7 +126,16 @@ function buildBodyLexical(raw: string | null) {
     return paragraphNode(line.replace(/\*\*/g, ""));
   });
 
-  return { root: { type: "root", children, direction: "ltr", format: "", indent: 0, version: 1 } };
+  return {
+    root: {
+      type: "root",
+      children,
+      direction: "ltr" as const,
+      format: "" as const,
+      indent: 0,
+      version: 1,
+    },
+  };
 }
 
 // --- main -----------------------------------------------------------------
@@ -202,6 +211,14 @@ async function main() {
       collection: "hr_articles",
       user: importUser,
       overrideAccess: true,
+      draft: false,
+      // `data` is cast below: the generated HrArticle type demands `short_id`,
+      // but that column is a Postgres GENERATED ALWAYS column (derived from
+      // the row's own id) — Payload has no field-level way to express
+      // "server-generated, don't send this on create". workflow_stage and
+      // priority are omitted deliberately too: the DB has defaults for both,
+      // and enforceArticlePublication (lib/payload/workflow.ts) forces
+      // workflow_stage to "published" on this create anyway.
       data: {
         slug: row.slug || slugify(row.title),
         title: row.title,
@@ -228,7 +245,8 @@ async function main() {
         ingest_key: ingestKey,
         last_ingested_at: new Date().toISOString(),
         _status: "published",
-      },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
     });
     created++;
   }
